@@ -2,7 +2,8 @@ AIRFLOW_HOME = ~/Desktop/astro
 PROJ_SLUG = hdash
 CLI_NAME = hdash
 PY_VERSION = 3.8
-LINTER = flake8
+PY_LINT = pylint
+FLAKE8 = flake8
 FORMATTER = black
 
 check: format lint test
@@ -15,8 +16,10 @@ freeze:
 	pip freeze > requirements.txt
 
 lint:
-	$(LINTER) $(PROJ_SLUG)
-	$(LINTER) tests
+	$(PY_LINT) $(PROJ_SLUG)
+	$(PY_LINT) tests
+	$(FLAKE8) $(PROJ_SLUG)
+	$(FLAKE8) tests
 
 format:
 	$(FORMATTER) $(PROJ_SLUG)

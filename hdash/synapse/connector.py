@@ -1,9 +1,8 @@
 """Synapse Connector."""
 
 
-import synapseclient  # type: ignore
-from pandas import DataFrame  # type: ignore
 import logging
+import synapseclient
 from hdash.synapse.credentials import SynapseCredentials
 
 
@@ -14,21 +13,25 @@ class SynapseConnector:
 
     def __init__(self):
         """Construct a new Synapse Connector Class."""
-        self._logger = logging.getLogger("airflow.task")
-        self._syn = synapseclient.Synapse()
-        self._cred = SynapseCredentials()
-        self._syn.login(self._cred.user_name, self._cred.password, silent=True)
+        self.logger = logging.getLogger("airflow.task")
+        self.syn = synapseclient.Synapse()
+        self.cred = SynapseCredentials()
+        self.syn.login(self.cred.user_name, self.cred.password, silent=True)
 
     def retrieve_atlas_table(self, entity_id):
         """Retrieve the Synapse Table for the Specified Atlas."""
-        self._logger.info("Retrieving Synapse Table for:  %s." % entity_id)
+        self.logger.info("Retrieving Synapse Table for:  %s", entity_id)
         sql = f"SELECT * FROM {SynapseConnector.MASTER_HTAN_ID} WHERE projectId ='{entity_id}';"
-        self._logger.info("Issuing Synapse Query:  %s" % sql)
-        table = self._syn.tableQuery(sql)
-        df = table.asDataFrame()
-        self._logger.info("Got Data Frame with %d rows." % len(df.index))
+        self.logger.info("Issuing Synapse Query:  %s", sql)
+        table = self.syn.tableQuery(sql)
+        synapse_df = table.asDataFrame()
+        self.logger.info("Got Data Frame with %d rows.", len(synapse_df.index))
         # df.to_csv(SynapseUtil.MASTER_HTAN_TABLE)
-        return df
+        return synapse_df
+
+    def retrieve_file(self, synapse_id):
+        """Retrieve the specified file from Synapse."""
+        print(f"To be implemented {synapse_id}.")
 
     # def retrieve_file(self, synapse_id):
     #     """Retrieve the specified file from Synapse."""
