@@ -22,18 +22,12 @@ format:
 	$(FORMATTER) $(PROJ_SLUG)
 	$(FORMATTER) tests
 
-qtest:  prepare
-	py.test -s tests/
-
-test:   prepare
-	py.test -s --cov-report term --cov=$(PROJ_SLUG) tests/
-
-coverage:
-	py.test --cov-report html --cov=$(PROJ_SLUG) tests/
+test:  prepare
+	python3 -s -m pytest tests/
 
 deploy:
+	cp -R hdash $(AIRFLOW_HOME)
 	cp hdash/dags/*.py $(AIRFLOW_HOME)/dags
 
 clean:
 	rm -rf deploy
-	rm -rf *.egg-info
