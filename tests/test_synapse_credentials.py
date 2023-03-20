@@ -1,12 +1,10 @@
 """Test Synapse Credentials."""
-import pytest
-from hdash.synapse.credentials import SynapseCredentials
 from unittest import mock
+from hdash.synapse.credentials import SynapseCredentials
 
 
 def test_synapse_credentials():
     """Test Synapse Credentials."""
-
     # Patch Airflow Variables.
     # This is a recommended practiced described at:
     # https://airflow.apache.org/docs/apache-airflow/2.0.2/best-practices.html

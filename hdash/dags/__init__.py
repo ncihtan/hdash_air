@@ -1,1 +1,1 @@
-"""Airflow DAGs"""
+"""Airflow DAGs."""
