@@ -16,5 +16,5 @@ def test_synapse_credentials():
     }
     with mock.patch.dict("os.environ", airflow_vars):
         credentials = SynapseCredentials()
-        assert "user" == credentials.user_name
-        assert "password" == credentials.password
+        assert credentials.user_name == "user"
+        assert credentials.password == "password"

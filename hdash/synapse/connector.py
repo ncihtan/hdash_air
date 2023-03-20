@@ -21,12 +21,12 @@ class SynapseConnector:
     def retrieve_atlas_table(self, entity_id):
         """Retrieve the Synapse Table for the Specified Atlas."""
         self.logger.info("Retrieving Synapse Table for:  %s", entity_id)
-        sql = f"SELECT * FROM {SynapseConnector.MASTER_HTAN_ID} WHERE projectId ='{entity_id}';"
+        sql = f"SELECT * FROM {self.MASTER_HTAN_ID} "
+        sql += f"WHERE projectId ='{entity_id}';"
         self.logger.info("Issuing Synapse Query:  %s", sql)
         table = self.syn.tableQuery(sql)
         synapse_df = table.asDataFrame()
         self.logger.info("Got Data Frame with %d rows.", len(synapse_df.index))
-        # df.to_csv(SynapseUtil.MASTER_HTAN_TABLE)
         return synapse_df
 
     def retrieve_file(self, synapse_id):

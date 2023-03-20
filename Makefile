@@ -18,6 +18,8 @@ freeze:
 lint:
 	$(PY_LINT) $(PROJ_SLUG)
 	$(PY_LINT) tests
+
+flake8:
 	$(FLAKE8) $(PROJ_SLUG)
 	$(FLAKE8) tests
 
@@ -26,7 +28,10 @@ format:
 	$(FORMATTER) tests
 
 test:  prepare
-	python3 -s -m pytest tests/
+	pytest -v -m "not smoke" tests
+
+smoke:  prepare
+	pytest -v -m "smoke" tests
 
 deploy:
 	cp -R hdash $(AIRFLOW_HOME)
