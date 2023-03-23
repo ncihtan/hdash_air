@@ -12,13 +12,13 @@ class DbConnection:
     def __init__(self):
         """Construct a new Database Connection."""
         credentials = DatabaseCredentials()
-        user_name = credentials.user_name
+        user = credentials.user_name
         password = credentials.password
         host = credentials.host
         db_name = credentials.db_name
 
         # Connect Pattern:  "mysql+mysqldb://username:password@localhost/dbname"
-        self.db_connect_str = f"mysql+mysqldb://{user_name}:{password}@{host}/{db_name}"
+        self.db_connect_str = f"mysql+mysqldb://{user}:{password}@{host}/{db_name}"
 
         self._init_db_connections()
         if not database_exists(self.db_connect_str):
