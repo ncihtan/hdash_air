@@ -16,8 +16,8 @@ freeze:
 	pip freeze > requirements.txt
 
 lint:
-	$(PY_LINT) $(PROJ_SLUG)
-	$(PY_LINT) tests
+	$(PY_LINT) -j 0 $(PROJ_SLUG)
+	$(PY_LINT) -j 0 tests
 
 flake8:
 	$(FLAKE8) $(PROJ_SLUG)
