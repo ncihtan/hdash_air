@@ -17,8 +17,8 @@ class DbConnection:
         host = credentials.host
         db_name = credentials.db_name
 
-        # Connect Pattern:  "mysql+mysqldb://username:password@localhost/dbname"
-        self.db_connect_str = f"mysql+mysqldb://{user}:{password}@{host}/{db_name}"
+        # Connect Pattern:  "mysql+pymysql://username:password@localhost/dbname"
+        self.db_connect_str = f"mysql+pymysql://{user}:{password}@{host}/{db_name}"
 
         self._init_db_connections()
         if not database_exists(self.db_connect_str):
@@ -39,7 +39,6 @@ class DbConnection:
         return self._session
 
     def _create_database(self):
-        print("Creating tables")
         create_database(self.db_connect_str)
         Base.metadata.create_all(self._engine)
         self._init_db_connections()

@@ -27,10 +27,10 @@ format:
 	$(FORMATTER) $(PROJ_SLUG)
 	$(FORMATTER) tests
 
-test:  prepare
+test:
 	pytest -v -m "not smoke" tests
 
-smoke:  prepare
+smoke:
 	pytest -v -m "smoke" tests
 
 deploy:
