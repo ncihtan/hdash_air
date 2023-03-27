@@ -55,6 +55,7 @@ class MasterSynapseReader:
         file.file_type = row.type
         file.parent_id = row.parentId
         file.component = row.Component
+        file.size_bytes = row.dataFileSizeBytes
         file.md5 = row.dataFileMD5Hex
         file.atlas_id = self.atlas_id
         file.data_type = self.file_type_util.get_file_type(file.name)

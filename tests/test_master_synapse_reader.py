@@ -14,3 +14,6 @@ def test_master_synapse_reader():
     # 1 is a legacy meta file
     # we should therefore get 8 files
     assert len(file_list) == 8
+
+    file0 = file_list[0]
+    assert file0.size_bytes == 19.0

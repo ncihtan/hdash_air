@@ -1,5 +1,5 @@
 """AtlasStats ORM Class."""
-from sqlalchemy import Column, String, Integer, Float
+from sqlalchemy import Column, String, Integer, BigInteger, Float
 from hdash.db.db_base import Base
 
 
@@ -9,7 +9,7 @@ class AtlasStats(Base):
     __tablename__ = "atlas_stats"
 
     atlas_id = Column(String(25), primary_key=True)
-    total_file_size = Column(Integer)
+    total_file_size = Column(BigInteger)
     num_fastq_files = Column(Integer)
     num_bam_files = Column(Integer)
     num_image_files = Column(Integer)
@@ -21,6 +21,8 @@ class AtlasStats(Base):
     def __init__(self, atlas_id):
         """Create AtlasStats Object."""
         self.atlas_id = atlas_id
+        self.num_errors = 0
+        self.percent_metadata_complete = 0
 
     def __repr__(self):
         """Get atlas stats summary."""
