@@ -2,8 +2,11 @@
 
 
 import logging
+from typing import List
 import synapseclient
+from hdash.reader.master_synapse_reader import MasterSynapseReader
 from hdash.synapse.credentials import SynapseCredentials
+from hdash.db.atlas_file import AtlasFile
 
 
 class SynapseConnector:
@@ -18,7 +21,7 @@ class SynapseConnector:
         self.cred = SynapseCredentials()
         self.syn.login(self.cred.user_name, self.cred.password, silent=True)
 
-    def retrieve_atlas_table(self, entity_id):
+    def get_atlas_files(self, atlas_id, entity_id) -> List[AtlasFile]:
         """Retrieve the Synapse Table for the Specified Atlas."""
         self.logger.info("Retrieving Synapse Table for:  %s", entity_id)
         sql = f"SELECT * FROM {self.MASTER_HTAN_ID} "
@@ -27,11 +30,8 @@ class SynapseConnector:
         table = self.syn.tableQuery(sql)
         synapse_df = table.asDataFrame()
         self.logger.info("Got Data Frame with %d rows.", len(synapse_df.index))
-        return synapse_df
-
-    def retrieve_file(self, synapse_id):
-        """Retrieve the specified file from Synapse."""
-        print(f"To be implemented {synapse_id}.")
+        reader = MasterSynapseReader(atlas_id, synapse_df)
+        return reader.get_file_list()
 
     # def retrieve_file(self, synapse_id):
     #     """Retrieve the specified file from Synapse."""

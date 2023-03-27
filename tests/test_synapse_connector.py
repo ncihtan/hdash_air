@@ -7,5 +7,5 @@ from hdash.synapse.connector import SynapseConnector
 def test_synapse_connector():
     """Smoke Test for Synapse Connector."""
     connector = SynapseConnector()
-    dfci_df = connector.retrieve_atlas_table("syn23511954")
-    assert len(dfci_df.index) > 0
+    file_list = connector.get_atlas_files("HTA1", "syn23511954")
+    assert len(file_list) > 0

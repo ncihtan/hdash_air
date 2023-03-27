@@ -43,7 +43,7 @@ with DAG(
         synapse_id = atlas_id_tuple[1]
         logger.info("Getting Synapse data:  %s.", atlas_id)
         connector = SynapseConnector()
-        synapse_df = connector.retrieve_atlas_table(synapse_id)
+        synapse_df = connector.get_atlas_files(atlas_id, synapse_id)
         print(synapse_df)
 
     # Run the DAG

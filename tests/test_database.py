@@ -2,6 +2,7 @@
 import pytest
 from hdash.db.db_util import DbConnection
 from hdash.db.atlas import Atlas
+from hdash.db.atlas_file import AtlasFile
 from hdash.db.atlas_stats import AtlasStats
 
 
@@ -42,4 +43,29 @@ def test_atlas_stats():
     # Verify that we can get the atlas stats back
     atlas_list = session.query(AtlasStats).all()
     assert len(atlas_list) == 2
+    session.close()
+
+
+@pytest.mark.smoke
+def test_atlas_files():
+    """Smoke Test for AtlasFile Table."""
+    db_connection = DbConnection()
+    db_connection.reset_database()
+    session = db_connection.session
+
+    # Try adding a few atlas files
+    atlas_file1 = AtlasFile()
+    atlas_file1.atlas_id = "HTA1"
+    atlas_file1.synapse_id = "synapse1"
+    atlas_file2 = AtlasFile()
+    atlas_file2.atlas_id = "HTA1"
+    atlas_file2.synapse_id = "synapse2"
+
+    session.add(atlas_file1)
+    session.add(atlas_file2)
+    session.commit()
+
+    # Verify that we can get the objects
+    file_list = session.query(AtlasFile).all()
+    assert len(file_list) == 2
     session.close()
