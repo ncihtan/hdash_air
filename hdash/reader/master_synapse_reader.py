@@ -40,9 +40,12 @@ class MasterSynapseReader:
         file_list = file_df.apply(self._create_file, axis=1)
 
         # Remove Excluded Files
-        self.file_list = list(
-            filter(lambda x: x.file_type != FileType.EXCLUDE, file_list)
-        )
+        if len(file_list) > 0:
+            self.file_list = list(
+                filter(lambda x: x.file_type != FileType.EXCLUDE, file_list)
+            )
+        else:
+            self.file_list = file_list
 
     def get_file_list(self) -> List[AtlasFile]:
         """Get the List of Files."""

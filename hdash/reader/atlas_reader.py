@@ -9,7 +9,7 @@ class AtlasReader:
         """Create Atlas Reader Object."""
         fd = open(file)
         self.atlas_list = []
-        fd.readline()   # Skip header row
+        fd.readline()  # Skip header row
         for line in fd:
             parts = line.split(",")
             atlas = Atlas(parts[1], parts[2], parts[0], parts[3])
