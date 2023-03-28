@@ -59,10 +59,10 @@ with DAG(
             stats.num_image_files = file_counter.get_num_files(FileType.IMAGE)
             stats.num_matrix_files = file_counter.get_num_files(FileType.MATRIX)
             stats.num_other_files = file_counter.get_num_files(FileType.OTHER)
-            print(f"Saving stats to database")
+            print("Saving stats to database")
             session.add(stats)
             session.commit()
 
     # Run the DAG
-    id_list = get_atlas_list()
-    get_atlas_files.expand(atlas_id=id_list)
+    atlas_id_list = get_atlas_list()
+    get_atlas_files.expand(atlas_id=atlas_id_list)
