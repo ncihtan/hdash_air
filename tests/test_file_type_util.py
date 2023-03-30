@@ -12,3 +12,6 @@ def test_file_type_util():
     assert util.get_file_type("dfci.h5ad") == FileType.MATRIX
     assert util.get_file_type("synapse_storage_manifest_assay") == FileType.METADATA
     assert util.get_file_type("synapse_storage_manifest.csv") == FileType.EXCLUDE
+    assert util.get_file_type(".DS_Store") == FileType.EXCLUDE
+    assert util.get_file_type(".Rhistory") == FileType.EXCLUDE
+    assert util.get_file_type(".Other") == FileType.OTHER
