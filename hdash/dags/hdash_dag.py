@@ -8,6 +8,7 @@ from hdash.db.atlas import Atlas
 from hdash.db.db_util import DbConnection
 from hdash.synapse.file_counter import FileCounter
 from hdash.db.atlas_stats import AtlasStats
+from hdash.db.atlas_file import AtlasFile
 from hdash.synapse.file_type import FileType
 
 
@@ -32,9 +33,14 @@ with DAG(
         logger.info("Got %d atlases.", len(atlases))
         id_list = [atlas.atlas_id for atlas in atlases]
 
-        # Delete any Existing Atlas Stats before kicking off the next step
+        # Delete any Existing Atlas Stats Records
         session.query(AtlasStats).delete()
         session.commit()
+
+        # Delete any Existing Atlas Files
+        session.query(AtlasFile).delete()
+        session.commit()
+
         session.close()
         return id_list
 
@@ -65,6 +71,10 @@ with DAG(
             stats.num_other_files = file_counter.get_num_files(FileType.OTHER)
             print("Saving stats to database")
             session.add(stats)
+            session.commit()
+
+            # Save Files to Database
+            session.add_all(file_list)
             session.commit()
 
     # Run the DAG
