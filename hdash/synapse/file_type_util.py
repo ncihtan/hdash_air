@@ -32,7 +32,9 @@ class FileTypeUtil:
 
     def _get_file_extension(self, path):
         """Get File Extension, remove .gz, as needed."""
-        if path.suffix == ".gz":
+        if path.name.startswith("."):
+            return path.name
+        elif path.suffix == ".gz":
             file_extension = "".join(path.suffixes[-2])
         else:
             file_extension = path.suffix
