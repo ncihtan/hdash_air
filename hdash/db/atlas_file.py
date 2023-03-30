@@ -1,5 +1,5 @@
 """AtlasFile ORM Class."""
-from sqlalchemy import Column, String, Integer, Boolean
+from sqlalchemy import Column, String, BigInteger, Boolean
 from hdash.db.db_base import Base
 
 
@@ -14,15 +14,12 @@ class AtlasFile(Base):
     file_type = Column(String(25))
     data_type = Column(String(25))
     component = Column(String(255))
-    size_bytes = Column(Integer)
-    is_archive_folder = Column(Boolean)
-    is_meta_file = Column(Boolean)
+    size_bytes = Column(BigInteger)
     md5 = Column(String(255))
 
     def __init__(self):
         """Create Atlas File."""
-        self.is_archive_folder = False
-        self.is_meta_file = False
+        self.size_bytes = 0
 
     def __repr__(self):
         """Get atlas file summary."""
