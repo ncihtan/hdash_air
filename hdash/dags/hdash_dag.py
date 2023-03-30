@@ -31,6 +31,10 @@ with DAG(
         atlases = session.query(Atlas).all()
         logger.info("Got %d atlases.", len(atlases))
         id_list = [atlas.atlas_id for atlas in atlases]
+
+        # Delete any Existing Atlas Stats before kicking off the next step
+        session.query(AtlasStats).delete()
+        session.commit()
         session.close()
         return id_list
 
