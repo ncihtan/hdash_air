@@ -16,6 +16,7 @@ class AtlasFile(Base):
     component = Column(String(255))
     size_bytes = Column(BigInteger)
     md5 = Column(String(255))
+    modified_on = Column(BigInteger)
 
     def __init__(self):
         """Create Atlas File."""

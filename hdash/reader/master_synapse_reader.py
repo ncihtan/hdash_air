@@ -18,8 +18,6 @@ class MasterSynapseReader:
     - Ignore files placed in archive folders.
     """
 
-    LEGACY_META_FILE_NAME = "synapse_storage_manifest.csv"
-
     def __init__(self, atlas_id, synapse_df):
         """Create Reader with Synapse Data Frame."""
         self.atlas_id = atlas_id
@@ -50,6 +48,32 @@ class MasterSynapseReader:
         else:
             self.file_list = file_list
 
+        # Bin Files into meta v. non-meta and filter meta files by most recent
+        meta_files = list(
+            filter(lambda x: x.data_type == FileType.METADATA.value, self.file_list)
+        )
+        non_meta_files = list(
+            filter(lambda x: x.data_type != FileType.METADATA.value, self.file_list)
+        )
+        meta_files = self.filter_meta_files_by_most_recent(meta_files)
+
+        # Merge back together
+        self.file_list = []
+        self.file_list.extend(meta_files)
+        self.file_list.extend(non_meta_files)
+
+    def filter_meta_files_by_most_recent(self, meta_files):
+        """If a folder has more than one meta file, keep the most recent one."""
+        folder_map = {}
+        for file in meta_files:
+            if file.parent_id in folder_map:
+                stored_file = folder_map[file.parent_id]
+                if file.modified_on > stored_file.modified_on:
+                    folder_map[file.parent_id] = file
+            else:
+                folder_map[file.parent_id] = file
+        return list(folder_map.values())
+
     def get_file_list(self) -> List[AtlasFile]:
         """Get the List of Files."""
         return self.file_list
@@ -63,6 +87,7 @@ class MasterSynapseReader:
         file.component = row.Component
         file.size_bytes = row.dataFileSizeBytes
         file.md5 = row.dataFileMD5Hex
+        file.modified_on = row.modifiedOn
         file.atlas_id = self.atlas_id
         file.data_type = self.file_type_util.get_file_type(file.name).value
         return file

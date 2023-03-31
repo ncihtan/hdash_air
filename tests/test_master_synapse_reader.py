@@ -1,6 +1,7 @@
 """Test Master Synapse Reader."""
 import pandas as pd
 from hdash.reader.master_synapse_reader import MasterSynapseReader
+from hdash.synapse.file_type import FileType
 
 
 def test_master_synapse_reader():
@@ -13,9 +14,11 @@ def test_master_synapse_reader():
     # 3 are in archive folders
     # 1 is a legacy meta file
     # 1 is a .DS_Store file
-    # we should therefore get 6 files
-    assert len(file_list) == 6
+    # we also have two meta files in the same directory
+    # only one of this should be chosen.
+    # we therefore end up with 5 files
+    assert len(file_list) == 5
 
+    # Verify that we get the correct, most recent meta file
     file0 = file_list[0]
-    assert file0.size_bytes == 19.0
-    assert file0.component == "NA"
+    assert file0.data_type == FileType.METADATA.value
