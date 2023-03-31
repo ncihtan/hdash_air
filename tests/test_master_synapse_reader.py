@@ -10,10 +10,12 @@ def test_master_synapse_reader():
     file_list = reader.get_file_list()
 
     # master_htan.csv has 11 files.
-    # 2 are in archive folders
+    # 3 are in archive folders
     # 1 is a legacy meta file
-    # we should therefore get 8 files
-    assert len(file_list) == 8
+    # 1 is a .DS_Store file
+    # we should therefore get 6 files
+    assert len(file_list) == 6
 
     file0 = file_list[0]
     assert file0.size_bytes == 19.0
+    assert file0.component == "NA"
