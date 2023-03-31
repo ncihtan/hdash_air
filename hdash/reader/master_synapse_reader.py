@@ -37,7 +37,7 @@ class MasterSynapseReader:
         file_df = file_df[~file_df.parentId.isin(archive_id_set)]
 
         # Fill in NAs
-        file_df.Component = file_df.Component.fillna('NA')
+        file_df.Component = file_df.Component.fillna("NA")
 
         # Convert to File List
         file_list = file_df.apply(self._create_file, axis=1)
@@ -45,7 +45,7 @@ class MasterSynapseReader:
         # Remove Excluded Files
         if len(file_list) > 0:
             self.file_list = list(
-                filter(lambda x: x.data_type != FileType.EXCLUDE, file_list)
+                filter(lambda x: x.data_type != FileType.EXCLUDE.value, file_list)
             )
         else:
             self.file_list = file_list

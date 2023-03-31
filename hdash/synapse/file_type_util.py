@@ -34,7 +34,7 @@ class FileTypeUtil:
         """Get File Extension, remove .gz, as needed."""
         if path.name.startswith("."):
             return path.name
-        elif path.suffix == ".gz":
+        if path.suffix == ".gz":
             file_extension = "".join(path.suffixes[-2])
         else:
             file_extension = path.suffix

@@ -1,5 +1,5 @@
 """AtlasFile ORM Class."""
-from sqlalchemy import Column, String, BigInteger, Boolean
+from sqlalchemy import Column, String, BigInteger
 from hdash.db.db_base import Base
 
 
