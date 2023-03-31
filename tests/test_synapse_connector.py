@@ -9,3 +9,6 @@ def test_synapse_connector():
     connector = SynapseConnector()
     file_list = connector.get_atlas_files("HTA1", "syn23511954")
     assert len(file_list) > 0
+
+    csv_data = connector.get_cvs_table("syn51185203")
+    assert "Fixative Type" in csv_data

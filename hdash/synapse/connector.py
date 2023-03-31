@@ -33,13 +33,11 @@ class SynapseConnector:
         reader = MasterSynapseReader(atlas_id, synapse_df)
         return reader.get_file_list()
 
-    # def retrieve_file(self, synapse_id):
-    #     """Retrieve the specified file from Synapse."""
-    #     syn_link = self.syn.get(
-    #         entity=synapse_id,
-    #         downloadLocation=SynapseUtil.CACHE,
-    #     )
-    #     new_file_path = SynapseUtil.CACHE + "/" + synapse_id + ".csv"
-    #     logging.info("Renaming:  %s --> %s" % (syn_link.path, new_file_path))
-    #     os.rename(syn_link.path, new_file_path)
-    #     return new_file_path
+    def get_cvs_table(self, synapse_id):
+        """Retrieve the specified CSV table from Synapse."""
+        self.logger.info("Retrieving Synapse Table:  %s", synapse_id)
+        table = self.syn.get(synapse_id)
+        file = open(table.path, "r")
+        cvs_data = file.read()
+        file.close()
+        return cvs_data

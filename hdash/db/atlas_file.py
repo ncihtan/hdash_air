@@ -1,5 +1,6 @@
 """AtlasFile ORM Class."""
 from sqlalchemy import Column, String, BigInteger
+from sqlalchemy.dialects.mysql import LONGTEXT
 from hdash.db.db_base import Base
 
 
@@ -17,6 +18,7 @@ class AtlasFile(Base):
     size_bytes = Column(BigInteger)
     md5 = Column(String(255))
     modified_on = Column(BigInteger)
+    content = Column(LONGTEXT)
 
     def __init__(self):
         """Create Atlas File."""
