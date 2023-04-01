@@ -77,6 +77,12 @@ with DAG(
             session.add_all(file_list)
             session.commit()
 
+    # @task
+    # def get_meta_files(atlas_id: str):
+    #     """Get all meta files."""
+    #     pass
+
     # Run the DAG
     atlas_id_list = get_atlas_list()
     get_atlas_files.expand(atlas_id=atlas_id_list)
+    # get_meta_files.expand(atlas_id=atlas_id_list)

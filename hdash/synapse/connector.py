@@ -37,7 +37,6 @@ class SynapseConnector:
         """Retrieve the specified CSV table from Synapse."""
         self.logger.info("Retrieving Synapse Table:  %s", synapse_id)
         table = self.syn.get(synapse_id)
-        file = open(table.path, "r")
-        cvs_data = file.read()
-        file.close()
+        with open(table.path, "r", encoding="utf-8") as file:
+            cvs_data = file.read()
         return cvs_data
