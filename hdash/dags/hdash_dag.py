@@ -9,6 +9,7 @@ from hdash.db.db_util import DbConnection
 from hdash.synapse.file_counter import FileCounter
 from hdash.db.atlas_stats import AtlasStats
 from hdash.db.atlas_file import AtlasFile
+from hdash.db.meta_cache import MetaCache
 from hdash.synapse.file_type import FileType
 
 
@@ -76,13 +77,40 @@ with DAG(
             # Save Files to Database
             session.add_all(file_list)
             session.commit()
+        return atlas_id
 
-    # @task
-    # def get_meta_files(atlas_id: str):
-    #     """Get all meta files."""
-    #     pass
+    @task
+    def get_meta_files(atlas_id: str):
+        """Get all meta files and store contents in database."""
+        db_connection = DbConnection()
+        session = db_connection.session
+        atlas = session.query(Atlas).filter_by(atlas_id=atlas_id).one()
+        logger.info("Getting Metadata files for:  %s.", atlas)
+
+        meta_list = (
+            session.query(AtlasFile)
+            .filter_by(atlas_id=atlas_id, data_type=FileType.METADATA.value)
+            .all()
+        )
+        logger.info("Processing %d meta files.", len(meta_list))
+
+        connector = SynapseConnector()
+        for meta_file in meta_list:
+            # Check that meta file is already cached
+            cache = session.query(MetaCache).filter_by(md5=meta_file.md5).first()
+            if cache is None:
+                logger.info("Retrieving meta file:  %s", meta_file.synapse_id)
+                csv = connector.get_cvs_table(meta_file.synapse_id)
+                meta_cache = MetaCache()
+                meta_cache.synapse_id = meta_file.synapse_id
+                meta_cache.md5 = meta_file.md5
+                meta_cache.content = csv
+                session.add(meta_cache)
+                session.commit()
+            else:
+                logger.info("Skipping. Found cache for:  %s", meta_file.synapse_id)
 
     # Run the DAG
-    atlas_id_list = get_atlas_list()
-    get_atlas_files.expand(atlas_id=atlas_id_list)
-    # get_meta_files.expand(atlas_id=atlas_id_list)
+    atlas_id_list1 = get_atlas_list()
+    atlas_id_list2 = get_atlas_files.expand(atlas_id=atlas_id_list1)
+    get_meta_files.expand(atlas_id=atlas_id_list2)

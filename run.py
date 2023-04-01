@@ -1,3 +1,4 @@
+import sys
 from hdash.reader.atlas_reader import AtlasReader
 from hdash.db.db_util import DbConnection
 from hdash.db.atlas import Atlas
@@ -6,6 +7,7 @@ from hdash.synapse.connector import SynapseConnector
 from hdash.synapse.file_counter import FileCounter
 from hdash.db.atlas_file import AtlasFile
 from hdash.db.atlas_stats import AtlasStats
+from hdash.db.meta_cache import MetaCache
 
 # Start with Fresh Database
 db_connection = DbConnection()
@@ -20,6 +22,7 @@ print(f"Saving {len(atlas_list)} atlases to the database.")
 for atlas in atlas_list:
     session.add(atlas)
 session.commit()
+sys.exit(1)
 
 # Process each atlas
 atlas_list = session.query(Atlas).all()

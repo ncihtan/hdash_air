@@ -82,11 +82,11 @@ def test_meta_cache():
     # Try adding a few meta-caches
     cache1 = MetaCache()
     cache1.synapse_id = "syn1"
-    cache1.md5_hash = "md1"
+    cache1.md5 = "md1"
 
     cache2 = MetaCache()
     cache2.synapse_id = "syn2"
-    cache2.md5_hash = "md2"
+    cache2.md5 = "md2"
 
     session.add(cache1)
     session.add(cache2)
