@@ -1,1 +1,1 @@
-"""HTAN Validator."""
+"""Core HTAN Validator and Validator Rules."""
