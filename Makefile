@@ -27,7 +27,7 @@ format:
 	$(FORMATTER) $(PROJ_SLUG)
 	$(FORMATTER) tests
 
-test:
+test: prepare
 	pytest -v -m "not smoke" tests
 
 smoke:
