@@ -26,10 +26,8 @@ class ValidationRule:
 
     def _create_error_msg(self, msg, meta_file: MetaFile):
         """Create Error Message with Synapse ID."""
-        synapse_id = meta_file.atlas_file.synapse_id # pylint: disable=unused-variable
-        category = meta_file.atlas_file.category     # pylint: disable=unused-variable
-        error_msg = (
-            f"{msg} [Error occurred while processing file:  "
-            "{synapse_id} of type {category}]."
-        )
+        synapse_id = meta_file.atlas_file.synapse_id
+        category = meta_file.atlas_file.category
+        error_msg = f"{msg} [Error occurred while processing file:  "
+        error_msg += f"{synapse_id} of type {category}]."
         return error_msg
