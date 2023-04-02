@@ -1,2 +1,2 @@
 [MASTER]
-disable=R0903
+disable=R0903, R0902

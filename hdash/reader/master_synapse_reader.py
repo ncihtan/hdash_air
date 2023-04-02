@@ -85,7 +85,7 @@ class MasterSynapseReader:
         file.name = row["name"]
         file.file_type = row.type
         file.parent_id = row.parentId
-        file.component = row.Component
+        file.category = row.Component
         file.size_bytes = row.dataFileSizeBytes
         file.md5 = row.dataFileMD5Hex
         file.modified_on = row.modifiedOn

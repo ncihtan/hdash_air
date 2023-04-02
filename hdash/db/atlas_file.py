@@ -13,7 +13,7 @@ class AtlasFile(Base):
     parent_id = Column(String(255))
     file_type = Column(String(25))
     data_type = Column(String(25))
-    component = Column(String(255))
+    category = Column(String(255))
     size_bytes = Column(BigInteger)
     md5 = Column(String(255))
     modified_on = Column(BigInteger)
