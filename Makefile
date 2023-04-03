@@ -11,6 +11,7 @@ check: format lint test
 prepare:
 	mkdir -p deploy
 	mkdir -p deploy/images
+	mkdir -p tests/out
 
 freeze:
 	pip freeze > requirements.txt

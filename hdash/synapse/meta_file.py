@@ -13,12 +13,11 @@ class MetaFile:
         self.atlas_file = atlas_file
         self.meta_cache = meta_cache
         self.data_frame = None
-        self.num_records = 0
 
         if meta_cache.content is not None:
             cvs_string_io = StringIO(meta_cache.content)
             self.data_frame = pd.read_csv(cvs_string_io)
-            self.num_records = len(self.data_frame.index)
+            self.meta_cache.num_records = len(self.data_frame.index)
 
     def __repr__(self):
         """Return summary of object."""

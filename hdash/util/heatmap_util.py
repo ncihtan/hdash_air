@@ -1,11 +1,11 @@
 """HeatMap Utility."""
 import pandas as pd
 from natsort import natsorted
+import seaborn as sns
+import matplotlib.pyplot as plt
 from hdash.util.heatmap import HeatMap
 from hdash.stats.completeness_summary import CompletenessSummary
 from hdash.util.categories import Categories
-import seaborn as sns
-import matplotlib.pyplot as plt
 
 
 class HeatMapUtil:
@@ -21,7 +21,7 @@ class HeatMapUtil:
     CAPTION = "Value of 1 indicates presence of data."
 
     def __init__(self, atlas_id, completeness_summary: CompletenessSummary):
-        """Default Constructor."""
+        """Create Heatmap Utility."""
         self.atlas_id = atlas_id
         self.completeness_summary = completeness_summary
         self.heatmaps = []
@@ -116,28 +116,28 @@ class HeatMapUtil:
         b_ids = self.completeness_summary.graph_flat.biospecimen_id_set
         b_ids = natsorted(b_ids)
         for biospecimen_id in b_ids:
-            sum = 0
+            total_sum = 0
             current_row = [biospecimen_id]
             for category in category_list:
                 value = 0
                 if self.completeness_summary.has_data(biospecimen_id, category):
                     value = 1
                 current_row.append(value)
-                sum += value
-            if sum > -0:
+                total_sum += value
+            if total_sum > -0:
                 data.append(current_row)
         self.__create_heatmap(heatmap_type, data, headers, label, bg_color)
 
     def __create_heatmap(self, heatmap_type, data, headers, label, bg_color):
         """Create Heatmap Object."""
-        df = pd.DataFrame(data, columns=headers)
-        df_html = df.to_html(
+        data_frame = pd.DataFrame(data, columns=headers)
+        df_html = data_frame.to_html(
             index=False, justify="left", classes="table table-striped table-sm"
         )
         caption = HeatMapUtil.CAPTION
         heatmap_id = self.atlas_id + "_" + heatmap_type
 
-        revised_df = self._prepare_df(df)
+        revised_df = self._prepare_df(data_frame)
         counts = revised_df.sum(axis=0)
         counts_df = counts.to_frame()
         counts_df.index = list(counts.index)
@@ -146,7 +146,7 @@ class HeatMapUtil:
             index=True, justify="left", classes="table table-striped table-sm"
         )
         heatmap = HeatMap(
-            heatmap_id, label, caption, data, df, df_html, counts_html, bg_color
+            heatmap_id, label, caption, data, data_frame, df_html, counts_html, bg_color
         )
         self.heatmaps.append(heatmap)
 
@@ -154,8 +154,8 @@ class HeatMapUtil:
         """Create Seaborn HeatMaps."""
         for heatmap in self.heatmaps:
             if len(heatmap.data) > 0:
-                revised_df = self._prepare_df(heatmap.df)
-                ax = sns.heatmap(
+                revised_df = self._prepare_df(heatmap.data_frame)
+                axis = sns.heatmap(
                     revised_df,
                     vmin=0,
                     vmax=1,
@@ -164,20 +164,20 @@ class HeatMapUtil:
                     yticklabels=False,
                     cmap="Blues",
                 )
-                ax.xaxis.tick_top()
+                axis.xaxis.tick_top()
                 plt.xticks(rotation=90)
-                ax.set_ylabel("")
-                ax.figure.tight_layout()
-                fig_name = "deploy/images/" + heatmap.id + ".png"
+                axis.set_ylabel("")
+                axis.figure.tight_layout()
+                fig_name = "deploy/images/" + heatmap.heatmap_id + ".png"
                 plt.savefig(fig_name)
                 plt.figure()
 
-    def _prepare_df(self, df):
-        columns = list(df.columns)
+    def _prepare_df(self, data_frame):
+        columns = list(data_frame.columns)
         if "BiospecimenID" in columns:
-            df.index = df["BiospecimenID"]
-            revised_df = df.drop(["BiospecimenID"], axis=1)
+            data_frame.index = data_frame["BiospecimenID"]
+            revised_df = data_frame.drop(["BiospecimenID"], axis=1)
         else:
-            df.index = df["ParticipantID"]
-            revised_df = df.drop(["ParticipantID"], axis=1)
+            data_frame.index = data_frame["ParticipantID"]
+            revised_df = data_frame.drop(["ParticipantID"], axis=1)
         return revised_df

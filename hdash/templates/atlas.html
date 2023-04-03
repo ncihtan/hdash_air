@@ -1,0 +1,170 @@
+<html>
+<head>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      margin-left: 20px;
+      margin-right:10px;
+      margin-top:10px;
+      margin-bottom:10px;
+    }
+    .footer {
+      margin: 10px;
+    }
+    .timestamp {
+      padding-top:10px;
+      padding-bottom:20px;
+    }
+    .validation_True {
+      background-color: lightgreen !important;
+    }
+    .validation_False {
+      background-color: pink !important;
+    }
+  </style>
+</head>
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+  <nav class="navbar navbar-dark bg-primary">
+    <div class="container-fluid">
+      <span class="navbar-brand mb-0 h1">HTAN Dashboard</span>
+    </div>
+  </nav>
+  <br/>
+  <div class="w-95 p-1 m-1">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ atlas_info.info.atlas_id }}:  {{ atlas_info.info.name }}</li>
+      </ol>
+    </nav>
+    <h2 class="m-1 mb-2">{{ atlas_info.info.atlas_id }}:  {{ atlas_info.info.name }}</h2>
+    <div class="container w-95 p-0 m-1 mb-3">
+      <div class="row">
+        <div class="col-3">
+            <div class="card h-100">
+              <div class="card-body">
+                <h5 class="card-title">Total File Size</h5>
+                <h6 class="card-subtitle mt-4 mb-4 text-success h2">{{ atlas_info.stats.get_total_fize_size_human_readable()}}</h6>
+                <p class="card-text text-muted">Total size of all files submitted to the DCC.</p>
+              </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="card h-100">
+              <div class="card-body">
+                <h5 class="card-title">Total Number of Files</h5>
+                <h6 class="card-subtitle mt-4 mb-4 text-success h2">{{ "{:,d}".format(atlas_info.stats.get_total_num_files())}}</h6>
+                <p class="card-text text-muted">Total number of files submitted to the DCC.</p>
+              </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="card h-100">
+              <div class="card-body">
+                <h5 class="card-title">Validation Errors</h5>
+                <h6 class="card-subtitle mt-4 mb-4 text-success h2">{{ "{:,d}".format(atlas_info.get_total_num_errors()) }}</h6>
+                <p class="card-text text-muted">Total number of validation errors detected by the DCC dashboard.</p>
+              </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="card h-100">
+              <div class="card-body">
+                <h5 class="card-title">Percent Metadata Complete</h5>
+                <h6 class="card-subtitle mt-4 mb-4 text-success h2">{{ "%.1f"|format(100 * atlas_info.stats.percent_metadata_complete) }}%</h6>
+                <p class="card-text text-muted">Total percent of metadata fields completed.</p>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+  <div class="w-95 p-3 m-1" style="background-color: #eee;">
+  <h3>Metadata Files</h3>
+  {% if atlas_info.meta_list|length > 0 %}
+  <table class="table table-striped ">
+    <thead>
+        <tr>
+            <th>Synapse ID</th>
+            <th>Category</th>
+            <th>Num Records</th>
+            <th>Percent Complete Metadata</th>
+        </tr>
+    </thead>
+    <tbody>
+      {% for meta_file in atlas_info.meta_list %}
+        <tr>
+          <td><a href="https://www.synapse.org/#!Synapse:{{ meta_file.meta_cache.synapse_id }}/files/">{{ meta_file.meta_cache.synapse_id }}</a></td>
+          <td>{{ meta_file.atlas_file.category }}</td>
+          <td>{{ meta_file.meta_cache.num_records }}</td>
+          <td>{{ "%.2f"|format(100 * meta_file.meta_cache.percent_completed_fields) }}%</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    No metadata detected.
+  {% endif %}
+</div>
+
+  <div class="w-95 p-3 m-1" style="background-color: #eee;">
+  <h3>Metadata Validation</h3>
+  <table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Text</th>
+            <th>Passed/Failed</th>
+            <th>Error List</th>
+        </tr>
+    </thead>
+    <tbody>
+      {% for validation in atlas_info.validation_list %}
+        {% set trClass = "validation_%s" % validation.validation_passed() %}
+        {% set passed = "Failed:  %d Errors." % validation.error_list|length %}
+        {% if (validation.validation_passed()) %}
+          {% set passed = "Passed" %}
+        {% endif %}
+        <tr valign="top">
+          <td>{{ validation.validation_code }}</td>
+          <td>{{ validation.validation_text }}</td>
+          <td class={{trClass}}>{{ passed }}</td>
+          <td width=70%>
+            {% for error in validation.error_list %}
+              - {{ error.error_msg }}<br/>
+            {% endfor %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+
+  {% for matrix in atlas_info.matrix_list %}
+    {% set bg_color = "background-color: " + heatmap.bg_color + ";" %}
+    <div class="w-95 p-3 m-1" style="{{ bg_color }}">
+    <h3>{{ heatmap.label }} </h3>
+    {% if heatmap.data | length > 0 %}
+      {{ heatmap.caption }}
+      See <a href="{{ heatmap.id }}.html">Complete Matrix Details</a>.
+      <br><br>
+      <img src="images/{{ heatmap.id }}.png" class="img-thumbnail">
+      <br/>
+      <br/>
+    {% endif %}
+    </div>
+  {% endfor %}
+
+  <div class="w-95 p-3 m-1" style="background-color: #eee;">
+  <h3><i class="bi bi-bug"></i> DCC Debugging</h3>
+  <ul>
+    <li><a href="{{ atlas_info.info.atlas_id}}_network.sif">Cytoscape SIF Network</a></li>
+  </ul>
+  </div>
+
+</body>
+
+</html>

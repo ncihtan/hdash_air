@@ -5,6 +5,8 @@ from hdash.db.atlas import Atlas
 from hdash.db.atlas_file import AtlasFile
 from hdash.db.atlas_stats import AtlasStats
 from hdash.db.meta_cache import MetaCache
+from hdash.db.matrix import Matrix
+from hdash.db.validation import Validation, ValidationError
 
 
 @pytest.mark.smoke
@@ -96,3 +98,50 @@ def test_meta_cache():
     cache_list = session.query(MetaCache).all()
     assert len(cache_list) == 2
     session.close()
+
+
+@pytest.mark.smoke
+def test_validation():
+    """Smoke Test for Validation Checks."""
+    db_connection = DbConnection()
+    db_connection.reset_database()
+    session = db_connection.session
+
+    # Add a validation with multiple error messages
+    validation = Validation("HTA1", "H_LINKS", "Check Links")
+
+    error1 = ValidationError()
+    error1.error_msg = "Link1 failed"
+    validation.error_list.append(error1)
+
+    error2 = ValidationError()
+    error2.error_msg = "Link2 failed"
+    validation.error_list.append(error2)
+
+    session.add(validation)
+    session.commit()
+
+    # Verify that we can get the objects back
+    validation_list = session.query(Validation).all()
+    assert len(validation_list) == 1
+    record0 = validation_list[0]
+    assert len(record0.error_list) == 2
+    session.close()
+
+
+@pytest.mark.smoke
+def test_matrix():
+    """Smoke Test for Matrix."""
+    db_connection = DbConnection()
+    db_connection.reset_database()
+    session = db_connection.session
+
+    matrix = Matrix()
+    matrix.atlas_id = "HTA1"
+    matrix.order = 0
+    matrix.label = "Clinical Demographics"
+    session.add(matrix)
+
+    # Verify that we can get the objects back
+    matrix_list = session.query(Matrix).all()
+    assert len(matrix_list) == 1
