@@ -31,7 +31,7 @@ class MetaDataSummary:
         self.categories = Categories()
         for meta_file in meta_list:
             percent_complete = self._calculate_percent_complete(meta_file.data_frame)
-            meta_file.percent_meta_data_complete = percent_complete
+            meta_file.meta_cache.percent_completed_fields = percent_complete
 
     def _calculate_percent_complete(self, df):
         """Inspect Data Frame for completed/missing fields."""

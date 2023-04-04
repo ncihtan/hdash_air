@@ -10,7 +10,15 @@ from hdash.synapse.file_counter import FileCounter
 from hdash.db.atlas_stats import AtlasStats
 from hdash.db.atlas_file import AtlasFile
 from hdash.db.meta_cache import MetaCache
+from hdash.db.validation import Validation, ValidationError
+from hdash.db.web_cache import WebCache
+from hdash.synapse.meta_file import MetaFile
+from hdash.synapse.meta_map import MetaMap
 from hdash.synapse.file_type import FileType
+from hdash.validator.htan_validator import HtanValidator
+from hdash.graph.graph_creator import GraphCreator
+from hdash.graph.sif_writer import SifWriter
+from hdash.stats.meta_summary import MetaDataSummary
 
 
 logger = logging.getLogger("airflow.task")
@@ -40,6 +48,15 @@ with DAG(
 
         # Delete any Existing Atlas Files
         session.query(AtlasFile).delete()
+        session.commit()
+
+        # Delete any Existing Validation Results
+        session.query(ValidationError).delete()
+        session.query(Validation).delete()
+        session.commit()
+
+        # Delete any Existing Web Resources
+        session.query(WebCache).delete()
         session.commit()
 
         session.close()
@@ -109,8 +126,54 @@ with DAG(
                 session.commit()
             else:
                 logger.info("Skipping. Found cache for:  %s", meta_file.synapse_id)
+        return atlas_id
+
+    @task
+    def validate_atlas(atlas_id: str):
+        """Validate atlas and store results to the database."""
+        db_connection = DbConnection()
+        session = db_connection.session
+
+        # Create the metamap
+        meta_map = MetaMap()
+        atlas_file_list = (
+            session.query(AtlasFile)
+            .filter_by(atlas_id=atlas_id, data_type=FileType.METADATA.value)
+            .all()
+        )
+        for atlas_file in atlas_file_list:
+            meta_cache = session.query(MetaCache).filter_by(md5=atlas_file.md5).first()
+            meta_map.add_meta_file(MetaFile(atlas_file, meta_cache))
+
+        # Validate
+        graph_creator = GraphCreator(atlas_id, meta_map)
+        htan_graph = graph_creator.htan_graph
+        validator = HtanValidator(atlas_id, meta_map, htan_graph)
+
+        # Store Validation Results to Database
+        validation_list = validator.get_validation_results()
+        session.add_all(validation_list)
+        session.commit()
+
+        # Assess Completeness
+        atlas_stats = session.query(AtlasStats).filter_by(atlas_id=atlas_id).one()
+        meta_summary = MetaDataSummary(meta_map.meta_list_sorted)
+        atlas_stats.percent_metadata_complete = (
+            meta_summary.get_overall_percent_complete()
+        )
+        session.commit()
+
+        # Store SIF Networks
+        directed_graph = htan_graph.directed_graph
+        sif_writer = SifWriter(directed_graph)
+        web_cache = WebCache()
+        web_cache.file_name = f"{atlas_id}_network.sif"
+        web_cache.content = sif_writer.sif
+        session.add(web_cache)
+        session.commit()
 
     # Run the DAG
     atlas_id_list1 = get_atlas_list()
     atlas_id_list2 = get_atlas_files.expand(atlas_id=atlas_id_list1)
-    get_meta_files.expand(atlas_id=atlas_id_list2)
+    atlas_id_list3 = get_meta_files.expand(atlas_id=atlas_id_list2)
+    validate_atlas.expand(atlas_id=atlas_id_list3)

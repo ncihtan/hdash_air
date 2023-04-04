@@ -1,6 +1,7 @@
 """Core HTAN Validator."""
 
 from typing import List
+from hdash.db.validation import Validation, ValidationError
 from hdash.graph.htan_graph import HtanGraph
 from hdash.validator.validation_rule import ValidationRule
 from hdash.validator.validate_demographics import ValidateDemographics
@@ -18,41 +19,62 @@ class HtanValidator:
 
     def __init__(self, atlas_id, meta_map: MetaMap, htan_graph: HtanGraph):
         """Construct a new HTAN Validator for one atlas."""
+        self.counter = 0
         self.atlas_id = atlas_id
         self.meta_map = meta_map
         self.graph = htan_graph
-        self.validation_list = []
+        self.validation_results: List[Validation] = []
         self.__validate()
 
-    def get_validation_list(self) -> List[ValidationRule]:
-        """Get the list of validation rules applied."""
-        return self.validation_list
+    def get_validation_results(self) -> List[Validation]:
+        """Get the list of validation results."""
+        return self.validation_results
 
     def __validate(self):
         # Categories Validation
         check0 = ValidateCategories(self.meta_map)
-        self.validation_list.append(check0)
+        self._add_results(check0)
 
         # Clinical Validation
         check1 = ValidateDemographics(self.meta_map)
-        self.validation_list.append(check1)
+        self._add_results(check1)
 
         if check1.validation_passed():
             check2 = ValidateNonDemographics(self.meta_map)
-            self.validation_list.append(check2)
+            self._add_results(check2)
 
         # Biospecimen Validation
         check3 = ValidateBiospecimens(self.meta_map)
-        self.validation_list.append(check3)
+        self._add_results(check3)
 
         # ID Checks
         check4 = ValidatePrimaryIds(self.atlas_id, self.meta_map)
-        self.validation_list.append(check4)
+        self._add_results(check4)
 
         # Link Integrity
         check5 = ValidateLinks(self.graph)
-        self.validation_list.append(check5)
+        self._add_results(check5)
 
         # Synapse IDs
         check6 = ValidateEntityIds(self.meta_map)
-        self.validation_list.append(check6)
+        self._add_results(check6)
+
+    def _add_results(self, validation_rule: ValidationRule):
+        """Add Validation Results."""
+        validation_results = Validation(
+            self.atlas_id,
+            validation_rule.validation_code,
+            validation_rule.validation_text,
+        )
+        validation_results.validation_order = self.counter
+        self.counter += 1
+        error_list: List[ValidationError] = []
+        error_counter = 0
+        for error_msg in validation_rule.error_list:
+            error = ValidationError()
+            error.error_msg = error_msg
+            error.order = error_counter
+            error_counter += 1
+            error_list.append(error)
+        validation_results.error_list = error_list
+        self.validation_results.append(validation_results)

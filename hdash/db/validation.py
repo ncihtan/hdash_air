@@ -11,7 +11,7 @@ class Validation(Base):
     __tablename__ = "validation"
     validation_id = Column(Integer, primary_key=True, autoincrement=True)
     atlas_id = Column(String(255))
-    validation_order = Column(Integer, autoincrement=True)
+    validation_order = Column(Integer)
     validation_code = Column(String(255))
     validation_text = Column(String(255))
     error_list = relationship("ValidationError", backref="validation")
@@ -37,7 +37,7 @@ class ValidationError(Base):
     __tablename__ = "validation_error"
     validation_error_id = Column(Integer, primary_key=True, autoincrement=True)
     validation_id = Column(Integer, ForeignKey("validation.validation_id"))
-    order = Column(Integer, autoincrement=True)
+    order = Column(Integer)
     error_msg = Column(String(1000))
 
     def __repr__(self):
