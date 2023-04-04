@@ -76,22 +76,21 @@ with DAG(
         # Count the Files
         print(f"Total number of files:  {len(file_list)}")
 
+        # Save stats back to the database
+        file_counter = FileCounter(file_list)
+        stats = AtlasStats(atlas.atlas_id)
+        stats.total_file_size = file_counter.get_total_file_size()
+        stats.num_bam_files = file_counter.get_num_files(FileType.BAM.value)
+        stats.num_fastq_files = file_counter.get_num_files(FileType.FASTQ.value)
+        stats.num_image_files = file_counter.get_num_files(FileType.IMAGE.value)
+        stats.num_matrix_files = file_counter.get_num_files(FileType.MATRIX.value)
+        stats.num_other_files = file_counter.get_num_files(FileType.OTHER.value)
+        print("Saving stats to database")
+        session.add(stats)
+        session.commit()
+
+        # Save Files to Database
         if len(file_list) > 0:
-            file_counter = FileCounter(file_list)
-
-            # Save stats back to the database
-            stats = AtlasStats(atlas.atlas_id)
-            stats.total_file_size = file_counter.get_total_file_size()
-            stats.num_bam_files = file_counter.get_num_files(FileType.BAM.value)
-            stats.num_fastq_files = file_counter.get_num_files(FileType.FASTQ.value)
-            stats.num_image_files = file_counter.get_num_files(FileType.IMAGE.value)
-            stats.num_matrix_files = file_counter.get_num_files(FileType.MATRIX.value)
-            stats.num_other_files = file_counter.get_num_files(FileType.OTHER.value)
-            print("Saving stats to database")
-            session.add(stats)
-            session.commit()
-
-            # Save Files to Database
             session.add_all(file_list)
             session.commit()
         return atlas_id
@@ -164,7 +163,7 @@ with DAG(
         )
         session.commit()
 
-        # Store SIF Networks
+        # Store SIF Network
         directed_graph = htan_graph.directed_graph
         sif_writer = SifWriter(directed_graph)
         web_cache = WebCache()

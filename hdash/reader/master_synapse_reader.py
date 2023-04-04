@@ -40,21 +40,18 @@ class MasterSynapseReader:
         # Convert to File List
         file_list = file_df.apply(self._create_file, axis=1)
 
-        # Remove Excluded Files
         if len(file_list) > 0:
-            self.file_list = list(
+            # Remove Excluded Files
+            file_list = list(
                 filter(lambda x: x.data_type != FileType.EXCLUDE.value, file_list)
             )
-        else:
-            self.file_list = file_list
 
-        # Bin Files into meta v. non-meta and filter meta files by most recent
-        if len(file_list) > 0:
+            # Bin Files into meta v. non-meta and filter meta files by most recent
             meta_files = list(
-                filter(lambda x: x.data_type == FileType.METADATA.value, self.file_list)
+                filter(lambda x: x.data_type == FileType.METADATA.value, file_list)
             )
             non_meta_files = list(
-                filter(lambda x: x.data_type != FileType.METADATA.value, self.file_list)
+                filter(lambda x: x.data_type != FileType.METADATA.value, file_list)
             )
             meta_files = self.filter_meta_files_by_most_recent(meta_files)
 
@@ -62,6 +59,8 @@ class MasterSynapseReader:
             self.file_list = []
             self.file_list.extend(meta_files)
             self.file_list.extend(non_meta_files)
+        else:
+            self.file_list = []
 
     def filter_meta_files_by_most_recent(self, meta_files):
         """If a folder has more than one meta file, keep the most recent one."""

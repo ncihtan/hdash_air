@@ -20,6 +20,9 @@ def test_file_counter():
     assert counter.get_num_files(FileType.IMAGE.value) == 1
     assert counter.get_num_files(FileType.FASTQ.value) == 1
 
+    file_list = []
+    counter = FileCounter(file_list)
+
 
 def _create_file(synapse_id, file_name, file_size, file_type, parent_id):
     """Create Atlas File."""
