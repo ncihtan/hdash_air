@@ -16,9 +16,9 @@ def test_file_counter():
     counter = FileCounter(file_list)
 
     assert counter.get_total_file_size() == 400
-    assert counter.get_num_files(FileType.BAM) == 2
-    assert counter.get_num_files(FileType.IMAGE) == 1
-    assert counter.get_num_files(FileType.FASTQ) == 1
+    assert counter.get_num_files(FileType.BAM.value) == 2
+    assert counter.get_num_files(FileType.IMAGE.value) == 1
+    assert counter.get_num_files(FileType.FASTQ.value) == 1
 
 
 def _create_file(synapse_id, file_name, file_size, file_type, parent_id):

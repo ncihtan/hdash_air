@@ -82,11 +82,11 @@ with DAG(
             # Save stats back to the database
             stats = AtlasStats(atlas.atlas_id)
             stats.total_file_size = file_counter.get_total_file_size()
-            stats.num_bam_files = file_counter.get_num_files(FileType.BAM)
-            stats.num_fastq_files = file_counter.get_num_files(FileType.FASTQ)
-            stats.num_image_files = file_counter.get_num_files(FileType.IMAGE)
-            stats.num_matrix_files = file_counter.get_num_files(FileType.MATRIX)
-            stats.num_other_files = file_counter.get_num_files(FileType.OTHER)
+            stats.num_bam_files = file_counter.get_num_files(FileType.BAM.value)
+            stats.num_fastq_files = file_counter.get_num_files(FileType.FASTQ.value)
+            stats.num_image_files = file_counter.get_num_files(FileType.IMAGE.value)
+            stats.num_matrix_files = file_counter.get_num_files(FileType.MATRIX.value)
+            stats.num_other_files = file_counter.get_num_files(FileType.OTHER.value)
             print("Saving stats to database")
             session.add(stats)
             session.commit()
@@ -131,6 +131,7 @@ with DAG(
     @task
     def validate_atlas(atlas_id: str):
         """Validate atlas and store results to the database."""
+        logger.info("Valdating atlas:  %s.", atlas_id)
         db_connection = DbConnection()
         session = db_connection.session
 

@@ -90,5 +90,5 @@ class MasterSynapseReader:
         file.md5 = row.dataFileMD5Hex
         file.modified_on = row.modifiedOn
         file.atlas_id = self.atlas_id
-        file.data_type = self.file_type_util.get_file_type(file.name).value
+        file.data_type = self.file_type_util.get_file_type(file.name)
         return file

@@ -14,7 +14,7 @@ class FileTypeUtil:
         """Create FileType Utility."""
         self._init_file_types()
 
-    def get_file_type(self, file_name) -> FileType:
+    def get_file_type(self, file_name):
         """Determine the file type from the file name."""
         path = Path(file_name)
         file_type = FileType.OTHER
@@ -28,7 +28,7 @@ class FileTypeUtil:
                 file_type = self.file_type_map[file_extension]
             except KeyError:
                 logging.warning("Unrecognized: %s", file_extension)
-        return file_type
+        return file_type.value
 
     def _get_file_extension(self, path):
         """Get File Extension, remove .gz, as needed."""

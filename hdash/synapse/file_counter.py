@@ -1,7 +1,6 @@
 """File Counter."""
 from typing import List
 from collections import Counter
-from hdash.synapse.file_type import FileType
 from hdash.db.atlas_file import AtlasFile
 
 
@@ -21,7 +20,7 @@ class FileCounter:
         self.total_file_size = sum(size_list)
         self.counter = Counter(data_type_list)
 
-    def get_num_files(self, file_type: FileType):
+    def get_num_files(self, file_type):
         """Get number of files for the specified file type."""
         return self.counter.get(file_type, 0)
 
