@@ -23,7 +23,7 @@ class Validation(Base):
         self.validation_text = validation_text
 
     def __repr__(self):
-        """Get atlas file summary."""
+        """Get summary."""
         return f"<ValidationResult({self.validation_code})>"
 
     def validation_passed(self):
@@ -41,5 +41,5 @@ class ValidationError(Base):
     error_msg = Column(String(1000))
 
     def __repr__(self):
-        """Get atlas file summary."""
+        """Get summary."""
         return f"<ValidationError({self.error_msg})>"

@@ -6,6 +6,7 @@ from hdash.db.atlas_file import AtlasFile
 from hdash.db.atlas_stats import AtlasStats
 from hdash.db.meta_cache import MetaCache
 from hdash.db.matrix import Matrix
+from hdash.db.web_cache import WebCache
 from hdash.db.validation import Validation, ValidationError
 
 
@@ -145,3 +146,20 @@ def test_matrix():
     # Verify that we can get the objects back
     matrix_list = session.query(Matrix).all()
     assert len(matrix_list) == 1
+
+
+@pytest.mark.smoke
+def test_web_cache():
+    """Smoke Test for Web Cache."""
+    db_connection = DbConnection()
+    db_connection.reset_database()
+    session = db_connection.session
+
+    web_cache = WebCache()
+    web_cache.file_name = "index.html"
+    web_cache.content = "<html>Page</html>"
+    session.add(web_cache)
+
+    # Verify that we can get the objects back
+    web_cache_list = session.query(WebCache).all()
+    assert len(web_cache_list) == 1

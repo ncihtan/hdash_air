@@ -21,5 +21,5 @@ class Atlas(Base):
         self.dcc_liaison = dcc_liaison
 
     def __repr__(self):
-        """Get atlas summary."""
+        """Get summary."""
         return f"<Atlas({self.atlas_id}, {self.name})>"

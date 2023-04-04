@@ -15,5 +15,5 @@ class MetaCache(Base):
     percent_completed_fields = Column(Float)
 
     def __repr__(self):
-        """Get atlas file summary."""
+        """Get summary."""
         return f"<MetaCache({self.synapse_id}, {self.md5})>"

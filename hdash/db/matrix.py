@@ -17,5 +17,5 @@ class Matrix(Base):
     content = Column(LONGTEXT)
 
     def __repr__(self):
-        """Get atlas stats summary."""
+        """Get summary."""
         return f"<Matrix({self.label})>"

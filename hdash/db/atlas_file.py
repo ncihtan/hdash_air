@@ -23,5 +23,5 @@ class AtlasFile(Base):
         self.size_bytes = 0
 
     def __repr__(self):
-        """Get atlas file summary."""
+        """Get summary."""
         return f"<AtlasFile({self.synapse_id}, {self.data_type})>"

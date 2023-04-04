@@ -44,5 +44,5 @@ class AtlasStats(Base):
         )
 
     def __repr__(self):
-        """Get atlas stats summary."""
+        """Get summary."""
         return f"<AtlasStats({self.atlas_id})>"
