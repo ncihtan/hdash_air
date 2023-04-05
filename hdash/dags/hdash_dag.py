@@ -1,6 +1,7 @@
 """HTAN Dashboard DAG."""
 from typing import List
 import logging
+from natsort import natsorted
 from datetime import datetime
 from airflow import DAG
 from airflow.decorators import task
@@ -171,6 +172,7 @@ with DAG(
         """Create Web Site."""
         db_connection = DbConnection()
         session = db_connection.session
+        atlas_id_list = natsorted(atlas_id_list)
         atlas_info_list = _get_atlas_info_list(atlas_id_list, session)
 
         web_writer = WebWriter(atlas_info_list)

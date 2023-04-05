@@ -37,7 +37,7 @@ class ValidateNonDemographics(ValidationRule):
                     if participant_id not in demog_id_list:
                         msg = (
                             f"Clinical file:  {category} "
-                            "contains ID:  {participant_id}"
+                            f"contains ID:  {participant_id}"
                             ", but this ID is not in Demographics File"
                         )
                         self.add_error(msg, clinical_file)

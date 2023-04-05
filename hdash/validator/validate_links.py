@@ -26,7 +26,7 @@ class ValidateLinks(ValidationRule):
                 if parent_id not in directed_graph.nodes:
                     error_message = (
                         f"{child_id} references parent ID="
-                        "{parent_id}, but no such ID exists."
+                        f"{parent_id}, but no such ID exists."
                     )
                     self.add_error(
                         error_message, child_node[HtanGraph.DATA_KEY].meta_file

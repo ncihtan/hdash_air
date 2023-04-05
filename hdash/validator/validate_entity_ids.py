@@ -26,7 +26,7 @@ class ValidateEntityIds(ValidationRule):
                     except KeyError:
                         error_msg = (
                             f"{category} does not have "
-                            "{Categories.ENTITY_ID_COL} column."
+                            f"{Categories.ENTITY_ID_COL} column."
                         )
                         self.add_error(error_msg, meta_file)
 
