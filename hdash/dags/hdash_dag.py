@@ -1,4 +1,5 @@
 """HTAN Dashboard DAG."""
+from typing import List
 import logging
 from datetime import datetime
 from airflow import DAG
@@ -7,6 +8,7 @@ from hdash.synapse.connector import SynapseConnector
 from hdash.db.atlas import Atlas
 from hdash.db.db_util import DbConnection
 from hdash.synapse.file_counter import FileCounter
+from hdash.synapse.atlas_info import AtlasInfo
 from hdash.db.atlas_stats import AtlasStats
 from hdash.db.atlas_file import AtlasFile
 from hdash.db.meta_cache import MetaCache
@@ -19,6 +21,7 @@ from hdash.validator.htan_validator import HtanValidator
 from hdash.graph.graph_creator import GraphCreator
 from hdash.graph.sif_writer import SifWriter
 from hdash.stats.meta_summary import MetaDataSummary
+from hdash.util.web_writer import WebWriter
 
 
 logger = logging.getLogger("airflow.task")
@@ -130,22 +133,12 @@ with DAG(
     @task
     def validate_atlas(atlas_id: str):
         """Validate atlas and store results to the database."""
-        logger.info("Valdating atlas:  %s.", atlas_id)
+        logger.info("Validating atlas:  %s.", atlas_id)
         db_connection = DbConnection()
         session = db_connection.session
 
-        # Create the metamap
-        meta_map = MetaMap()
-        atlas_file_list = (
-            session.query(AtlasFile)
-            .filter_by(atlas_id=atlas_id, data_type=FileType.METADATA.value)
-            .all()
-        )
-        for atlas_file in atlas_file_list:
-            meta_cache = session.query(MetaCache).filter_by(md5=atlas_file.md5).first()
-            meta_map.add_meta_file(MetaFile(atlas_file, meta_cache))
-
         # Validate
+        meta_map = _get_meta_map(atlas_id, session)
         graph_creator = GraphCreator(atlas_id, meta_map)
         htan_graph = graph_creator.htan_graph
         validator = HtanValidator(atlas_id, meta_map, htan_graph)
@@ -171,9 +164,72 @@ with DAG(
         web_cache.content = sif_writer.sif
         session.add(web_cache)
         session.commit()
+        return atlas_id
+
+    @task
+    def create_web(atlas_id_list):
+        """Create Web Site."""
+        db_connection = DbConnection()
+        session = db_connection.session
+        atlas_info_list = _get_atlas_info_list(atlas_id_list, session)
+
+        web_writer = WebWriter(atlas_info_list)
+        web_cache = WebCache()
+        web_cache.file_name = "index.html"
+        web_cache.content = web_writer.index_html
+        logger.info("Creating index.html")
+        session.add(web_cache)
+
+        for atlas_id in atlas_id_list:
+            atlas_html = web_writer.atlas_html_map[atlas_id]
+            web_cache = WebCache()
+            web_cache.file_name = f"{atlas_id}.html"
+            web_cache.content = atlas_html
+            logger.info("Creating %s.", web_cache.file_name)
+            session.add(web_cache)
+        session.commit()
+
+    def _get_meta_map(atlas_id, session):
+        """Get the Meta Map Object."""
+        meta_map = MetaMap()
+        atlas_file_list = (
+            session.query(AtlasFile)
+            .filter_by(atlas_id=atlas_id, data_type=FileType.METADATA.value)
+            .order_by(AtlasFile.category)
+            .all()
+        )
+        for atlas_file in atlas_file_list:
+            meta_cache = session.query(MetaCache).filter_by(md5=atlas_file.md5).first()
+            meta_map.add_meta_file(MetaFile(atlas_file, meta_cache))
+        return meta_map
+
+    def _get_atlas_info_list(atlas_list, session):
+        """Get Atlas Info List."""
+        atlas_info_list: List[AtlasInfo] = []
+        for atlas_id in atlas_list:
+            atlas = session.query(Atlas).filter_by(atlas_id=atlas_id).one()
+            atlas_stats = session.query(AtlasStats).filter_by(atlas_id=atlas_id).one()
+            meta_map = _get_meta_map(atlas_id, session)
+            validation_list = (
+                session.query(Validation)
+                .filter_by(atlas_id=atlas_id)
+                .order_by(Validation.validation_order)
+                .all()
+            )
+            matrix_list = []
+            atlas_info = AtlasInfo(
+                atlas,
+                atlas_stats,
+                meta_map.meta_list_sorted,
+                validation_list,
+                matrix_list,
+            )
+            atlas_info_list.append(atlas_info)
+        return atlas_info_list
 
     # Run the DAG
     atlas_id_list1 = get_atlas_list()
     atlas_id_list2 = get_atlas_files.expand(atlas_id=atlas_id_list1)
     atlas_id_list3 = get_meta_files.expand(atlas_id=atlas_id_list2)
-    validate_atlas.expand(atlas_id=atlas_id_list3)
+    atlas_id_list4 = validate_atlas.expand(atlas_id=atlas_id_list3)
+    create_web(atlas_id_list4)
