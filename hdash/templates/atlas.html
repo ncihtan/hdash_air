@@ -2,6 +2,7 @@
 <head>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css">
+  <script src='https://cdn.plot.ly/plotly-2.20.0.min.js'></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
@@ -144,16 +145,14 @@
   </div>
 
   {% for matrix in atlas_info.matrix_list %}
-    {% set bg_color = "background-color: " + heatmap.bg_color + ";" %}
+    {% set bg_color = "background-color: " + matrix.bg_color + ";" %}
     <div class="w-95 p-3 m-1" style="{{ bg_color }}">
-    <h3>{{ heatmap.label }} </h3>
-    {% if heatmap.data | length > 0 %}
-      {{ heatmap.caption }}
+    <h3>{{ matrix.label }} </h3>
+    {% if matrix.data | length > 0 %}
+      {{ matrix.caption }}
       See <a href="{{ heatmap.id }}.html">Complete Matrix Details</a>.
       <br><br>
-      <img src="images/{{ heatmap.id }}.png" class="img-thumbnail">
-      <br/>
-      <br/>
+      {% include "matrix_viz.html" %}
     {% endif %}
     </div>
   {% endfor %}

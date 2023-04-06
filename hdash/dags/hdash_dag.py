@@ -1,8 +1,8 @@
 """HTAN Dashboard DAG."""
 from typing import List
 import logging
-from natsort import natsorted
 from datetime import datetime
+from natsort import natsorted
 from airflow import DAG
 from airflow.decorators import task
 from hdash.synapse.connector import SynapseConnector

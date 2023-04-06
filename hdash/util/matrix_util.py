@@ -1,15 +1,13 @@
-"""HeatMap Utility."""
+"""Matrix Utility."""
 import pandas as pd
 from natsort import natsorted
-import seaborn as sns
-import matplotlib.pyplot as plt
-from hdash.util.heatmap import HeatMap
+from hdash.db.matrix import Matrix
 from hdash.stats.completeness_summary import CompletenessSummary
 from hdash.util.categories import Categories
 
 
-class HeatMapUtil:
-    """HeatMap Utility Class."""
+class MatrixUtil:
+    """Matrix Utility Class."""
 
     CLINICAL_TIER_1_2 = "clinical_tier1_2"
     CLINICAL_TIER_3 = "clinical_tier3"
@@ -21,73 +19,72 @@ class HeatMapUtil:
     CAPTION = "Value of 1 indicates presence of data."
 
     def __init__(self, atlas_id, completeness_summary: CompletenessSummary):
-        """Create Heatmap Utility."""
+        """Create Matrix Utility."""
         self.atlas_id = atlas_id
         self.completeness_summary = completeness_summary
-        self.heatmaps = []
+        self.matrix_list = []
         self.categories = Categories()
 
-        # Heatmap 1
-        self.__build_clinical_heatmap(
-            HeatMapUtil.CLINICAL_TIER_1_2,
+        # Matrix 1
+        self._build_clinical_matrix(
+            MatrixUtil.CLINICAL_TIER_1_2,
             self.categories.clinical_tier1_2_list,
             "Clinical Data Matrix: Tiers 1 and 2",
             "#fce1e9",
         )
 
-        # Heatmap 2
-        self.__build_clinical_heatmap(
-            HeatMapUtil.CLINICAL_TIER_3,
+        # Matrix 2
+        self._build_clinical_matrix(
+            MatrixUtil.CLINICAL_TIER_3,
             self.categories.clinical_tier3_list,
             "Clinical Data Matrix: Tier 3",
             "#fce1e9",
         )
 
-        # Heatmap 3
+        # Matrix 3
         self.single_cell_assay_list = []
         self.single_cell_assay_list.extend(self.categories.sc_rna_list)
         self.single_cell_assay_list.extend(self.categories.sc_atac_list)
-        self.__build_assay_heatmap(
-            HeatMapUtil.SINGLE_CELL,
+        self._build_assay_matrix(
+            MatrixUtil.SINGLE_CELL,
             self.single_cell_assay_list,
             "Assay Matrix: Single Cell Data",
             "#e3eeff",
         )
 
-        # Heatmap 4
+        # Matrix 4
         self.bulk_assay_list = []
         self.bulk_assay_list.extend(self.categories.bulk_rna_list)
         self.bulk_assay_list.extend(self.categories.bulk_wes_list)
-        self.__build_assay_heatmap(
-            HeatMapUtil.BULK,
+        self._build_assay_matrix(
+            MatrixUtil.BULK,
             self.bulk_assay_list,
             "Assay Matrix: Bulk Data",
             "#e3eeff",
         )
 
-        # Heatmap 5
+        # Matrix 5
         self.image_assay_list = []
         self.image_assay_list.extend(self.categories.image_list)
         self.image_assay_list.extend(self.categories.other_assay_list)
-        self.__build_assay_heatmap(
-            HeatMapUtil.IMAGE_OTHER,
+        self._build_assay_matrix(
+            MatrixUtil.IMAGE_OTHER,
             self.image_assay_list,
             "Assay Matrix: Imaging and Other",
             "#e3eeff",
         )
 
-        # Heatmap 5
+        # Matrix 6
         self.visium_assay_list = []
         self.visium_assay_list.extend(self.categories.visium_list)
-        self.__build_assay_heatmap(
-            HeatMapUtil.VISIUM,
+        self._build_assay_matrix(
+            MatrixUtil.VISIUM,
             self.visium_assay_list,
             "Assay Matrix: Visium",
             "#e3eeff",
         )
-        self._create_seaborn_heatmaps()
 
-    def __build_clinical_heatmap(self, heatmap_type, category_list, label, bg_color):
+    def _build_clinical_matrix(self, heatmap_type, category_list, label, bg_color):
         """Build Clinical Data Heatmap."""
         headers = ["ParticipantID"]
         data = []
@@ -105,9 +102,9 @@ class HeatMapUtil:
                     value = 1
                 current_row.append(value)
             data.append(current_row)
-        self.__create_heatmap(heatmap_type, data, headers, label, bg_color)
+        self._create_matrix(heatmap_type, data, headers, label, bg_color)
 
-    def __build_assay_heatmap(self, heatmap_type, category_list, label, bg_color):
+    def _build_assay_matrix(self, heatmap_type, category_list, label, bg_color):
         """Build Assay Data Heatmap."""
         headers = ["BiospecimenID"]
         data = []
@@ -126,58 +123,16 @@ class HeatMapUtil:
                 total_sum += value
             if total_sum > -0:
                 data.append(current_row)
-        self.__create_heatmap(heatmap_type, data, headers, label, bg_color)
+        self._create_matrix(heatmap_type, data, headers, label, bg_color)
 
-    def __create_heatmap(self, heatmap_type, data, headers, label, bg_color):
+    def _create_matrix(self, matrix_type, data, headers, label, bg_color):
         """Create Heatmap Object."""
         data_frame = pd.DataFrame(data, columns=headers)
-        df_html = data_frame.to_html(
-            index=False, justify="left", classes="table table-striped table-sm"
-        )
-        caption = HeatMapUtil.CAPTION
-        heatmap_id = self.atlas_id + "_" + heatmap_type
-
-        revised_df = self._prepare_df(data_frame)
-        counts = revised_df.sum(axis=0)
-        counts_df = counts.to_frame()
-        counts_df.index = list(counts.index)
-        counts_df.columns = ["Counts"]
-        counts_html = counts_df.to_html(
-            index=True, justify="left", classes="table table-striped table-sm"
-        )
-        heatmap = HeatMap(
-            heatmap_id, label, caption, data, data_frame, df_html, counts_html, bg_color
-        )
-        self.heatmaps.append(heatmap)
-
-    def _create_seaborn_heatmaps(self):
-        """Create Seaborn HeatMaps."""
-        for heatmap in self.heatmaps:
-            if len(heatmap.data) > 0:
-                revised_df = self._prepare_df(heatmap.data_frame)
-                axis = sns.heatmap(
-                    revised_df,
-                    vmin=0,
-                    vmax=1,
-                    annot=False,
-                    linewidths=0.0,
-                    yticklabels=False,
-                    cmap="Blues",
-                )
-                axis.xaxis.tick_top()
-                plt.xticks(rotation=90)
-                axis.set_ylabel("")
-                axis.figure.tight_layout()
-                fig_name = "deploy/images/" + heatmap.heatmap_id + ".png"
-                plt.savefig(fig_name)
-                plt.figure()
-
-    def _prepare_df(self, data_frame):
-        columns = list(data_frame.columns)
-        if "BiospecimenID" in columns:
-            data_frame.index = data_frame["BiospecimenID"]
-            revised_df = data_frame.drop(["BiospecimenID"], axis=1)
-        else:
-            data_frame.index = data_frame["ParticipantID"]
-            revised_df = data_frame.drop(["ParticipantID"], axis=1)
-        return revised_df
+        matrix_id = self.atlas_id + "_" + matrix_type
+        matrix = Matrix()
+        matrix.matrix_id = matrix_id
+        matrix.label = label
+        matrix.caption = MatrixUtil.CAPTION
+        matrix.bg_color = bg_color
+        matrix.content = data_frame.to_csv(index=False)
+        self.matrix_list.append(matrix)

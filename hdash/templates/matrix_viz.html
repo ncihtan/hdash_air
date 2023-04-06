@@ -1,0 +1,73 @@
+<!-- Plotly chart will be drawn inside this div -->
+<div id='matrix_{{matrix.id}}'></div>
+
+<script>
+let colorScale = [[0, 'rgb(247, 252, 252)'], [1, 'rgb(20, 61, 128)']];
+var data = [
+  {
+    z: [
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+      [1, 1, 0, 1, 1],
+    ],
+    x: ['Demographics', 'Exposure', 'Family History', "Follow-up", "Diagnosis"],
+    type: 'heatmap',
+    colorscale: colorScale
+  }
+];
+
+var layout = {
+  width: 400,
+  height: 400,
+  margin: {
+    l: 10,
+    r: 0,
+    b: 0,
+    t: 0,
+    pad: 4
+  },
+  font: {size: 14},
+  legend: {font: {size: 16}},
+  hovermode: false,
+  xaxis: {
+    visible: true,
+    tickangle: 270,
+    automargin: true,
+    side: 'top'
+  },
+  yaxis: {
+    visible: false
+  }
+};
+
+const config = {
+  displayModeBar: false
+};
+
+Plotly.newPlot('matrix_{{matrix.id}}', data, layout, config);
+</script>
