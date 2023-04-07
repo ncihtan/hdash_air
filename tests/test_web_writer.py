@@ -21,7 +21,6 @@ def test_report_writer(atlas_list, sample_meta_map):
 
     report_writer = WebWriter(atlas_list)
     html = report_writer.index_html
-    assert html.index("Ino") > 0
 
     atlas_html_map = report_writer.atlas_html_map
     assert len(atlas_html_map) == 1
@@ -31,3 +30,4 @@ def test_report_writer(atlas_list, sample_meta_map):
 
     with open("tests/out/HTA1.html", "w", encoding="utf-8") as file_handler:
         file_handler.write(atlas_html_map["HTA1"])
+    assert html.index("Ino") > 0

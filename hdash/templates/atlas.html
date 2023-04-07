@@ -124,16 +124,16 @@
                 <h2 class="accordion-header">
                     <button class="accordion-button bg-light" type="button"
                             data-bs-toggle="collapse"
-                            data-bs-target="#validation1">
+                            data-bs-target="#validation{{ loop.index }}">
                         {% if (validation.validation_passed()) %}
                         <span class="badge bg-success me-1">Passed</span>
                         {% else %}
                         <span class="badge bg-danger me-2">Failed:  {{ validation.error_list|length}} errors</span>
                         {% endif %}
-                        <span><strong>{{ validation.validation_text }}</strong></span>
+                        <span><strong>{{ validation.validation_text }} {{loop.index}}</strong></span>
                     </button>
                 </h2>
-                <div id="validation1" class="accordion-collapse collapse collapse">
+                <div id="validation{{loop.index}}" class="accordion-collapse collapse collapse">
                     <div class="accordion-body">
                         {% if (validation.validation_passed()) %}
                         Validation Passed.
@@ -154,17 +154,16 @@
     </div>
 
     {% for html_matrix in atlas_info.html_matrix_list %}
-    {% set bg_color = "background-color: " + html_matrix.matrix.bg_color + ";" %}
-    <div class="w-95 p-3 mb-3 border border-primary-subtle rounded">
-        <h3>{{ html_matrix.matrix.label }} </h3>
-        {% if html_matrix.has_data() %}
-        {{ html_matrix.matrix.caption }}
-        See <a href="{{ html_matrix.matrix.matrix_id }}.html">Complete Matrix
-        Details</a>.
-        <br><br>
-        {% include "matrix_viz.html" %}
-        {% endif %}
-    </div>
+    {% if html_matrix.has_data() %}
+        <div class="w-95 p-3 mb-3 border border-primary-subtle rounded">
+            <h3>{{ html_matrix.matrix.label }} </h3>
+            {{ html_matrix.matrix.caption }}
+            See <a href="{{ html_matrix.matrix.matrix_id }}.html">Complete Matrix
+            Details</a>.
+            <br><br>
+            {% include "matrix_viz.html" %}
+        </div>
+    {% endif %}
     {% endfor %}
 
     <div class="w-95 p-3" style="background-color: #eee;">
