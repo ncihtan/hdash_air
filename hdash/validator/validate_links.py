@@ -9,7 +9,7 @@ class ValidateLinks(ValidationRule):
 
     def __init__(self, htan_graph: HtanGraph):
         """Construct new Validation Rule."""
-        super().__init__("H_LINKS", "Validate all internal links.")
+        super().__init__("H_LINKS", "Links connect.")
         self._htan_graph = htan_graph
         self._validate_edges()
         self._validate_adjacent_edges()

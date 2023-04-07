@@ -14,7 +14,7 @@ class ValidatePrimaryIds(ValidationRule):
         """Construct new Validation Rule."""
         super().__init__(
             "H_ID_SPEC",
-            "Verify that primary IDs follow HTAN ID Spec.",
+            "Primary IDs follow the HTAN ID Spec.",
         )
         self.primary_id_set = {}
 

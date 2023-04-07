@@ -3,7 +3,7 @@ from typing import List
 from hdash.db.atlas import Atlas
 from hdash.db.validation import Validation
 from hdash.db.atlas_stats import AtlasStats
-from hdash.db.matrix import Matrix
+from hdash.util.html_matrix import HtmlMatrix
 from hdash.synapse.meta_file import MetaFile
 
 
@@ -16,14 +16,14 @@ class AtlasInfo:
         atlas_stats: AtlasStats,
         meta_list: List[MetaFile],
         validation_list: List[Validation],
-        matrix_list: List[Matrix],
+        html_matrix_list: List[HtmlMatrix],
     ):
         """Create new Atlas Info Object."""
         self.info = atlas
         self.stats = atlas_stats
         self.meta_list = meta_list
         self.validation_list = validation_list
-        self.matrix_list = matrix_list
+        self.html_matrix_list = html_matrix_list
 
     def get_total_num_errors(self):
         """Get total number of validation errors."""

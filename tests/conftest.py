@@ -78,13 +78,20 @@ def _init_atlas_list() -> List[AtlasInfo]:
 
     validation_list: List[Validation] = []
     validation1 = Validation("HTA1", "H_LINKS", "Check internal links")
-
     error_list: List[ValidationError] = []
     error1 = ValidationError()
     error1.error_msg = "Invalid ID: XXXX"
     error_list.append(error1)
     validation1.error_list = error_list
     validation_list.append(validation1)
+
+    validation2 = Validation("HTA1", "H_LINKS", "Check primary IDs")
+    error_list: List[ValidationError] = []
+    error1 = ValidationError()
+    error1.error_msg = "Invalid ID: XXXX"
+    error_list.append(error1)
+    validation2.error_list = error_list
+    validation_list.append(validation2)
 
     meta_list: List[MetaFile] = []
     atlas_file1 = AtlasFile()

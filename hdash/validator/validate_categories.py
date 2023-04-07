@@ -12,7 +12,7 @@ class ValidateCategories(ValidationRule):
         """Construct new Validation Rule."""
         super().__init__(
             "H_CATEGORIES",
-            "Check that all Atlas Categories are supported by the Dashboard.",
+            "All Atlas Categories are supported by the Dashboard.",
         )
 
         categories = Categories()

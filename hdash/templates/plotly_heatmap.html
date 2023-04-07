@@ -1,0 +1,44 @@
+<script>
+    // Create New Plotly Heatmap
+    function createHeatMap(data, divId) {
+      let colorScale = [[0, 'rgb(247, 252, 252)'], [1, 'rgb(20, 61, 128)']];
+      data[0].type = "heatmap";
+      data[0].colorscale = colorScale;
+
+      layout = createHeatmapLayout();
+      const config = {
+        displayModeBar: false
+      };
+      Plotly.newPlot(divId, data, layout, config);
+    }
+
+    // Create Heatmap Layout
+    function createHeatmapLayout() {
+      var layout = {
+        width: 400,
+        height: 400,
+        margin: {
+          l: 10,
+          r: 0,
+          b: 0,
+          t: 0,
+          pad: 4
+        },
+        font: { size: 14 },
+        legend: { font: { size: 16 } },
+        hovermode: false,
+        xaxis: {
+          visible: true,
+          tickangle: 270,
+          automargin: true,
+          side: 'top'
+        },
+        yaxis: {
+          visible: false
+        }
+      };
+      return layout;
+    }
+
+    let data = []
+</script>

@@ -13,6 +13,10 @@ class HtmlMatrix:
         self.matrix = matrix
         self.data_frame = pd.read_csv(StringIO(matrix.content))
 
+    def has_data(self):
+        """Determine if the matrix has data."""
+        return len(self.data_frame) > 0
+
     def get_data_frame_html(self):
         """Get Data Frame HTML."""
         return self.data_frame.to_html(

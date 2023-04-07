@@ -31,7 +31,7 @@ class WebWriter:
         self.now_str = self.now.strftime("%m/%d/%Y %H:%M:%S")
         self._generate_index_html()
         self._generate_atlas_pages()
-        self._generate_matrix_pages()
+        #self._generate_matrix_pages()
 
     def _generate_index_html(self):
         template = self.env.get_template("index.html")
