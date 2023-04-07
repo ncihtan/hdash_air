@@ -125,12 +125,12 @@
                     <button class="accordion-button bg-light" type="button"
                             data-bs-toggle="collapse"
                             data-bs-target="#validation{{ loop.index }}">
+                        <span><strong>{{ validation.validation_text }}</strong></span>
                         {% if (validation.validation_passed()) %}
-                        <span class="badge bg-success me-1">Passed</span>
+                        <span class="badge bg-success ms-1">Passed</span>
                         {% else %}
-                        <span class="badge bg-danger me-2">Failed:  {{ validation.error_list|length}} errors</span>
+                        <span class="badge bg-danger ms-2">Failed:  {{ validation.error_list|length}} errors</span>
                         {% endif %}
-                        <span><strong>{{ validation.validation_text }} {{loop.index}}</strong></span>
                     </button>
                 </h2>
                 <div id="validation{{loop.index}}" class="accordion-collapse collapse collapse">
