@@ -19,7 +19,9 @@
       margin-top:10px;
       margin-bottom:10px;
     }
-
+    .small_table_text {
+        font-size:12;
+    }
     </style>
 </head>
 <body>
@@ -158,10 +160,28 @@
         <div class="w-95 p-3 mb-3 border border-primary-subtle rounded">
             <h3>{{ html_matrix.matrix.label }} </h3>
             {{ html_matrix.matrix.caption }}
-            See <a href="{{ html_matrix.matrix.matrix_id }}.html">Complete Matrix
-            Details</a>.
             <br><br>
             {% include "matrix_viz.html" %}
+            <br><br>
+
+            <div class="accordion" id="accordionMatrix{{loop.index}}">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button bg-light" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#matrix{{loop.index}}">
+                            <span>View Details</span>
+                        </button>
+                    </h2>
+                    <div id="matrix{{loop.index}}" class="accordion-collapse collapse collapse">
+                        <div class="accordion-body">
+                            <div class="small_table_text">
+                            {{ html_matrix.get_data_frame_html() | safe }}
+                            {{ html_matrix.get_counts_html() | safe }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     {% endif %}
     {% endfor %}
