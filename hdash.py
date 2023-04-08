@@ -9,6 +9,7 @@ from hdash.db.atlas_file import AtlasFile
 from hdash.db.atlas_stats import AtlasStats
 from hdash.db.meta_cache import MetaCache
 from hdash.db.validation import Validation, ValidationError
+from hdash.db.matrix import Matrix
 from hdash.db.web_cache import WebCache
 
 @click.group()

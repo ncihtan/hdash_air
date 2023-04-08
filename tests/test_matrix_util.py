@@ -16,7 +16,7 @@ def test_matrix_util(sample_meta_map):
 
     stats = CompletenessSummary("HTA1", meta_map, graph_flat)
 
-    # Run HeatMap Util
+    # Run Matrix Util
     matrix_util = MatrixUtil("HTA1", stats)
 
     matrix_list = matrix_util.matrix_list

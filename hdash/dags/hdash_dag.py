@@ -13,16 +13,21 @@ from hdash.synapse.atlas_info import AtlasInfo
 from hdash.db.atlas_stats import AtlasStats
 from hdash.db.atlas_file import AtlasFile
 from hdash.db.meta_cache import MetaCache
+from hdash.db.matrix import Matrix
 from hdash.db.validation import Validation, ValidationError
 from hdash.db.web_cache import WebCache
 from hdash.synapse.meta_file import MetaFile
 from hdash.synapse.meta_map import MetaMap
 from hdash.synapse.file_type import FileType
 from hdash.validator.htan_validator import HtanValidator
-from hdash.graph.graph_creator import GraphCreator
 from hdash.graph.sif_writer import SifWriter
 from hdash.stats.meta_summary import MetaDataSummary
 from hdash.util.web_writer import WebWriter
+from hdash.util.matrix_util import MatrixUtil
+from hdash.stats.completeness_summary import CompletenessSummary
+from hdash.graph.graph_creator import GraphCreator
+from hdash.graph.graph_flattener import GraphFlattener
+from hdash.util.html_matrix import HtmlMatrix
 
 
 logger = logging.getLogger("airflow.task")
@@ -61,6 +66,10 @@ with DAG(
 
         # Delete any Existing Web Resources
         session.query(WebCache).delete()
+        session.commit()
+
+        # Delete any Existing Matrices
+        session.query(Matrix).delete()
         session.commit()
 
         session.close()
@@ -149,13 +158,20 @@ with DAG(
         session.add_all(validation_list)
         session.commit()
 
-        # Assess Completeness
+        # Assess Completeness of Metadata
         atlas_stats = session.query(AtlasStats).filter_by(atlas_id=atlas_id).one()
         meta_summary = MetaDataSummary(meta_map.meta_list_sorted)
         atlas_stats.percent_metadata_complete = (
             meta_summary.get_overall_percent_complete()
         )
         session.commit()
+
+        # Assess Completeness across Levels
+        graph_flat = GraphFlattener(htan_graph)
+        completeness_summary = CompletenessSummary("HTA1", meta_map, graph_flat)
+        matrix_util = MatrixUtil(atlas_id, completeness_summary)
+        matrix_list = matrix_util.matrix_list
+        session.add_all(matrix_list)
 
         # Store SIF Network
         directed_graph = htan_graph.directed_graph
@@ -218,13 +234,22 @@ with DAG(
                 .order_by(Validation.validation_order)
                 .all()
             )
-            matrix_list = []
+            matrix_list = (
+                session.query(Matrix)
+                .filter_by(atlas_id=atlas_id)
+                .order_by(Matrix.order)
+                .all()
+            )
+            html_matrix_list = []
+            for matrix in matrix_list:
+                html_matrix_list.append(HtmlMatrix(matrix))
+
             atlas_info = AtlasInfo(
                 atlas,
                 atlas_stats,
                 meta_map.meta_list_sorted,
                 validation_list,
-                matrix_list,
+                html_matrix_list,
             )
             atlas_info_list.append(atlas_info)
         return atlas_info_list

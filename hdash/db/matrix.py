@@ -9,11 +9,10 @@ class Matrix(Base):
 
     __tablename__ = "matrix"
 
-    matrix_id = Column(String, primary_key=True)
+    matrix_id = Column(String(255), primary_key=True)
     atlas_id = Column(String(255))
     order = Column(Integer)
     label = Column(String(255))
-    bg_color = Column(String(255))
     content = Column(LONGTEXT)
 
     def __repr__(self):

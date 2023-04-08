@@ -24,13 +24,13 @@ class MatrixUtil:
         self.completeness_summary = completeness_summary
         self.matrix_list = []
         self.categories = Categories()
+        self.current_order = 0
 
         # Matrix 1
         self._build_clinical_matrix(
             MatrixUtil.CLINICAL_TIER_1_2,
             self.categories.clinical_tier1_2_list,
             "Clinical Data Matrix: Tiers 1 and 2",
-            "#fce1e9",
         )
 
         # Matrix 2
@@ -38,7 +38,6 @@ class MatrixUtil:
             MatrixUtil.CLINICAL_TIER_3,
             self.categories.clinical_tier3_list,
             "Clinical Data Matrix: Tier 3",
-            "#fce1e9",
         )
 
         # Matrix 3
@@ -49,7 +48,6 @@ class MatrixUtil:
             MatrixUtil.SINGLE_CELL,
             self.single_cell_assay_list,
             "Assay Matrix: Single Cell Data",
-            "#e3eeff",
         )
 
         # Matrix 4
@@ -57,10 +55,7 @@ class MatrixUtil:
         self.bulk_assay_list.extend(self.categories.bulk_rna_list)
         self.bulk_assay_list.extend(self.categories.bulk_wes_list)
         self._build_assay_matrix(
-            MatrixUtil.BULK,
-            self.bulk_assay_list,
-            "Assay Matrix: Bulk Data",
-            "#e3eeff",
+            MatrixUtil.BULK, self.bulk_assay_list, "Assay Matrix: Bulk Data"
         )
 
         # Matrix 5
@@ -71,20 +66,16 @@ class MatrixUtil:
             MatrixUtil.IMAGE_OTHER,
             self.image_assay_list,
             "Assay Matrix: Imaging and Other",
-            "#e3eeff",
         )
 
         # Matrix 6
         self.visium_assay_list = []
         self.visium_assay_list.extend(self.categories.visium_list)
         self._build_assay_matrix(
-            MatrixUtil.VISIUM,
-            self.visium_assay_list,
-            "Assay Matrix: Visium",
-            "#e3eeff",
+            MatrixUtil.VISIUM, self.visium_assay_list, "Assay Matrix: Visium"
         )
 
-    def _build_clinical_matrix(self, heatmap_type, category_list, label, bg_color):
+    def _build_clinical_matrix(self, heatmap_type, category_list, label):
         """Build Clinical Data Heatmap."""
         headers = ["ParticipantID"]
         data = []
@@ -102,9 +93,9 @@ class MatrixUtil:
                     value = 1
                 current_row.append(value)
             data.append(current_row)
-        self._create_matrix(heatmap_type, data, headers, label, bg_color)
+        self._create_matrix(heatmap_type, data, headers, label)
 
-    def _build_assay_matrix(self, heatmap_type, category_list, label, bg_color):
+    def _build_assay_matrix(self, heatmap_type, category_list, label):
         """Build Assay Data Heatmap."""
         headers = ["BiospecimenID"]
         data = []
@@ -123,16 +114,18 @@ class MatrixUtil:
                 total_sum += value
             if total_sum > -0:
                 data.append(current_row)
-        self._create_matrix(heatmap_type, data, headers, label, bg_color)
+        self._create_matrix(heatmap_type, data, headers, label)
 
-    def _create_matrix(self, matrix_type, data, headers, label, bg_color):
+    def _create_matrix(self, matrix_type, data, headers, label):
         """Create Heatmap Object."""
         data_frame = pd.DataFrame(data, columns=headers)
         matrix_id = self.atlas_id + "_" + matrix_type
         matrix = Matrix()
         matrix.matrix_id = matrix_id
+        matrix.atlas_id = self.atlas_id
+        matrix.order = self.current_order
         matrix.label = label
         matrix.caption = MatrixUtil.CAPTION
-        matrix.bg_color = bg_color
         matrix.content = data_frame.to_csv(index=False)
         self.matrix_list.append(matrix)
+        self.current_order += 1
