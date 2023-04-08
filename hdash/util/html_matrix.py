@@ -20,8 +20,9 @@ class HtmlMatrix:
     def get_data_frame_html(self):
         """Get Data Frame HTML."""
         return self.data_frame.to_html(
-            index=False, justify="left",
-            classes="table table-striped table-sm small_table_text"
+            index=False,
+            justify="left",
+            classes="table table-striped table-sm small_table_text",
         )
 
     def get_counts_html(self):
@@ -32,8 +33,9 @@ class HtmlMatrix:
         counts_df.index = list(counts.index)
         counts_df.columns = ["Counts"]
         return counts_df.to_html(
-            index=True, justify="left",
-            classes="table w-25 table-striped table-sm small_table_text"
+            index=True,
+            justify="left",
+            classes="table w-25 table-striped table-sm small_table_text",
         )
 
     def get_javascript_data(self):

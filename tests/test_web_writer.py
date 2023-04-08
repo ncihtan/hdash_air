@@ -6,6 +6,7 @@ from hdash.graph.graph_creator import GraphCreator
 from hdash.util.matrix_util import MatrixUtil
 from hdash.util.html_matrix import HtmlMatrix
 
+
 def test_report_writer(atlas_list, sample_meta_map):
     """Test Report Writer."""
     graph_creator = GraphCreator("HTA1", sample_meta_map)
