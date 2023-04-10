@@ -3,8 +3,10 @@ from typing import List
 import logging
 from datetime import datetime
 from natsort import natsorted
+import boto3
 from airflow import DAG
 from airflow.decorators import task
+from hdash.util.s3_credentials import S3Credentials
 from hdash.synapse.connector import SynapseConnector
 from hdash.db.atlas import Atlas
 from hdash.db.db_util import DbConnection
@@ -206,6 +208,29 @@ with DAG(
             logger.info("Creating %s.", web_cache.file_name)
             session.add(web_cache)
         session.commit()
+        return len(atlas_id_list)
+
+    @task
+    def deploy_web(deploy_num_atlases):
+        """Deploy website to S3 Bucket."""
+        if deploy_num_atlases > 0:
+            db_connection = DbConnection()
+            session = db_connection.session
+            s3_credentials = S3Credentials()
+            s3_config = s3_credentials.get_s3_config()
+            client = boto3.client("s3", **s3_config)
+            end_point = f"{s3_credentials.endpoint_url}/{s3_credentials.bucket_name}"
+            logger.info("Deploying to:  %s.", end_point)
+            web_list = session.query(WebCache).all()
+            for web_cache in web_list:
+                logger.info("Writing:  %s.", web_cache.file_name)
+                client.put_object(
+                    Bucket=s3_credentials.bucket_name,
+                    Key=web_cache.file_name,
+                    Body=web_cache.content,
+                    ACL='public-read',
+                    ContentType='text/html'
+                )
 
     def _get_meta_map(atlas_id, session):
         """Get the Meta Map Object."""
@@ -259,4 +284,5 @@ with DAG(
     atlas_id_list2 = get_atlas_files.expand(atlas_id=atlas_id_list1)
     atlas_id_list3 = get_meta_files.expand(atlas_id=atlas_id_list2)
     atlas_id_list4 = validate_atlas.expand(atlas_id=atlas_id_list3)
-    create_web(atlas_id_list4)
+    num_atlases = create_web(atlas_id_list4)
+    deploy_web(num_atlases)

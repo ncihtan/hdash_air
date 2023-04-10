@@ -1,5 +1,4 @@
 """S3 Credentials."""
-import boto3
 from airflow.models import Variable
 
 

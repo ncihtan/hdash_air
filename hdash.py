@@ -80,6 +80,8 @@ def deploy():
                 Bucket=s3_credentials.bucket_name,
                 Key=web_cache.file_name,
                 Body=web_cache.content,
+                ACL='public-read',
+                ContentType='text/html'
             )
         output_header(emoji.emojize("Done :beer_mug:"))
     else:
