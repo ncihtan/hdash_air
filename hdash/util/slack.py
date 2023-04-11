@@ -44,11 +44,11 @@ class Slack:
         if success:
             text = self._create_text_block(
                 "plain_text",
-                f":white_check_mark: Dashboard automatically deployed at {now}.",
+                f":white_check_mark: Dashboard automatically deployed at {now} (GMT).",
             )
         else:
             text = self._create_text_block(
-                "plain_text", f":scream: Dashboard Failure occurred at {now}."
+                "plain_text", f":scream: Dashboard Failure occurred at {now} (GMT)."
             )
         block3["text"] = text
 

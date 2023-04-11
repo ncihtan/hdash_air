@@ -37,8 +37,8 @@ from hdash.util.slack import Slack
 logger = logging.getLogger("airflow.task")
 
 
-def task_failure_alert(context):
-    """Handle Task Failure."""
+def dag_failure_alert(context):
+    """Handle Failure."""
     task_instance_key_str = context["task_instance_key_str"]
     error_msg = f"Failure occurred at: {task_instance_key_str}."
     slack = Slack()
@@ -48,7 +48,7 @@ def task_failure_alert(context):
 
 
 def dag_success_alert(context):
-    """Handle DAG Success."""
+    """Handle Success."""
     run_id = context["run_id"]
     success_msg = f"Run ID Succeeded: {run_id}."
     slack = Slack()
@@ -64,8 +64,8 @@ with DAG(
     schedule="@hourly",
     catchup=False,
     tags=["htan"],
-    on_success_callback=None,
-    on_failure_callback=task_failure_alert,
+    on_success_callback=dag_success_alert,
+    on_failure_callback=dag_failure_alert,
 ) as dag:
 
     @task()
@@ -243,7 +243,6 @@ with DAG(
     @task
     def deploy_web(
         deploy_num_atlases,
-        on_success_callback=dag_success_alert,
         retries=3,
         retry_delay=timedelta(minutes=5),
     ):
