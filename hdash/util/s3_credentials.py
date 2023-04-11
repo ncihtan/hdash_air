@@ -9,6 +9,7 @@ class S3Credentials:
     SECRET_ACCESS_KEY = "S3_SECRET_ACCESS_KEY"
     ENDPOINT_URL = "S3_ENDPOINT_URL"
     BUCKET_NAME = "S3_BUCKET_NAME"
+    WEB_SITE_URL = "S3_WEB_SITE_URL"
 
     def __init__(self):
         """Construct S3 Credentials."""
@@ -27,6 +28,10 @@ class S3Credentials:
         self._bucket_name = Variable.get(self.BUCKET_NAME)
         if self._bucket_name is None:
             raise EnvironmentError(f"{self.BUCKET_NAME} not set.")
+
+        self._web_site_url = Variable.get(self.WEB_SITE_URL)
+        if self._web_site_url is None:
+            raise EnvironmentError(f"{self.WEB_SITE_URL} not set.")
 
     @property
     def access_key_id(self):
@@ -47,6 +52,11 @@ class S3Credentials:
     def bucket_name(self):
         """Get Bucket Name."""
         return self._bucket_name
+
+    @property
+    def web_site_url(self):
+        """Get Web Site URL."""
+        return self._web_site_url
 
     def get_s3_config(self):
         """Get S3 Configuration Map."""

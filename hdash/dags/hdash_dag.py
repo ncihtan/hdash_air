@@ -228,8 +228,8 @@ with DAG(
                     Bucket=s3_credentials.bucket_name,
                     Key=web_cache.file_name,
                     Body=web_cache.content,
-                    ACL='public-read',
-                    ContentType='text/html'
+                    ACL="public-read",
+                    ContentType="text/html",
                 )
 
     def _get_meta_map(atlas_id, session):

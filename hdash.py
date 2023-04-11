@@ -13,6 +13,7 @@ from hdash.db.meta_cache import MetaCache
 from hdash.db.validation import Validation, ValidationError
 from hdash.db.matrix import Matrix
 from hdash.db.web_cache import WebCache
+from hdash.util.slack import Slack
 
 
 @click.group()
@@ -87,6 +88,13 @@ def deploy():
     else:
         output_header(emoji.emojize(":warning:  No web cache files found."))
 
+@cli.command()
+def slack():
+    """Send a success message to Slack."""
+    slack = Slack()
+    print(f"Sending slack message to web hook:  {slack.web_hook_url}.")
+    r = slack.post_msg(True)
+    print(r)
 
 def output_header(msg):
     """Output header with emphasis."""
