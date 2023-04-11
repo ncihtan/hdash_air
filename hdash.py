@@ -93,7 +93,7 @@ def slack():
     """Send a success message to Slack."""
     slack = Slack()
     print(f"Sending slack message to web hook:  {slack.web_hook_url}.")
-    r = slack.post_msg(True)
+    r = slack.post_msg(True, "This is a mock message from the hdash command line tool.")
     print(r)
 
 def output_header(msg):

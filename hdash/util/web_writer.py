@@ -28,7 +28,7 @@ class WebWriter:
 
         self.env = self._get_template_env()
         self.now = datetime.now()
-        self.now_str = self.now.strftime("%m/%d/%Y %H:%M:%S")
+        self.now_str = self.now.strftime("%Y-%m-%d %I:%M:%S %p")
         self._generate_index_html()
         self._generate_atlas_pages()
 

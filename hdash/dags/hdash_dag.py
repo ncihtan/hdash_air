@@ -2,6 +2,7 @@
 from typing import List
 import logging
 from datetime import datetime
+from datetime import timedelta
 from natsort import natsorted
 import boto3
 from airflow import DAG
@@ -30,21 +31,46 @@ from hdash.stats.completeness_summary import CompletenessSummary
 from hdash.graph.graph_creator import GraphCreator
 from hdash.graph.graph_flattener import GraphFlattener
 from hdash.util.html_matrix import HtmlMatrix
+from hdash.util.slack import Slack
 
 
 logger = logging.getLogger("airflow.task")
+
+
+def task_failure_alert(context):
+    """Handle Task Failure."""
+    task_instance_key_str = context["task_instance_key_str"]
+    error_msg = f"Failure occurred at: {task_instance_key_str}."
+    slack = Slack()
+    logger.info("Sending failure message to Slack:  %s.", error_msg)
+    response = slack.post_msg(False, error_msg)
+    logger.info("Response from Slack:  %s.", response.status_code)
+
+
+def dag_success_alert(context):
+    """Handle DAG Success."""
+    run_id = context["run_id"]
+    success_msg = f"Run ID Succeeded: {run_id}."
+    slack = Slack()
+    logger.info("Sending success message to Slack:  %s.", success_msg)
+    response = slack.post_msg(True, success_msg)
+    logger.info("Response from Slack:  %s.", response.status_code)
+
 
 # Create the DAG
 with DAG(
     dag_id="hdash",
     start_date=datetime(2023, 1, 1),
-    schedule=None,
+    schedule="@hourly",
     catchup=False,
     tags=["htan"],
+    on_success_callback=None,
+    on_failure_callback=task_failure_alert,
 ) as dag:
 
     @task()
-    def get_atlas_list():
+    def get_atlas_list(retries=3, retry_delay=timedelta(minutes=5)):
+        # pylint: disable=unused-argument
         """Get all HTAN Atlases from the Database."""
         logger.info("Querying database for all atlases")
         db_connection = DbConnection()
@@ -78,7 +104,8 @@ with DAG(
         return id_list
 
     @task
-    def get_atlas_files(atlas_id: str):
+    def get_atlas_files(atlas_id: str, retries=3, retry_delay=timedelta(minutes=5)):
+        # pylint: disable=unused-argument
         """Get all Synapse Files for the Specified Atlas."""
         db_connection = DbConnection()
         session = db_connection.session
@@ -111,7 +138,8 @@ with DAG(
         return atlas_id
 
     @task
-    def get_meta_files(atlas_id: str):
+    def get_meta_files(atlas_id: str, retries=3, retry_delay=timedelta(minutes=5)):
+        # pylint: disable=unused-argument
         """Get all meta files and store contents in database."""
         db_connection = DbConnection()
         session = db_connection.session
@@ -127,7 +155,7 @@ with DAG(
 
         connector = SynapseConnector()
         for meta_file in meta_list:
-            # Check that meta file is already cached
+            # Check if meta file is already cached
             cache = session.query(MetaCache).filter_by(md5=meta_file.md5).first()
             if cache is None:
                 logger.info("Retrieving meta file:  %s", meta_file.synapse_id)
@@ -143,7 +171,8 @@ with DAG(
         return atlas_id
 
     @task
-    def validate_atlas(atlas_id: str):
+    def validate_atlas(atlas_id: str, retries=3, retry_delay=timedelta(minutes=5)):
+        # pylint: disable=unused-argument
         """Validate atlas and store results to the database."""
         logger.info("Validating atlas:  %s.", atlas_id)
         db_connection = DbConnection()
@@ -186,7 +215,8 @@ with DAG(
         return atlas_id
 
     @task
-    def create_web(atlas_id_list):
+    def create_web(atlas_id_list, retries=3, retry_delay=timedelta(minutes=5)):
+        # pylint: disable=unused-argument
         """Create Web Site."""
         db_connection = DbConnection()
         session = db_connection.session
@@ -211,7 +241,13 @@ with DAG(
         return len(atlas_id_list)
 
     @task
-    def deploy_web(deploy_num_atlases):
+    def deploy_web(
+        deploy_num_atlases,
+        on_success_callback=dag_success_alert,
+        retries=3,
+        retry_delay=timedelta(minutes=5),
+    ):
+        # pylint: disable=unused-argument
         """Deploy website to S3 Bucket."""
         if deploy_num_atlases > 0:
             db_connection = DbConnection()
