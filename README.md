@@ -16,8 +16,8 @@ an S3 compatible cloud bucket.
 * A MySQL database for storing intermediate files.
 * An S3 compatible cloud bucket for hosting static web pages.
 
-```hdash_air``` is currently installed on [Linode.com](https://www.linode.com/),
-where I have installed Astro, a managed MySQL database, and a Linode cloud bucket.
+```hdash_air``` is currently running on [Google Cloud Composer](https://cloud.google.com/composer),
+with a managed MySQL database, and a Linode cloud bucket.
 
 ## Development
 
@@ -62,6 +62,13 @@ S3_WEB_SITE_URL       S3 Static Site, e.g. http://hdash.website-us-east-1.linode
 SLACK_WEBHOOK_URL     Slack Web Hook URL for Posting to Slack
 ```
 
+For local development, you will also need:
+```
+AIRFLOW_DEV_HOME            Directory of local/dev Airflow installation.
+HDASH_CLOUD_COMPOSER_DAG    DAG Bucket location for Google Cloud Composer.
+                            Must be of the form:  gs://xxxx/dags 
+```
+
 Note:  For the command line tool, all variables must be prefixed with:  AIRFLOW_VAR_.
 For example:  AIRFLOW_VAR_SYNAPSE_USER.
 
@@ -98,6 +105,54 @@ make lint       run pylint
 make deploy     copy files to local Airflow Dev Server.
 make gcp        copy files to Google Cloud Composer for production deployment.
 ```
+
+## Local Development
+
+For local development, I have used the Astro CLI.  See:  https://docs.astronomer.io/astro/cli/overview.
+
+Commands to get started:
+
+```
+mkdir astro
+cd astro
+astro init
+astro dev start
+```
+
+NOTE:  For the installation to work, you must also copy most of the dependencies from
+requirements.txt to astro/requirements.txt.
+
+## Production Deployment
+
+For production deployment, I am using [Google Cloud Composer](https://cloud.google.com/composer).
+
+Google provides complete documentation on installing Python dependencies at:  
+https://cloud.google.com/composer/docs/composer-2/install-python-dependencies.
+This includes a console interface where you can install dependencies one by one;
+but it also includes documentation on installing an entire requirements.txt file via the
+gcloud command line utility.
+
+I used the following command to install dependencies in the requirements.txt file:
+
+```
+gcloud composer environments update [project-name] --location [location] --update-pypi-packages-from-file requirements.txt
+```
+
+Note that when you update dependencies, it can take several minutes for Google to
+update the environment.  Google also already has a (large) number of Python dependencies
+installed (see:  https://cloud.google.com/composer/docs/concepts/versioning/composer-versions),
+and the current requirements.txt may conflict with Google's.  If this happens, you will receive an
+error and none of your dependencies will be installed.  You will then need to potentially relax
+specific version numbers in the requirements.txt file.
+
+Other important notes:
+
+use ```make gcp``` to transfer code to Google Cloud Composer.
+
+By default, Google Cloud Composer is set to use fairly minimal VMs with minimal memory.
+To adjust, go to Environment Details, and click Workflow Configuration: Edit.  
+You can then adjust the CPUs, RAM and storage for the scheduler and the workers.
+You can also adjust the maximum number of workers.
 
 ## LicenseMIT License
 
