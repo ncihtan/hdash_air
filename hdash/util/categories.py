@@ -39,7 +39,7 @@ class Categories:
     SRRS_IMAGING_LEVEL2 = "SRRSImagingLevel2"
     VISIUM_LEVEL_1 = "10xVisiumSpatialTranscriptomics-RNA-seqLevel1"
     VISIUM_LEVEL_2 = "10xVisiumSpatialTranscriptomics-RNA-seqLevel2"
-    VISIUM_AUX_LEVEL_2 = "10xVisiumSpatialTranscriptomics-AuxiliaryFilesLevel2"
+    VISIUM_AUX_LEVEL_2 = "10xVisiumSpatialTranscriptomics-AuxiliaryFiles"
     VISIUM_LEVEL_3 = "10xVisiumSpatialTranscriptomics-RNA-seqLevel3"
 
     # Clinical Data Categories
