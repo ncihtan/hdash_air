@@ -69,8 +69,8 @@ HDASH_CLOUD_COMPOSER_DAG    DAG Bucket location for Google Cloud Composer.
                             Must be of the form:  gs://xxxx/dags 
 ```
 
-Note:  For the command line tool, all variables must be prefixed with:  AIRFLOW_VAR_.
-For example:  AIRFLOW_VAR_SYNAPSE_USER.
+Note:  For the command line tool, all variables must be prefixed with:  ```AIRFLOW_VAR_```.
+For example:  ```AIRFLOW_VAR_SYNAPSE_USER```.
 
 ## Command Line Tool
 
@@ -120,7 +120,7 @@ astro dev start
 ```
 
 NOTE:  For the installation to work, you must also copy most of the dependencies from
-requirements.txt to astro/requirements.txt.
+```requirements.txt``` to ```astro/requirements.txt```.
 
 ## Production Deployment
 
@@ -147,14 +147,14 @@ specific version numbers in the requirements.txt file.
 
 Other important notes:
 
-use ```make gcp``` to transfer code to Google Cloud Composer.
+Use ```make gcp``` to transfer code to Google Cloud Composer.
 
 By default, Google Cloud Composer is set to use fairly minimal VMs with minimal memory.
 To adjust, go to Environment Details, and click Workflow Configuration: Edit.  
 You can then adjust the CPUs, RAM and storage for the scheduler and the workers.
 You can also adjust the maximum number of workers.
 
-## LicenseMIT License
+## MIT License
 
 Copyright (c) ncihtan
 
