@@ -8,7 +8,7 @@ def test_slack_connector():
     slack = Slack()
     blocks = slack.create_blocks(True, "Details")
     success_json = json.dumps(blocks, indent=2)
-    assert "HTAN Dashboard" in success_json
+    assert "HDash Bot" in success_json
 
     blocks = slack.create_blocks(False, "Details")
     fail_json = json.dumps(blocks, indent=2)

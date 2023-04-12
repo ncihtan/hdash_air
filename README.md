@@ -93,8 +93,10 @@ The Makefile includes a number of useful targets for developing code.
 make test       run Pytests
 make smoke      run "smoke" tests agains external dependencies, e.g. database, synapse, etc.
 make format     run black
-make flake8     run Flake8
+make flake8     run flake8
 make lint       run pylint
+make deploy     copy files to local Airflow Dev Server.
+make gcp        copy files to Google Cloud Composer for production deployment.
 ```
 
 ## LicenseMIT License
