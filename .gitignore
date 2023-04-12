@@ -3,3 +3,4 @@
 .coverage
 tests/out
 deploy/
+*.pyc

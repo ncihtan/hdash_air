@@ -31,6 +31,12 @@ class Slack:
         now = now.strftime("%Y-%m-%d %I:%M:%S %p")
         payload = {}
         blocks = []
+
+        if success:
+            payload["text"] = "Dashboard Build Success"
+        else:
+            payload["text"] = "Dashboard Build Failed"
+        
         payload["blocks"] = blocks
         text = self._create_text_block("plain_text", "HDash Bot")
         block1 = {"type": "header", "text": text}
