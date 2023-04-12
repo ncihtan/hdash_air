@@ -6,8 +6,6 @@ PY_LINT = pylint
 FLAKE8 = flake8
 FORMATTER = black
 
-check: format lint test
-
 prepare:
 	mkdir -p deploy
 	mkdir -p deploy/images

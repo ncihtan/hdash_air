@@ -63,13 +63,14 @@ with DAG(
     start_date=datetime(2023, 1, 1),
     schedule="@hourly",
     catchup=False,
+    max_active_runs=1,
     tags=["htan"],
     on_success_callback=dag_success_alert,
     on_failure_callback=dag_failure_alert,
 ) as dag:
 
     @task()
-    def get_atlas_list(retries=3, retry_delay=timedelta(minutes=5)):
+    def get_atlas_list():
         # pylint: disable=unused-argument
         """Get all HTAN Atlases from the Database."""
         logger.info("Querying database for all atlases")
@@ -104,7 +105,7 @@ with DAG(
         return id_list
 
     @task
-    def get_atlas_files(atlas_id: str, retries=3, retry_delay=timedelta(minutes=5)):
+    def get_atlas_files(atlas_id: str):
         # pylint: disable=unused-argument
         """Get all Synapse Files for the Specified Atlas."""
         db_connection = DbConnection()
@@ -138,7 +139,7 @@ with DAG(
         return atlas_id
 
     @task
-    def get_meta_files(atlas_id: str, retries=3, retry_delay=timedelta(minutes=5)):
+    def get_meta_files(atlas_id: str):
         # pylint: disable=unused-argument
         """Get all meta files and store contents in database."""
         db_connection = DbConnection()
@@ -171,7 +172,7 @@ with DAG(
         return atlas_id
 
     @task
-    def validate_atlas(atlas_id: str, retries=3, retry_delay=timedelta(minutes=5)):
+    def validate_atlas(atlas_id: str):
         # pylint: disable=unused-argument
         """Validate atlas and store results to the database."""
         logger.info("Validating atlas:  %s.", atlas_id)
@@ -215,7 +216,7 @@ with DAG(
         return atlas_id
 
     @task
-    def create_web(atlas_id_list, retries=3, retry_delay=timedelta(minutes=5)):
+    def create_web(atlas_id_list):
         # pylint: disable=unused-argument
         """Create Web Site."""
         db_connection = DbConnection()

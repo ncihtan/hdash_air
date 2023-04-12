@@ -37,7 +37,7 @@ def init():
 
 @cli.command()
 def reset():
-    """Reset the database."""
+    """Reset the database (use with caution)."""
     db_connection = DbConnection()
     output_header("Resetting database.")
     db_connection.reset_database()
@@ -46,7 +46,7 @@ def reset():
 
 @cli.command()
 def web():
-    """Create Website from Database."""
+    """Download website from the database to deploy directory."""
     db_connection = DbConnection()
     session = db_connection.session
     output_header("Creating web site.")
@@ -64,7 +64,7 @@ def web():
 
 @cli.command()
 def deploy():
-    """Deploy Website from Database to S3 Bucket."""
+    """Deploy website from database to S3 bucket."""
     db_connection = DbConnection()
     session = db_connection.session
     s3_credentials = S3Credentials()
@@ -90,7 +90,7 @@ def deploy():
 
 @cli.command()
 def slack():
-    """Send a success message to Slack."""
+    """Send a mock message to Slack."""
     slack = Slack()
     print(f"Sending slack message to web hook:  {slack.web_hook_url}.")
     r = slack.post_msg(True, "This is a mock message from the hdash command line tool.")
