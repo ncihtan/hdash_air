@@ -61,7 +61,7 @@ def dag_success_alert(context):
 with DAG(
     dag_id="hdash",
     start_date=datetime(2023, 1, 1),
-    schedule="@hourly",
+    schedule="0 6,10,14,18 * * *",
     catchup=False,
     max_active_runs=1,
     tags=["htan"],
