@@ -2,7 +2,6 @@
 from typing import List
 import logging
 from datetime import datetime
-from datetime import timedelta
 from natsort import natsorted
 import boto3
 from airflow import DAG
@@ -61,7 +60,7 @@ def dag_success_alert(context):
 with DAG(
     dag_id="hdash",
     start_date=datetime(2023, 1, 1),
-    schedule="0 6,10,14,18 * * *",
+    schedule="0 0,4,8,12,16,20 * * *",
     catchup=False,
     max_active_runs=1,
     tags=["htan"],
@@ -242,11 +241,7 @@ with DAG(
         return len(atlas_id_list)
 
     @task
-    def deploy_web(
-        deploy_num_atlases,
-        retries=3,
-        retry_delay=timedelta(minutes=5),
-    ):
+    def deploy_web(deploy_num_atlases):
         # pylint: disable=unused-argument
         """Deploy website to S3 Bucket."""
         if deploy_num_atlases > 0:
