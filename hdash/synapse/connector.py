@@ -25,7 +25,7 @@ class SynapseConnector:
         """Retrieve the Synapse Table for the Specified Atlas."""
         self.logger.info("Retrieving Synapse Table for:  %s", entity_id)
         sql = f"SELECT * FROM {self.MASTER_HTAN_ID} "
-        sql += f"WHERE projectId ='{entity_id}';"
+        sql += f"WHERE projectId ='{entity_id}'"
         self.logger.info("Issuing Synapse Query:  %s", sql)
         table = self.syn.tableQuery(sql)
         synapse_df = table.asDataFrame()
