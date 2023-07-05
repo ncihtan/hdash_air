@@ -25,6 +25,14 @@ class Categories:
     BULK_RNA_SEQ_LEVEL_2 = "BulkRNA-seqLevel2"
     BULK_RNA_SEQ_LEVEL_3 = "BulkRNA-seqLevel3"
     BULK_RNA_SEQ_LEVEL_4 = "BulkRNA-seqLevel4"
+    BULK_METHYLATION_SEQ_LEVEL_1 = "BulkMethylation-seqLevel1"
+    BULK_METHYLATION_SEQ_LEVEL_2 = "BulkMethylation-seqLevel2"
+    BULK_METHYLATION_SEQ_LEVEL_3 = "BulkMethylation-seqLevel3"
+    BULK_METHYLATION_SEQ_LEVEL_4 = "BulkMethylation-seqLevel4"
+    HI_C_SEQ_LEVEL_1 = "HI-C-seqLevel1"
+    HI_C_SEQ_LEVEL_2 = "HI-C-seqLevel2"
+    HI_C_SEQ_LEVEL_3 = "HI-C-seqLevel3"
+    HI_C_SEQ_LEVEL_4 = "HI-C-seqLevel4"
     SC_ATAC_SEQ_LEVEL_1 = "ScATAC-seqLevel1"
     SC_ATAC_SEQ_LEVEL_2 = "ScATAC-seqLevel2"
     SC_ATAC_SEQ_LEVEL_3 = "ScATAC-seqLevel3"
@@ -41,6 +49,16 @@ class Categories:
     VISIUM_LEVEL_2 = "10xVisiumSpatialTranscriptomics-RNA-seqLevel2"
     VISIUM_AUX_LEVEL_2 = "10xVisiumSpatialTranscriptomics-AuxiliaryFiles"
     VISIUM_LEVEL_3 = "10xVisiumSpatialTranscriptomics-RNA-seqLevel3"
+    VISIUM_LEVEL_4 = "10xVisiumSpatialTranscriptomics-RNA-seqLevel4"
+    MASS_SPEC_LEVEL_1 = "MassSpectrometryLevel1"
+    MASS_SPEC_LEVEL_2 = "MassSpectrometryLevel2"
+    MASS_SPEC_LEVEL_3 = "MassSpectrometryLevel3"
+    MASS_SPEC_LEVEL_4 = "MassSpectrometryLevel4"
+    MASS_SPEC_AUX = "MassSpectrometryAuxiliaryFile"
+    ELECTRON_MICROSCOPY_LEVEL_1 = "ElectronMicroscopyLevel1"
+    ELECTRON_MICROSCOPY_LEVEL_2 = "ElectronMicroscopyLevel2"
+    ELECTRON_MICROSCOPY_LEVEL_3 = "ElectronMicroscopyLevel3"
+    ELECTRON_MICROSCOPY_LEVEL_4 = "ElectronMicroscopyLevel4"
 
     # Clinical Data Categories
     DEMOGRAPHICS = "Demographics"
@@ -110,6 +128,36 @@ class Categories:
             Categories.VISIUM_LEVEL_2,
             Categories.VISIUM_AUX_LEVEL_2,
             Categories.VISIUM_LEVEL_3,
+            Categories.VISIUM_LEVEL_4
+        ]
+
+        self.bulk_methylation_seq = [
+            Categories.BULK_METHYLATION_SEQ_LEVEL_1,
+            Categories.BULK_METHYLATION_SEQ_LEVEL_2,
+            Categories.BULK_METHYLATION_SEQ_LEVEL_3,
+            Categories.BULK_METHYLATION_SEQ_LEVEL_4
+        ]
+
+        self.hi_c_seq_list = [
+            Categories.HI_C_SEQ_LEVEL_1,
+            Categories.HI_C_SEQ_LEVEL_2,
+            Categories.HI_C_SEQ_LEVEL_3,
+            Categories.HI_C_SEQ_LEVEL_4
+        ]
+
+        self.mass_spec_list = [
+            Categories.MASS_SPEC_LEVEL_1,
+            Categories.MASS_SPEC_LEVEL_2,
+            Categories.MASS_SPEC_LEVEL_3,
+            Categories.MASS_SPEC_LEVEL_4,
+            Categories.MASS_SPEC_AUX
+        ]
+
+        self.electron_microscopy_list = [
+            Categories.ELECTRON_MICROSCOPY_LEVEL_1,
+            Categories.ELECTRON_MICROSCOPY_LEVEL_2,
+            Categories.ELECTRON_MICROSCOPY_LEVEL_3,
+            Categories.ELECTRON_MICROSCOPY_LEVEL_4
         ]
 
         self.other_assay_list = [Categories.OTHER_ASSAY]
@@ -189,6 +237,24 @@ class Categories:
             Categories.VISIUM_LEVEL_2: "VS2",
             Categories.VISIUM_AUX_LEVEL_2: "VS2_A",
             Categories.VISIUM_LEVEL_3: "VS3",
+            Categories.VISIUM_LEVEL_4: "VS4",
+            Categories.BULK_METHYLATION_SEQ_LEVEL_1: "BMS1",
+            Categories.BULK_METHYLATION_SEQ_LEVEL_2: "BMS2",
+            Categories.BULK_METHYLATION_SEQ_LEVEL_3: "BMS3",
+            Categories.BULK_METHYLATION_SEQ_LEVEL_4: "BMS4",
+            Categories.HI_C_SEQ_LEVEL_1: "HIC1",
+            Categories.HI_C_SEQ_LEVEL_2: "HIC2",
+            Categories.HI_C_SEQ_LEVEL_3: "HIC3",
+            Categories.HI_C_SEQ_LEVEL_4: "HIC4",
+            Categories.MASS_SPEC_LEVEL_1: "MS1",
+            Categories.MASS_SPEC_LEVEL_2: "MS2",
+            Categories.MASS_SPEC_LEVEL_3: "MS3",
+            Categories.MASS_SPEC_LEVEL_4: "MS4",
+            Categories.MASS_SPEC_AUX: "MSA",
+            Categories.ELECTRON_MICROSCOPY_LEVEL_1: "EM1",
+            Categories.ELECTRON_MICROSCOPY_LEVEL_2: "EM2",
+            Categories.ELECTRON_MICROSCOPY_LEVEL_3: "EM3",
+            Categories.ELECTRON_MICROSCOPY_LEVEL_4: "EM4"
         }
 
         self.all_assays = []
@@ -199,6 +265,10 @@ class Categories:
         self.all_assays.extend(self.image_list)
         self.all_assays.extend(self.other_assay_list)
         self.all_assays.extend(self.visium_list)
+        self.all_assays.extend(self.bulk_methylation_seq)
+        self.all_assays.extend(self.hi_c_seq_list)
+        self.all_assays.extend(self.mass_spec_list)
+        self.all_assays.extend(self.electron_microscopy_list)
 
         self.all_clinical = []
         self.all_clinical.extend(self.clinical_tier1_2_list)
