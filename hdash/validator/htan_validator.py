@@ -36,7 +36,7 @@ class HtanValidator:
         self._add_results(check0)
 
         # Clinical Validation
-        check1 = ValidateDemographics(self.meta_map)
+        check1 = ValidateDemographics(self.atlas_id, self.meta_map)
         self._add_results(check1)
 
         if check1.validation_passed():

@@ -34,6 +34,7 @@ class GraphCreator:
         """Gather all nodes."""
         self.__gather_nodes_by_category(self._categories.DEMOGRAPHICS)
         self.__gather_nodes_by_category(self._categories.BIOSPECIMEN)
+        self.__gather_nodes_by_category(self._categories.SRRS_TIER2)
         self.__gather_nodes_by_category(self._categories.SRRS_BIOSPECIMEN)
         for category in self._categories.all_assays:
             self.__gather_nodes_by_category(category)
