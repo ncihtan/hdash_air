@@ -17,7 +17,8 @@ def test_validator(sample_meta_map):
     assert validation_list[1].validation_passed()
     assert validation_list[2].validation_passed()
     assert validation_list[3].validation_passed()
-    assert validation_list[4].validation_passed()
+    assert validation_list[4].validation_passed() == False
+    assert len(validation_list[4].error_list) == 2
     assert not validation_list[5].validation_passed()
     error_list = validation_list[5].error_list
     assert error_list[0].error_msg.startswith(

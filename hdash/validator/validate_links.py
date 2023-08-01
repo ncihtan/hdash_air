@@ -23,7 +23,7 @@ class ValidateLinks(ValidationRule):
             child_id = edge[1]
             if child_id in directed_graph.nodes:
                 child_node = directed_graph.nodes[child_id]
-                if parent_id not in directed_graph.nodes:
+                if "EXT" not in parent_id and parent_id not in directed_graph.nodes:
                     error_message = (
                         f"{child_id} references parent ID="
                         f"{parent_id}, but no such ID exists."

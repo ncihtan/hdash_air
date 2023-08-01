@@ -1,5 +1,6 @@
 """Validation Rule."""
 
+import re
 from hdash.util.id_util import IdUtil
 from hdash.util.categories import Categories
 from hdash.validator.validation_rule import ValidationRule
@@ -72,25 +73,14 @@ class ValidatePrimaryIds(ValidationRule):
         elif primary_id == "nan":
             msg = "Primary ID is missing from specific row."
             self.add_error(msg, meta_file)
+        elif primary_id in self.primary_id_set:
+            msg = f"Primary ID {primary_id} has already been defined in {category}."
+            self.add_error(msg, meta_file)
         else:
-            if primary_id in self.primary_id_set:
-                msg = f"Primary ID {primary_id} has already been defined in {category}."
+            match = bool(re.match(
+                "^(HTA([1-9]|1[0-5]))_((EXT)?([0-9]\d*|0000))_([0-9]\d*|0000)$",
+                primary_id)
+            )
+            if not match:
+                msg = primary_id + " does not match HTAN spec."
                 self.add_error(msg, meta_file)
-            else:
-                self.primary_id_set[primary_id] = category
-                parts = primary_id.split("_")
-                label = category + ": " + primary_id
-                if parts[0] != atlas_id:
-                    msg = label + " does not match atlas ID: " + atlas_id
-                    self.add_error(msg, meta_file)
-                if len(parts) != 3:
-                    msg = label + " does not match HTAN spec."
-                    self.add_error(msg, meta_file)
-                else:
-                    try:
-                        if parts[1] != "xxxx":
-                            int(parts[1])
-                        int(parts[2])
-                    except ValueError:
-                        msg = label + " does not match HTAN spec."
-                        self.add_error(msg, meta_file)
