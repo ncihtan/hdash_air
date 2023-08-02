@@ -56,6 +56,7 @@
             <th>Matrix</th>
             <th>Other</th>
             <th>Metadata</th>
+            <th>Percent Metadata Complete</th>
             <th>Num Errors</th>
             <th>Liaison</th>
         </tr>
@@ -88,6 +89,7 @@
                 No
                 {% endif %}
             </td>
+            <td>{{"%.1f"|format(100 *   atlas_info.stats.percent_metadata_complete) }}%</td>
             <td>{{ atlas_info.get_total_num_errors() }}</td>
             <td>{{ atlas_info.info.dcc_liaison }}</td>
         </tr>
