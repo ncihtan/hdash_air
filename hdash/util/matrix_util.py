@@ -54,6 +54,8 @@ class MatrixUtil:
         self.bulk_assay_list = []
         self.bulk_assay_list.extend(self.categories.bulk_rna_list)
         self.bulk_assay_list.extend(self.categories.bulk_wes_list)
+        self.bulk_assay_list.extend(self.categories.bulk_methylation_seq)
+        self.bulk_assay_list.extend(self.categories.hi_c_seq_list)
         self._build_assay_matrix(
             MatrixUtil.BULK, self.bulk_assay_list, "Assay Matrix: Bulk Data"
         )
@@ -61,18 +63,20 @@ class MatrixUtil:
         # Matrix 5
         self.image_assay_list = []
         self.image_assay_list.extend(self.categories.image_list)
-        self.image_assay_list.extend(self.categories.other_assay_list)
         self._build_assay_matrix(
             MatrixUtil.IMAGE_OTHER,
             self.image_assay_list,
-            "Assay Matrix: Imaging and Other",
+            "Assay Matrix: Core Imaging",
         )
 
         # Matrix 6
-        self.visium_assay_list = []
-        self.visium_assay_list.extend(self.categories.visium_list)
+        self.other_assay_list = []
+        self.other_assay_list.extend(self.categories.visium_list)
+        self.other_assay_list.extend(self.categories.electron_microscopy_list)
+        self.other_assay_list.extend(self.categories.mass_spec_list)
+        self.other_assay_list.extend(self.categories.other_assay_list)
         self._build_assay_matrix(
-            MatrixUtil.VISIUM, self.visium_assay_list, "Assay Matrix: Visium"
+            MatrixUtil.VISIUM, self.other_assay_list, "Assay Matrix: Other"
         )
 
     def _build_clinical_matrix(self, heatmap_type, category_list, label):
