@@ -70,7 +70,7 @@ class Categories:
     MOLECULAR_TEST = "MolecularTest"
     CLINICAL_TIER2 = "ClinicalDataTier2"
     ALL_TIER3 = "AcuteLymphoblasticLeukemiaTier3"
-    BRAIN_TIER3 = "BrainCancerTier3"
+    BRAIN_TIER3 = "NeuroblastomaandGliomaTier3"
     BREAST_TIER3 = "BreastCancerTier3"
     CRC_TIER3 = "ColorectalCancerTier3"
     LUNG_TIER3 = "LungCancerTier3"
