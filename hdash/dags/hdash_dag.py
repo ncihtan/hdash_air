@@ -2,6 +2,7 @@
 from typing import List
 import logging
 from datetime import datetime
+from datetime import timedelta
 from natsort import natsorted
 import boto3
 from airflow import DAG
@@ -66,6 +67,7 @@ with DAG(
     tags=["htan"],
     on_success_callback=dag_success_alert,
     on_failure_callback=dag_failure_alert,
+    dagrun_timeout=timedelta(minutes=10)
 ) as dag:
 
     @task()
