@@ -2,6 +2,7 @@
 from typing import List
 from collections import Counter
 from hdash.db.atlas_file import AtlasFile
+import numpy
 
 
 class FileCounter:
@@ -17,7 +18,9 @@ class FileCounter:
         """Construct new File Counter."""
         data_type_list = list(map(lambda file: file.data_type, file_list))
         size_list = list(map(lambda file: file.size_bytes, file_list))
-        self.total_file_size = sum(size_list)
+
+        # Use numpy.nansum just in case we have empty files with NaN sizes
+        self.total_file_size = numpy.nansum(size_list)
         self.counter = Counter(data_type_list)
 
     def get_num_files(self, file_type):
