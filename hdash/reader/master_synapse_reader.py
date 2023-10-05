@@ -3,6 +3,7 @@ from typing import List
 from hdash.db.atlas_file import AtlasFile
 from hdash.synapse.file_type import FileType
 from hdash.synapse.file_type_util import FileTypeUtil
+import math
 
 
 class MasterSynapseReader:
@@ -86,7 +87,10 @@ class MasterSynapseReader:
         file.parent_id = row.parentId
         file.category = row.Component
         file.size_bytes = row.dataFileSizeBytes
-        file.md5 = row.dataFileMD5Hex
+        # Check edge case of empty size
+        if math.isnan(file.size_bytes):
+            file.size_bytes = 0
+        file.md5 = str(row.dataFileMD5Hex)
         file.modified_on = row.modifiedOn
         file.atlas_id = self.atlas_id
         file.data_type = self.file_type_util.get_file_type(file.name)
