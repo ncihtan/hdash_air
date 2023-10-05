@@ -129,6 +129,7 @@ with DAG(
         stats.num_image_files = file_counter.get_num_files(FileType.IMAGE.value)
         stats.num_matrix_files = file_counter.get_num_files(FileType.MATRIX.value)
         stats.num_other_files = file_counter.get_num_files(FileType.OTHER.value)
+        print(f"Total file size:  {file_counter.get_total_file_size()}")
         print("Saving stats to database")
         session.add(stats)
         session.commit()
@@ -201,7 +202,7 @@ with DAG(
 
         # Assess Completeness across Levels
         graph_flat = GraphFlattener(htan_graph)
-        completeness_summary = CompletenessSummary("HTA1", meta_map, graph_flat)
+        completeness_summary = CompletenessSummary(atlas_id, meta_map, graph_flat)
         matrix_util = MatrixUtil(atlas_id, completeness_summary)
         matrix_list = matrix_util.matrix_list
         session.add_all(matrix_list)
