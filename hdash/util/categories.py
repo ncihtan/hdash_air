@@ -59,6 +59,10 @@ class Categories:
     ELECTRON_MICROSCOPY_LEVEL_2 = "ElectronMicroscopyLevel2"
     ELECTRON_MICROSCOPY_LEVEL_3 = "ElectronMicroscopyLevel3"
     ELECTRON_MICROSCOPY_LEVEL_4 = "ElectronMicroscopyLevel4"
+    RPPA_LEVEL_1 = "RPPALevel1"
+    RPPA_LEVEL_2 = "RPPALevel2"
+    RPPA_LEVEL_3 = "RPPALevel3"
+    RPPA_LEVEL_4 = "RPPALevel4"
 
     # Clinical Data Categories
     DEMOGRAPHICS = "Demographics"
@@ -160,6 +164,13 @@ class Categories:
             Categories.ELECTRON_MICROSCOPY_LEVEL_4
         ]
 
+        self.rppa_list = [
+            Categories.RPPA_LEVEL_1,
+            Categories.RPPA_LEVEL_2,
+            Categories.RPPA_LEVEL_3,
+            Categories.RPPA_LEVEL_4
+        ]
+
         self.other_assay_list = [Categories.OTHER_ASSAY]
 
         self.clinical_tier1_2_list = [
@@ -254,7 +265,11 @@ class Categories:
             Categories.ELECTRON_MICROSCOPY_LEVEL_1: "EM1",
             Categories.ELECTRON_MICROSCOPY_LEVEL_2: "EM2",
             Categories.ELECTRON_MICROSCOPY_LEVEL_3: "EM3",
-            Categories.ELECTRON_MICROSCOPY_LEVEL_4: "EM4"
+            Categories.ELECTRON_MICROSCOPY_LEVEL_4: "EM4",
+            Categories.RPPA_LEVEL_1: "RPPA1",
+            Categories.RPPA_LEVEL_2: "RPPA2",
+            Categories.RPPA_LEVEL_3: "RPPA3",
+            Categories.RPPA_LEVEL_4: "RPPA4"
         }
 
         self.all_assays = []
@@ -269,6 +284,7 @@ class Categories:
         self.all_assays.extend(self.hi_c_seq_list)
         self.all_assays.extend(self.mass_spec_list)
         self.all_assays.extend(self.electron_microscopy_list)
+        self.all_assays.extend(self.rppa_list)
 
         self.all_clinical = []
         self.all_clinical.extend(self.clinical_tier1_2_list)

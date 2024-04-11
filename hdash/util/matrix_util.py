@@ -74,6 +74,7 @@ class MatrixUtil:
         self.other_assay_list.extend(self.categories.visium_list)
         self.other_assay_list.extend(self.categories.electron_microscopy_list)
         self.other_assay_list.extend(self.categories.mass_spec_list)
+        self.other_assay_list.extend(self.categories.rppa_list)
         self.other_assay_list.extend(self.categories.other_assay_list)
         self._build_assay_matrix(
             MatrixUtil.VISIUM, self.other_assay_list, "Assay Matrix: Other"
