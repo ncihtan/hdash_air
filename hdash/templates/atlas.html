@@ -160,8 +160,12 @@
         <div class="w-95 p-3 mb-3 border border-primary-subtle rounded">
             <h3>{{ html_matrix.matrix.label }} </h3>
             {{ html_matrix.matrix.caption }}
-            <br><br>
-            {% include "matrix_viz.html" %}
+            {% if html_matrix.has_non_zero_data() %}
+                <br><br>
+                {% include "matrix_viz.html" %}
+            {% else %}
+                No data available.
+            {% endif %}
             <br><br>
 
             <div class="accordion" id="accordionMatrix{{loop.index}}">

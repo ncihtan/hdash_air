@@ -17,6 +17,11 @@ class HtmlMatrix:
         """Determine if the matrix has data."""
         return len(self.data_frame) > 0
 
+    def has_non_zero_data(self):
+        """Determine if the matrix has non-zero data."""
+        revised_df = self._prepare_df(self.data_frame)
+        return revised_df.sum().sum() > 0
+
     def get_data_frame_html(self):
         """Get Data Frame HTML."""
         return self.data_frame.to_html(
