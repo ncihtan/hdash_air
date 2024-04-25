@@ -1,5 +1,5 @@
 """Web Writer."""
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List
 import humanize
 from jinja2 import Environment, PackageLoader, select_autoescape
@@ -29,6 +29,9 @@ class WebWriter:
         self.env = self._get_template_env()
         self.now = datetime.now()
         self.now_str = self.now.strftime("%Y-%m-%d %I:%M:%S %p")
+        self.next_update = self.now + timedelta(hours=4)
+        self.next_update_str = self.next_update.strftime("%Y-%m-%d %I:%M:%S %p")
+
         self._generate_index_html()
         self._generate_atlas_pages()
 
@@ -37,6 +40,7 @@ class WebWriter:
         storage_human = humanize.naturalsize(self.total_storage)
         self.index_html = template.render(
             now=self.now_str,
+            next_update=self.next_update_str,
             atlas_list=self.atlas_list,
             storage_human=storage_human,
         )

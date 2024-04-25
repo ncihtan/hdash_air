@@ -32,14 +32,17 @@
         <thead>
         <tr>
             <th>Timestamp (GMT)</th>
+            <th>Next Update (GMT)</th>
             <th>Total File Storage</th>
         </tr>
         </thead>
         <tbody>
         <tr>
             <td>{{ now }}</td>
+            <td>{{ next_update }}</td>
             <td>{{ storage_human }}</td>
         </tr>
+
         </tbody>
     </table>
     <br/>
