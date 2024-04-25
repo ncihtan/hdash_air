@@ -132,21 +132,21 @@ class Categories:
             Categories.VISIUM_LEVEL_2,
             Categories.VISIUM_AUX_LEVEL_2,
             Categories.VISIUM_LEVEL_3,
-            Categories.VISIUM_LEVEL_4
+            Categories.VISIUM_LEVEL_4,
         ]
 
         self.bulk_methylation_seq = [
             Categories.BULK_METHYLATION_SEQ_LEVEL_1,
             Categories.BULK_METHYLATION_SEQ_LEVEL_2,
             Categories.BULK_METHYLATION_SEQ_LEVEL_3,
-            Categories.BULK_METHYLATION_SEQ_LEVEL_4
+            Categories.BULK_METHYLATION_SEQ_LEVEL_4,
         ]
 
         self.hi_c_seq_list = [
             Categories.HI_C_SEQ_LEVEL_1,
             Categories.HI_C_SEQ_LEVEL_2,
             Categories.HI_C_SEQ_LEVEL_3,
-            Categories.HI_C_SEQ_LEVEL_4
+            Categories.HI_C_SEQ_LEVEL_4,
         ]
 
         self.mass_spec_list = [
@@ -154,21 +154,21 @@ class Categories:
             Categories.MASS_SPEC_LEVEL_2,
             Categories.MASS_SPEC_LEVEL_3,
             Categories.MASS_SPEC_LEVEL_4,
-            Categories.MASS_SPEC_AUX
+            Categories.MASS_SPEC_AUX,
         ]
 
         self.electron_microscopy_list = [
             Categories.ELECTRON_MICROSCOPY_LEVEL_1,
             Categories.ELECTRON_MICROSCOPY_LEVEL_2,
             Categories.ELECTRON_MICROSCOPY_LEVEL_3,
-            Categories.ELECTRON_MICROSCOPY_LEVEL_4
+            Categories.ELECTRON_MICROSCOPY_LEVEL_4,
         ]
 
         self.rppa_list = [
             Categories.RPPA_LEVEL_1,
             Categories.RPPA_LEVEL_2,
             Categories.RPPA_LEVEL_3,
-            Categories.RPPA_LEVEL_4
+            Categories.RPPA_LEVEL_4,
         ]
 
         self.other_assay_list = [Categories.OTHER_ASSAY]
@@ -269,7 +269,7 @@ class Categories:
             Categories.RPPA_LEVEL_1: "RPPA1",
             Categories.RPPA_LEVEL_2: "RPPA2",
             Categories.RPPA_LEVEL_3: "RPPA3",
-            Categories.RPPA_LEVEL_4: "RPPA4"
+            Categories.RPPA_LEVEL_4: "RPPA4",
         }
 
         self.all_assays = []

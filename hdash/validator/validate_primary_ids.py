@@ -77,9 +77,11 @@ class ValidatePrimaryIds(ValidationRule):
             self.add_error(msg, meta_file)
             error = True
         else:
-            match = bool(re.match(
-                "^(HTA([1-9]|1[0-5]))_((EXT)?([0-9]\d*|0000))_([0-9]\d*|0000)$",
-                primary_id)
+            match = bool(
+                re.match(
+                    "^(HTA([1-9]|1[0-5]))_((EXT)?([0-9]\d*|0000))_([0-9]\d*|0000)$",
+                    primary_id,
+                )
             )
             if not match:
                 msg = primary_id + " does not match HTAN spec."
