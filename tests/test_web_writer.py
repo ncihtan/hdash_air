@@ -31,4 +31,4 @@ def test_report_writer(atlas_list, sample_meta_map):
 
     with open("tests/out/HTA1.html", "w", encoding="utf-8") as file_handler:
         file_handler.write(atlas_html_map["HTA1"])
-    assert html.index("Ino") > 0
+    assert html.index("HTAN MSKCC") > 0
