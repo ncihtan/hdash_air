@@ -22,3 +22,7 @@ def test_master_synapse_reader():
     # Verify that we get the correct, most recent meta file
     file0 = file_list[0]
     assert file0.data_type == FileType.METADATA.value
+
+    # Verify that we are getting parent name
+    assert file0.name == "synapse_storage_manifest_biospecimen2.csv"
+    assert file0.parent_name == "MLL_PAYYBG_scRNA"

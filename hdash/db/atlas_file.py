@@ -11,6 +11,7 @@ class AtlasFile(Base):
     atlas_id = Column(String(255))
     name = Column(String(255))
     parent_id = Column(String(255))
+    parent_name = Column(String(255))
     file_type = Column(String(25))
     data_type = Column(String(25))
     category = Column(String(255))

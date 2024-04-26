@@ -29,6 +29,10 @@ class MasterSynapseReader:
         archive_df = synapse_df[synapse_df.name.str.lower() == "archive"]
         archive_id_set = set(archive_df.id)
 
+        # Get all folders
+        folder_df = synapse_df[synapse_df.type == "folder"]
+        folder_map = folder_df.set_index("id")["name"].to_dict()
+
         # Get all files
         file_df = synapse_df[synapse_df.type == "file"]
 
@@ -39,7 +43,7 @@ class MasterSynapseReader:
         file_df.Component = file_df.Component.fillna("NA")
 
         # Convert to File List
-        file_list = file_df.apply(self._create_file, axis=1)
+        file_list = file_df.apply(self._create_file, axis=1, args=(folder_map,))
 
         if len(file_list) > 0:
             # Remove Excluded Files
@@ -79,12 +83,16 @@ class MasterSynapseReader:
         """Get the List of Files."""
         return self.file_list
 
-    def _create_file(self, row):
+    def _create_file(self, row, folder_map):
         file = AtlasFile()
         file.synapse_id = row.id
         file.name = row["name"]
         file.file_type = row.type
         file.parent_id = row.parentId
+        if row.parentId in folder_map:
+            file.parent_name = folder_map[row.parentId]
+        else:
+            file.parent_name = None
         file.category = row.Component
         file.size_bytes = row.dataFileSizeBytes
         # Check edge case of empty size

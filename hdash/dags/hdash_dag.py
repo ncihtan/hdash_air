@@ -185,7 +185,8 @@ with DAG(
         meta_map = _get_meta_map(atlas_id, session)
         graph_creator = GraphCreator(atlas_id, meta_map)
         htan_graph = graph_creator.htan_graph
-        validator = HtanValidator(atlas_id, meta_map, htan_graph)
+        non_meta_file_list = _get_non_meta_atlas_files_from_db(atlas_id, session)
+        validator = HtanValidator(atlas_id, meta_map, htan_graph, non_meta_file_list)
 
         # Store Validation Results to Database
         validation_list = validator.get_validation_results()
@@ -279,6 +280,18 @@ with DAG(
             meta_cache = session.query(MetaCache).filter_by(md5=atlas_file.md5).first()
             meta_map.add_meta_file(MetaFile(atlas_file, meta_cache))
         return meta_map
+
+    def _get_non_meta_atlas_files_from_db(atlas_id, session):
+        atlas_file_list = (
+            session.query(AtlasFile)
+            .filter(
+                AtlasFile.atlas_id == atlas_id,
+                AtlasFile.data_type != FileType.METADATA.value,
+            )
+            .order_by(AtlasFile.category)
+            .all()
+        )
+        return atlas_file_list
 
     def _get_atlas_info_list(atlas_list, session):
         """Get Atlas Info List."""
