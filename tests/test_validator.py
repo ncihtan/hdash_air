@@ -33,7 +33,7 @@ def test_validator(sample_meta_map):
     assert validation_list[6].validation_passed()
     assert validation_list[7].validation_passed() is False
     error_list = validation_list[7].error_list
-    assert error_list[0].error_msg.startswith("Atlas file name:  hello$.txt contains")
+    assert error_list[0].error_msg.startswith("In folder: None, file name")
 
 
 def __create_atlas_file(file_name):
