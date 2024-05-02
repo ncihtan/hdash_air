@@ -198,7 +198,7 @@ with DAG(
         for validation in validation_list:
             logger.info(
                 "%s: %d errors"
-                % (validation.validation_code, len(validation.error_list)   )
+                % (validation.validation_code, len(validation.error_list))
             )
         session.add_all(validation_list)
         session.commit()

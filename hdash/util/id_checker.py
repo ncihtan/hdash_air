@@ -6,8 +6,8 @@ from hdash.util.id_util import IdUtil
 class IdChecker:
     """ID Checker Class."""
 
-    PARTICIPANT_ID = r"^(HTA([1-9]|[1-9]\d))_((EXT)?([1-9]\d*|0000))$"
-    DERIVED_ID = r"^(HTA([1-9]|[1-9]\d))_((EXT)?([1-9]\d*|0000))_([1-9]\d*|0000)$"
+    PARTICIPANT_ID = r"^(HTA([1-9]|[1-9]\d))_((EXT)?(\d*|0000))$"
+    DERIVED_ID = r"^(HTA([1-9]|[1-9]\d))_((EXT)?(\d*|0000))_(\d*|0000)$"
 
     def __init__(self):
         """Init IdChecker."""
