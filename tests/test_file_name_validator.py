@@ -5,7 +5,6 @@ from hdash.db.atlas_file import AtlasFile
 
 def test_file_name_checker():
     """Test File Name Validator."""
-
     file_list = [
         __create_atlas_file("Hello_World-1100.txt"),
         __create_atlas_file("hello$.txt"),

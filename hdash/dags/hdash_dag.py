@@ -182,18 +182,29 @@ with DAG(
         session = db_connection.session
 
         # Validate
+        logger.info("Creating meta_map")
         meta_map = _get_meta_map(atlas_id, session)
+        logger.info("Creating HTAN Graph")
         graph_creator = GraphCreator(atlas_id, meta_map)
         htan_graph = graph_creator.htan_graph
         non_meta_file_list = _get_non_meta_atlas_files_from_db(atlas_id, session)
+        logger.info("Start validation")
         validator = HtanValidator(atlas_id, meta_map, htan_graph, non_meta_file_list)
+        logger.info("Validation complete")
 
         # Store Validation Results to Database
+        logger.info("Store validation results to database")
         validation_list = validator.get_validation_results()
+        for validation in validation_list:
+            logger.info(
+                "%s: %d errors"
+                % (validation.validation_code, len(validation.error_list)   )
+            )
         session.add_all(validation_list)
         session.commit()
 
         # Assess Completeness of Metadata
+        logger.info("Assess metadata completeness")
         atlas_stats = session.query(AtlasStats).filter_by(atlas_id=atlas_id).one()
         meta_summary = MetaDataSummary(meta_map.meta_list_sorted)
         atlas_stats.percent_metadata_complete = (
@@ -202,6 +213,7 @@ with DAG(
         session.commit()
 
         # Assess Completeness across Levels
+        logger.info("Assess level completeness")
         graph_flat = GraphFlattener(htan_graph)
         completeness_summary = CompletenessSummary(atlas_id, meta_map, graph_flat)
         matrix_util = MatrixUtil(atlas_id, completeness_summary)
@@ -209,6 +221,7 @@ with DAG(
         session.add_all(matrix_list)
 
         # Store SIF Network
+        logger.info("Create SIF network")
         directed_graph = htan_graph.directed_graph
         sif_writer = SifWriter(directed_graph)
         web_cache = WebCache()

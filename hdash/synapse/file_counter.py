@@ -1,8 +1,8 @@
 """File Counter."""
 from typing import List
 from collections import Counter
-from hdash.db.atlas_file import AtlasFile
 import numpy
+from hdash.db.atlas_file import AtlasFile
 
 
 class FileCounter:

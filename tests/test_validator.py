@@ -25,10 +25,15 @@ def test_validator(sample_meta_map):
     assert validation_list[3].validation_passed()
     assert validation_list[4].validation_passed() is False
     assert len(validation_list[4].error_list) == 2
+    error_list = validation_list[4].error_list
+    assert error_list[0].error_msg.startswith(
+        "Invalid HTAN Data File ID:  HTA3_xxxx_4353967957"
+    )
+
     assert not validation_list[5].validation_passed()
     error_list = validation_list[5].error_list
     assert error_list[0].error_msg.startswith(
-        "HTA3_8001_001 references adjacent ID=HTA3_8001_1002"
+        "HTA3_8001_1 references adjacent ID=HTA3_8001_1002"
     )
     assert validation_list[6].validation_passed()
     assert validation_list[7].validation_passed() is False

@@ -1,7 +1,7 @@
 """Validation Rule."""
 
-from hdash.validator.validation_rule import ValidationRule
 from typing import List
+from hdash.validator.validation_rule import ValidationRule
 from hdash.db.atlas_file import AtlasFile
 from hdash.util.cds_name_checker import CdsFileNameChecker
 
@@ -15,6 +15,7 @@ class ValidateFileNames(ValidationRule):
             "H_FILE_NAMES",
             "File names follow Cancer Data Service (CDS) conventions.",
         )
+        self.atlas_id = atlas_id
         self.__validate_file_names(file_list)
 
     def __validate_file_names(self, file_list: List[AtlasFile]):
@@ -25,7 +26,7 @@ class ValidateFileNames(ValidationRule):
             file_name_valid = cds_name_checker.is_file_name_valid(file_name)
             if not file_name_valid:
                 msg = (
-                    "In folder: %s, file name: %s contains unsupported characters."
-                    % (folder_name, file_name)
+                    f"In folder: {folder_name}, file name: {file_name} "
+                    "contains unsupported characters."
                 )
                 self.add_error_message(msg)

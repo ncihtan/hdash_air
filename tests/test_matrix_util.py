@@ -34,7 +34,7 @@ def test_matrix_util(sample_meta_map):
     assert matrix1.iat[0, 1] == 0
 
     # Validate Single Cell Data
-    assert matrix2.iat[0, 0] == "HTA3_8001_001"
+    assert matrix2.iat[0, 0] == "HTA3_8001_1"
     assert matrix2.iat[0, 1] == 1
     assert matrix2.iat[0, 2] == 1
     assert matrix2.iat[0, 3] == 1

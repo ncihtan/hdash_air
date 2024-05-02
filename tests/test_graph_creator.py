@@ -23,7 +23,7 @@ def test_graph_creator(sample_meta_map):
         patient_node[HtanGraph.DATA_KEY].meta_file.atlas_file.category == "Demographics"
     )
 
-    biospecimen_node = directed_graph.nodes["HTA3_8001_001"]
+    biospecimen_node = directed_graph.nodes["HTA3_8001_1"]
     assert (
         biospecimen_node[HtanGraph.DATA_KEY].meta_file.atlas_file.synapse_id
         == "synapse_2"
@@ -41,9 +41,9 @@ def test_graph_creator(sample_meta_map):
     )
 
     # Check for Specific Edges
-    assert directed_graph.edges["HTA3_8001_002", "HTA3_8001_4651918348"] is not None
-    assert directed_graph.edges["HTA3_8001_002", "HTA3_8001_7837535366"] is not None
-    assert directed_graph.edges["HTA3_8001_001", "HTA3_8001_7837535366"] is not None
+    assert directed_graph.edges["HTA3_8001_2", "HTA3_8001_4651918348"] is not None
+    assert directed_graph.edges["HTA3_8001_2", "HTA3_8001_7837535366"] is not None
+    assert directed_graph.edges["HTA3_8001_1", "HTA3_8001_7837535366"] is not None
 
     # Verify Adjacent Edges
     adjacent_list = htan_graph.adjacent_list

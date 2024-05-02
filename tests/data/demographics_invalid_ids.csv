@@ -1,0 +1,7 @@
+Component,HTAN Participant ID,Ethnicity,Gender,Race,Vital Status,Days to Birth,Country of Residence,Age Is Obfuscated,Year Of Birth,Occupation Duration Years,Premature At Birth,Weeks Gestation at Birth,Cause of Death,Cause of Death Source,Days to Death,Filename,Year of Death,entityId
+Demographics,HTA3_001,not hispanic or latino,female,white,Alive,0,,FALSE,1946,,unknown,,Not Applicable,,,,,syn24994137
+Demographics,HTA3_800_1,not hispanic or latino,female,white,Alive,0,,FALSE,1944,,unknown,,Not Applicable,,,,,syn24994138
+Demographics,HTA3_8003,not hispanic or latino,female,white,Alive,0,,FALSE,1942,,unknown,,Not Applicable,,,,,syn24994139
+Demographics,,,female,white,Alive,0,,FALSE,1942,,unknown,,Not Applicable,,,,,syn24994140
+Demographics,"HTA3_8005, HTA3_8006",not hispanic or latino,female,white,Alive,0,,FALSE,1951,,unknown,,Not Applicable,,,,,syn24994141
+Demographics,HTA3_8006,not hispanic or latino,male,american indian or alaska native,Alive,0,,FALSE,1942,,unknown,,Not Applicable,,,,,syn24994142

@@ -12,5 +12,5 @@ def test_sif_writer(sample_meta_map):
 
     # Check for Specific Edges
     sif = sif_writer.sif
-    assert "B_HTA3_8001_002\tconnect\tSC1_HTA3_8001_4651918348" in sif
-    assert "B_HTA3_8001_001	connect	SC1_HTA3_8001_7837535366" in sif
+    assert "B_HTA3_8001_2\tconnect\tSC1_HTA3_8001_4651918348" in sif
+    assert "B_HTA3_8001_1	connect	SC1_HTA3_8001_7837535366" in sif
