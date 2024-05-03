@@ -13,6 +13,7 @@ from hdash.validator.validate_non_demographics import ValidateNonDemographics
 from hdash.validator.validate_links import ValidateLinks
 from hdash.validator.validate_categories import ValidateCategories
 from hdash.validator.validate_file_names import ValidateFileNames
+from hdash.validator.validate_orphan_files import ValidateOrphanFiles
 from hdash.synapse.meta_map import MetaMap
 
 
@@ -79,6 +80,11 @@ class HtanValidator:
         self.logger.info("CDS File name validation")
         check7 = ValidateFileNames(self.atlas_id, self.file_list)
         self._add_results(check7)
+
+        # Orphan File Check
+        self.logger.info("Orphan file check")
+        check8 = ValidateOrphanFiles(self.atlas_id, self.file_list, self.meta_map)
+        self._add_results(check8)
 
     def _add_results(self, validation_rule: ValidationRule):
         """Add Validation Results."""

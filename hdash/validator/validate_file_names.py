@@ -22,7 +22,7 @@ class ValidateFileNames(ValidationRule):
         cds_name_checker = CdsFileNameChecker()
         for current_file in file_list:
             file_name = current_file.name
-            folder_name = current_file.parent_name
+            folder_name = current_file.path
             file_name_valid = cds_name_checker.is_file_name_valid(file_name)
             if not file_name_valid:
                 msg = (

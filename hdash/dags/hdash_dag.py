@@ -200,8 +200,8 @@ with DAG(
                 "%s: %d errors"
                 % (validation.validation_code, len(validation.error_list))
             )
-        session.add_all(validation_list)
-        session.commit()
+            session.add(validation)
+            session.commit()
 
         # Assess Completeness of Metadata
         logger.info("Assess metadata completeness")

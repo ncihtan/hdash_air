@@ -20,5 +20,5 @@ def test_file_name_checker():
 def __create_atlas_file(file_name):
     atlas_file = AtlasFile()
     atlas_file.name = file_name
-    atlas_file.parent_name = "root"
+    atlas_file.path = "root"
     return atlas_file

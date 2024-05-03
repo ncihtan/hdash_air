@@ -1,4 +1,5 @@
 """Test HTAN Validator class."""
+from hdash.util.categories import Categories
 from hdash.validator.htan_validator import HtanValidator
 from hdash.graph.graph_creator import GraphCreator
 from hdash.db.atlas_file import AtlasFile
@@ -9,16 +10,19 @@ def test_validator(sample_meta_map):
     meta_map = sample_meta_map
 
     file_list = [
-        __create_atlas_file("Hello_World-1100.txt"),
-        __create_atlas_file("hello$.txt"),
-        __create_atlas_file("hello*.txt"),
+        __create_atlas_file(
+            "Linh_UCLA/Case1/"
+            + "Ground-glass-opacity/Ground-glass-opacity_S8_L001_R1_001.fastq.gz"
+        ),
+        __create_atlas_file("orphan1.txt"),
+        __create_atlas_file("orphan2.txt"),
     ]
     graph_creator = GraphCreator("HTA3", meta_map)
     htan_graph = graph_creator.htan_graph
     validator = HtanValidator("HTA3", meta_map, htan_graph, file_list)
     validation_list = validator.get_validation_results()
 
-    assert len(validation_list) == 8
+    assert len(validation_list) == 9
     assert validation_list[0].validation_passed()
     assert validation_list[1].validation_passed()
     assert validation_list[2].validation_passed()
@@ -38,10 +42,17 @@ def test_validator(sample_meta_map):
     assert validation_list[6].validation_passed()
     assert validation_list[7].validation_passed() is False
     error_list = validation_list[7].error_list
-    assert error_list[0].error_msg.startswith("In folder: None, file name")
+    assert error_list[0].error_msg.startswith(
+        "In folder: sc_rna_seq_level_1, file name"
+    )
+
+    assert validation_list[8].validation_passed() is False
+    error_list = validation_list[8].error_list
+    assert error_list[0].error_msg.startswith("Folder sc_rna_seq_level_1 has 2 file(s)")
 
 
 def __create_atlas_file(file_name):
     atlas_file = AtlasFile()
     atlas_file.name = file_name
+    atlas_file.path = "sc_rna_seq_level_1"
     return atlas_file

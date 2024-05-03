@@ -50,6 +50,7 @@ def _create_meta_file_list(record_list) -> List[MetaFile]:
         atlas_file = AtlasFile()
         atlas_file.name = path
         atlas_file.category = category
+        atlas_file.path = category
         atlas_file.synapse_id = f"synapse_{synapse_id}"
 
         meta_cache = MetaCache()
