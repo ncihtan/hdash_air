@@ -14,7 +14,7 @@ class MatrixUtil:
     SINGLE_CELL = "single_cell"
     BULK = "bulk"
     IMAGE_OTHER = "image_other"
-    VISIUM = "visium"
+    OTHER = "other"
 
     CAPTION = "Value of 1 indicates presence of data."
 
@@ -72,12 +72,13 @@ class MatrixUtil:
         # Matrix 6
         self.other_assay_list = []
         self.other_assay_list.extend(self.categories.visium_list)
+        self.other_assay_list.extend(self.categories.slide_seq_list)
         self.other_assay_list.extend(self.categories.electron_microscopy_list)
         self.other_assay_list.extend(self.categories.mass_spec_list)
         self.other_assay_list.extend(self.categories.rppa_list)
         self.other_assay_list.extend(self.categories.other_assay_list)
         self._build_assay_matrix(
-            MatrixUtil.VISIUM, self.other_assay_list, "Assay Matrix: Other"
+            MatrixUtil.OTHER, self.other_assay_list, "Assay Matrix: Other"
         )
 
     def _build_clinical_matrix(self, heatmap_type, category_list, label):

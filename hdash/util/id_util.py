@@ -12,6 +12,7 @@ class IdUtil:
     HTAN_DATA_FILE_ID = "HTAN Data File ID"
     HTAN_PARENT_BIOSPECIMEN_ID = "HTAN Parent Biospecimen ID"
     ADJACENT_BIOSPECIMEN_ID = "Adjacent Biospecimen IDs"
+    ACCESSORY_SYNAPSE_ID = "Accessory Synapse ID"
 
     def __init__(self):
         """Init ID Maps."""
@@ -19,6 +20,7 @@ class IdUtil:
         self.primary_id_map = {
             Categories.BIOSPECIMEN: IdUtil.HTAN_BIOSPECIMEN_ID,
             Categories.SRRS_BIOSPECIMEN: IdUtil.HTAN_BIOSPECIMEN_ID,
+            Categories.ACCESSORY_MANIFEST: IdUtil.ACCESSORY_SYNAPSE_ID
         }
 
         #  All Clinical Categories have the Same Primary ID
@@ -39,7 +41,10 @@ class IdUtil:
             Categories.VISIUM_LEVEL_1: IdUtil.HTAN_PARENT_BIOSPECIMEN_ID,
             Categories.VISIUM_LEVEL_2: IdUtil.HTAN_PARENT_BIOSPECIMEN_ID,
             Categories.VISIUM_AUX_LEVEL_2: IdUtil.HTAN_PARENT_BIOSPECIMEN_ID,
+            Categories.SLIDE_SEQ_LEVEL_1: IdUtil.HTAN_PARENT_BIOSPECIMEN_ID,
             Categories.BULK_METHYLATION_SEQ_LEVEL_1: IdUtil.HTAN_PARENT_BIOSPECIMEN_ID,
+            Categories.EX_SEQ_MINIMAL: IdUtil.HTAN_PARENT_BIOSPECIMEN_ID,
+            Categories.ACCESSORY_MANIFEST: IdUtil.HTAN_PARENT_BIOSPECIMEN_ID,
             Categories.HI_C_SEQ_LEVEL_1: IdUtil.HTAN_PARENT_BIOSPECIMEN_ID,
             Categories.MASS_SPEC_LEVEL_1: IdUtil.HTAN_PARENT_BIOSPECIMEN_ID,
             Categories.ELECTRON_MICROSCOPY_LEVEL_1: IdUtil.HTAN_PARENT_BIOSPECIMEN_ID,

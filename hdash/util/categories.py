@@ -63,6 +63,11 @@ class Categories:
     RPPA_LEVEL_2 = "RPPALevel2"
     RPPA_LEVEL_3 = "RPPALevel3"
     RPPA_LEVEL_4 = "RPPALevel4"
+    SLIDE_SEQ_LEVEL_1 = "Slide-seqLevel1"
+    SLIDE_SEQ_LEVEL_2 = "Slide-seqLevel2"
+    SLIDE_SEQ_LEVEL_3 = "Slide-seqLevel3"
+    EX_SEQ_MINIMAL = "ExSeqMinimal"
+    ACCESSORY_MANIFEST = "AccessoryManifest"
 
     # Clinical Data Categories
     DEMOGRAPHICS = "Demographics"
@@ -171,7 +176,17 @@ class Categories:
             Categories.RPPA_LEVEL_4,
         ]
 
-        self.other_assay_list = [Categories.OTHER_ASSAY]
+        self.slide_seq_list = [
+            Categories.SLIDE_SEQ_LEVEL_1,
+            Categories.SLIDE_SEQ_LEVEL_2,
+            Categories.SLIDE_SEQ_LEVEL_3,
+        ]
+
+        self.other_assay_list = [
+            Categories.OTHER_ASSAY,
+            Categories.EX_SEQ_MINIMAL,
+            # Categories.ACCESSORY_MANIFEST,
+        ]
 
         self.clinical_tier1_2_list = [
             Categories.DEMOGRAPHICS,
@@ -270,6 +285,11 @@ class Categories:
             Categories.RPPA_LEVEL_2: "RPPA2",
             Categories.RPPA_LEVEL_3: "RPPA3",
             Categories.RPPA_LEVEL_4: "RPPA4",
+            Categories.SLIDE_SEQ_LEVEL_1: "SS1",
+            Categories.SLIDE_SEQ_LEVEL_2: "SS2",
+            Categories.SLIDE_SEQ_LEVEL_3: "SS3",
+            Categories.EX_SEQ_MINIMAL: "ES",
+            Categories.ACCESSORY_MANIFEST: "AM",
         }
 
         self.all_assays = []
@@ -280,6 +300,7 @@ class Categories:
         self.all_assays.extend(self.image_list)
         self.all_assays.extend(self.other_assay_list)
         self.all_assays.extend(self.visium_list)
+        self.all_assays.extend(self.slide_seq_list)
         self.all_assays.extend(self.bulk_methylation_seq)
         self.all_assays.extend(self.hi_c_seq_list)
         self.all_assays.extend(self.mass_spec_list)
