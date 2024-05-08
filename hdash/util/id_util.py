@@ -20,7 +20,7 @@ class IdUtil:
         self.primary_id_map = {
             Categories.BIOSPECIMEN: IdUtil.HTAN_BIOSPECIMEN_ID,
             Categories.SRRS_BIOSPECIMEN: IdUtil.HTAN_BIOSPECIMEN_ID,
-            Categories.ACCESSORY_MANIFEST: IdUtil.ACCESSORY_SYNAPSE_ID
+            Categories.ACCESSORY_MANIFEST: IdUtil.ACCESSORY_SYNAPSE_ID,
         }
 
         #  All Clinical Categories have the Same Primary ID

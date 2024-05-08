@@ -38,7 +38,10 @@ class ValidateOrphanFiles(ValidationRule):
         category_list = meta_file_map.get_categories()
         for category in category_list:
             # We are only interested in assay-specific meta files
-            if category in categories.all_assays:
+            if (
+                category in categories.all_assays
+                and category != categories.ACCESSORY_MANIFEST
+            ):
                 meta_file_list = meta_file_map.get_meta_file_list(category)
                 for meta_file in meta_file_list:
                     meta_df = meta_file.data_frame

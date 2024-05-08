@@ -185,7 +185,7 @@ class Categories:
         self.other_assay_list = [
             Categories.OTHER_ASSAY,
             Categories.EX_SEQ_MINIMAL,
-            # Categories.ACCESSORY_MANIFEST,
+            Categories.ACCESSORY_MANIFEST,
         ]
 
         self.clinical_tier1_2_list = [
