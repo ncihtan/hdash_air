@@ -10,6 +10,7 @@ from hdash.util.s3_credentials import S3Credentials
 from hdash.db.atlas_file import AtlasFile
 from hdash.db.atlas_stats import AtlasStats
 from hdash.db.meta_cache import MetaCache
+from hdash.db.path_stats import PathStats
 from hdash.db.validation import Validation, ValidationError
 from hdash.db.matrix import Matrix
 from hdash.db.web_cache import WebCache

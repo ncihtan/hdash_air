@@ -19,12 +19,14 @@ from hdash.db.meta_cache import MetaCache
 from hdash.db.matrix import Matrix
 from hdash.db.validation import Validation, ValidationError
 from hdash.db.web_cache import WebCache
+from hdash.db.path_stats import PathStats
 from hdash.synapse.meta_file import MetaFile
 from hdash.synapse.meta_map import MetaMap
 from hdash.synapse.file_type import FileType
 from hdash.validator.htan_validator import HtanValidator
 from hdash.graph.sif_writer import SifWriter
 from hdash.stats.meta_summary import MetaDataSummary
+from hdash.stats.path_stats_checker import PathStatsChecker
 from hdash.util.web_writer import WebWriter
 from hdash.util.matrix_util import MatrixUtil
 from hdash.stats.completeness_summary import CompletenessSummary
@@ -102,6 +104,10 @@ with DAG(
         session.query(Matrix).delete()
         session.commit()
 
+        # Delete any Existing Path Stats
+        session.query(PathStats).delete()
+        session.commit()
+
         session.close()
         return id_list
 
@@ -115,7 +121,9 @@ with DAG(
 
         logger.info("Getting Synapse data:  %s.", atlas)
         connector = SynapseConnector()
-        file_list = connector.get_atlas_files(atlas.atlas_id, atlas.synapse_id)
+        (file_list, root_folder_map) = connector.get_atlas_files(
+            atlas.atlas_id, atlas.synapse_id
+        )
 
         # Count the Files
         print(f"Total number of files:  {len(file_list)}")
@@ -132,6 +140,16 @@ with DAG(
         print(f"Total file size:  {file_counter.get_total_file_size()}")
         print("Saving stats to database")
         session.add(stats)
+        session.commit()
+
+        # Perform path check
+        logger.info("Performing Path Check")
+        logger.info("Number of files to check:  %d", len(file_list))
+        logger.info("Number of root folders:  %d", len(root_folder_map))
+        path_stats_checker = PathStatsChecker(atlas_id, file_list, root_folder_map)
+        path_stats_list = path_stats_checker.path_map.values()
+        logger.info("Storing paths:  %d", len(path_stats_list))
+        session.add_all(path_stats_list)
         session.commit()
 
         # Save Files to Database
@@ -329,12 +347,20 @@ with DAG(
             for matrix in matrix_list:
                 html_matrix_list.append(HtmlMatrix(matrix))
 
+            path_stats_list = (
+                session.query(PathStats)
+                .filter_by(atlas_id=atlas_id)
+                .order_by(PathStats.path)
+                .all()
+            )
+
             atlas_info = AtlasInfo(
                 atlas,
                 atlas_stats,
                 meta_map.meta_list_sorted,
                 validation_list,
                 html_matrix_list,
+                path_stats_list,
             )
             atlas_info_list.append(atlas_info)
         return atlas_info_list

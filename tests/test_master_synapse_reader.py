@@ -8,7 +8,7 @@ def test_master_synapse_reader():
     """Test Master Synapse Reader."""
     pd.options.mode.chained_assignment = None
     synapse_df = pd.read_csv("tests/data/master_htan.csv")
-    reader = MasterSynapseReader("HTA1", synapse_df)
+    reader = MasterSynapseReader("HTA1", "syn22123910", synapse_df)
     file_list = reader.get_file_list()
 
     # master_htan.csv has 13 files.
@@ -28,3 +28,8 @@ def test_master_synapse_reader():
     assert file0.name == "synapse_storage_manifest_biospecimen2.csv"
     assert file0.path == "MLL_PAYYBG_scRNA"
     assert file_list[5].path == "sc_rna_seq_level_1/luad"
+
+    # Verify that we get root paths
+    assert len(reader.root_folder_map) == 1
+    root_folder = reader.root_folder_map["archive"]
+    assert root_folder["id"] == "syn22126051"

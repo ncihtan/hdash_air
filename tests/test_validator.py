@@ -1,5 +1,4 @@
 """Test HTAN Validator class."""
-from hdash.util.categories import Categories
 from hdash.validator.htan_validator import HtanValidator
 from hdash.graph.graph_creator import GraphCreator
 from hdash.db.atlas_file import AtlasFile
@@ -22,7 +21,7 @@ def test_validator(sample_meta_map):
     validator = HtanValidator("HTA3", meta_map, htan_graph, file_list)
     validation_list = validator.get_validation_results()
 
-    assert len(validation_list) == 9
+    assert len(validation_list) == 8
     assert validation_list[0].validation_passed()
     assert validation_list[1].validation_passed()
     assert validation_list[2].validation_passed()
@@ -45,10 +44,6 @@ def test_validator(sample_meta_map):
     assert error_list[0].error_msg.startswith(
         "In folder: sc_rna_seq_level_1, file name"
     )
-
-    assert validation_list[8].validation_passed() is False
-    error_list = validation_list[8].error_list
-    assert error_list[0].error_msg.startswith("Folder sc_rna_seq_level_1 has 2 file(s)")
 
 
 def __create_atlas_file(file_name):

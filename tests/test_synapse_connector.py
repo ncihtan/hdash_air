@@ -7,7 +7,7 @@ from hdash.synapse.connector import SynapseConnector
 def test_synapse_connector():
     """Smoke Test for Synapse Connector."""
     connector = SynapseConnector()
-    file_list = connector.get_atlas_files("HTA1", "syn23511954")
+    (file_list, root_folder_map) = connector.get_atlas_files("HTA1", "syn23511954")
     assert len(file_list) > 0
 
     csv_data = connector.get_cvs_table("syn51185203")

@@ -14,7 +14,7 @@ class MasterSynapseReader:
     with HTAN.  The table includes actual files, metadata files, and folders.
     """
 
-    def __init__(self, atlas_id, synapse_df):
+    def __init__(self, atlas_id, synapse_id, synapse_df):
         """Create Reader with Synapse Data Frame."""
         self.atlas_id = atlas_id
         self.synapse_df = synapse_df
@@ -23,6 +23,10 @@ class MasterSynapseReader:
         # Get all folders
         folder_df = synapse_df[synapse_df.type == "folder"]
         folder_map = folder_df.set_index("id").to_dict("index")
+
+        # Get root folders
+        root_folder_df = folder_df[folder_df.parentId == synapse_id]
+        self.root_folder_map = root_folder_df.set_index("name").to_dict("index")
 
         # Get all files
         file_df = synapse_df[synapse_df.type == "file"]
@@ -95,7 +99,7 @@ class MasterSynapseReader:
         return file
 
     def _get_path(self, row, folder_map):
-        """This method will walk up the tree to get the full path."""
+        """Walk up the tree to get the full path."""
         path = ""
         parent_id = row.parentId
 

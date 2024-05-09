@@ -6,6 +6,7 @@ class PathUtil:
 
     def truncate_path(self, path):
         """Truncate a path.
+
         For example, given:  em_level_1/008, return em_level_1.
         For example, given:  em_level_1/ohsu/008 return em_level_1/ohsu
         For example, given:  em_level_1 return ''

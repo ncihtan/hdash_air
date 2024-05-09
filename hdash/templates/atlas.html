@@ -160,6 +160,28 @@
         </div>
     </div>
 
+    <div class="w-95 p-3 mb-3 border border-primary-subtle rounded">
+        <h3>Folder Check</h3>
+        <table class="table table-striped ">
+            <thead>
+            <tr>
+                <th>Root Path</th>
+                <th>Num Annotated Files</th>
+                <th>Num Unannotated Files</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for path_stats in atlas_info.path_stats_list %}
+                <tr>
+                    <td><a href="https://www.synapse.org/#!Synapse:{{path_stats.synapse_id}}">{{ path_stats.path }}</a></td>
+                    <td>{{ path_stats.num_annotated_files }}</td>
+                    <td>{{ path_stats.num_un_annotated_files }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
     {% for html_matrix in atlas_info.html_matrix_list %}
     {% if html_matrix.has_data() %}
         <div class="w-95 p-3 mb-3 border border-primary-subtle rounded">

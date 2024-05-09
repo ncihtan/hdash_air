@@ -8,6 +8,7 @@ from hdash.db.atlas import Atlas
 from hdash.db.atlas_file import AtlasFile
 from hdash.db.atlas_stats import AtlasStats
 from hdash.db.validation import Validation, ValidationError
+from hdash.db.path_stats import PathStats
 from hdash.synapse.atlas_info import AtlasInfo
 from hdash.db.meta_cache import MetaCache
 from hdash.db.matrix import Matrix
@@ -110,8 +111,17 @@ def _init_atlas_list() -> List[AtlasInfo]:
     matrix.atlas_id = "HTA1"
     matrix.bg_color = "pink"
     matrix.label = "Clinical Data Matrix: Tiers 1 and 2"
+    matrix_list.append(matrix)
 
-    atlas_info1 = AtlasInfo(atlas1, stats1, meta_list, validation_list, matrix_list)
+    path_stats_list = []
+    path_stats = PathStats("HTA1", "syn123", "single_cell_level1")
+    path_stats.num_annotated_files = 2
+    path_stats.num_un_annotated_files = 5
+    path_stats_list.append(path_stats)
+
+    atlas_info1 = AtlasInfo(
+        atlas1, stats1, meta_list, validation_list, matrix_list, path_stats_list
+    )
     local_atlas_list.append(atlas_info1)
     return local_atlas_list
 

@@ -30,8 +30,8 @@ class SynapseConnector:
         table = self.syn.tableQuery(sql)
         synapse_df = table.asDataFrame()
         self.logger.info("Got Data Frame with %d rows.", len(synapse_df.index))
-        reader = MasterSynapseReader(atlas_id, synapse_df)
-        return reader.get_file_list()
+        reader = MasterSynapseReader(atlas_id, entity_id, synapse_df)
+        return (reader.get_file_list(), reader.root_folder_map)
 
     def get_cvs_table(self, synapse_id):
         """Retrieve the specified CSV table from Synapse."""
