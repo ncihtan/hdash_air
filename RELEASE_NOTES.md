@@ -1,5 +1,10 @@
 # Release Notes
 
+## 2024-05-09
+
+* Added new Folder check table to identify folders with un-annotated files.
+* Added CDS File Name check.
+
 ## 2023-04-08
 
 * Migrated to new Airflow infrastructure.
