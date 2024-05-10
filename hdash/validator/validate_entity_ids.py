@@ -16,7 +16,10 @@ class ValidateEntityIds(ValidationRule):
         for category in category_list:
             # Check for Entity IDs in All Assays.
             # Exclude biospecimen and clinical metadata from validation checks.
-            if category in categories.all_assays:
+            if (
+                category in categories.all_assays
+                and category != categories.ACCESSORY_MANIFEST
+            ):
                 meta_file_list = meta_file_map.get_meta_file_list(category)
                 for meta_file in meta_file_list:
                     data_frame = meta_file.data_frame
