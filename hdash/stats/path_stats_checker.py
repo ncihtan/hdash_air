@@ -5,6 +5,7 @@ from typing import List
 from typing import Dict
 from hdash.db.atlas_file import AtlasFile
 from hdash.db.path_stats import PathStats
+from hdash.synapse.file_type import FileType
 
 
 class PathStatsChecker:
@@ -17,7 +18,12 @@ class PathStatsChecker:
         self.logger.info("Performing Path Stats Checker on %d files" % len(file_list))
         self.path_map: Dict[str, PathStats] = {}
         counter = 0
-        for atlas_file in file_list:
+
+        non_meta_files = list(
+            filter(lambda x: x.data_type != FileType.METADATA.value, file_list)
+        )
+
+        for atlas_file in non_meta_files:
             counter += 1
             root_path = atlas_file.path.split(os.sep)[0]
             path_stats = self._get_path_stats(
