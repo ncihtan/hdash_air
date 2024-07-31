@@ -108,19 +108,26 @@ make gcp        copy files to Google Cloud Composer for production deployment.
 
 ## Local Development
 
-For local development, I have used the Astro CLI.  See:  https://docs.astronomer.io/astro/cli/overview.
+For local development, build the docker container by runnning:
 
-Commands to get started:
-
-```
-mkdir astro
-cd astro
-astro init
-astro dev start
+```commandline
+docker build . -t hdash
 ```
 
-NOTE:  For the installation to work, you must also copy most of the dependencies from
-```requirements.txt``` to ```astro/requirements.txt```.
+Start the local airflow and services by running:
+
+```commandline
+docker compose up
+```
+
+You then should be able to navigate to airflow http://localhost:8080/
+Username and password are both 'airflow'.
+
+Sometimes the image may need to be pruned, if you are getting databse timeouts.
+
+```commandline
+docker image prune -a -f
+```
 
 ## Production Deployment
 

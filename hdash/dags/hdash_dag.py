@@ -17,6 +17,7 @@ from hdash.db.atlas_stats import AtlasStats
 from hdash.db.atlas_file import AtlasFile
 from hdash.db.meta_cache import MetaCache
 from hdash.db.matrix import Matrix
+from hdash.db.therapy import Therapy
 from hdash.db.validation import Validation, ValidationError
 from hdash.db.web_cache import WebCache
 from hdash.db.path_stats import PathStats
@@ -29,11 +30,13 @@ from hdash.stats.meta_summary import MetaDataSummary
 from hdash.stats.path_stats_checker import PathStatsChecker
 from hdash.util.web_writer import WebWriter
 from hdash.util.matrix_util import MatrixUtil
+from hdash.util.therapy_util import TherapyUtil
 from hdash.stats.completeness_summary import CompletenessSummary
 from hdash.graph.graph_creator import GraphCreator
 from hdash.graph.graph_flattener import GraphFlattener
 from hdash.util.html_matrix import HtmlMatrix
 from hdash.util.slack import Slack
+from hdash.util.categories import Categories
 
 
 logger = logging.getLogger("airflow.task")
@@ -102,6 +105,10 @@ with DAG(
 
         # Delete any Existing Matrices
         session.query(Matrix).delete()
+        session.commit()
+
+        # Delete any Existing Therapy Data
+        session.query(Therapy).delete()
         session.commit()
 
         # Delete any Existing Path Stats
@@ -189,6 +196,33 @@ with DAG(
                 session.commit()
             else:
                 logger.info("Skipping. Found cache for:  %s", meta_file.synapse_id)
+        return atlas_id
+    
+    @task
+    def get_therapy_data(atlas_id: str):
+        # pylint: disable=unused-argument
+        """Get all therapy files and store contents in database."""
+        db_connection = DbConnection()
+        session = db_connection.session
+        atlas = session.query(Atlas).filter_by(atlas_id=atlas_id).one()
+        logger.info("Getting therapy data for:  %s.", atlas)
+
+        therapy_list = (
+            session.query(AtlasFile)
+            .filter_by(atlas_id=atlas_id, category=Categories.THERAPY)
+            .all()
+        )
+        logger.info("Processing %d therapy files.", len(therapy_list))
+
+        connector = SynapseConnector()
+        if len(therapy_list) > 0:
+            for therapy_file in therapy_list:
+                logger.info("Retrieving therapy files data:  %s", therapy_file.synapse_id)
+                csv = connector.get_cvs_table(therapy_file.synapse_id)
+                therapy_util = TherapyUtil(atlas_id, csv)
+            therapy_table_list = therapy_util.table_list
+            session.add_all(therapy_table_list)
+            session.commit()
         return atlas_id
 
     @task
@@ -284,19 +318,27 @@ with DAG(
             session = db_connection.session
             s3_credentials = S3Credentials()
             s3_config = s3_credentials.get_s3_config()
-            client = boto3.client("s3", **s3_config)
-            end_point = f"{s3_credentials.endpoint_url}/{s3_credentials.bucket_name}"
-            logger.info("Deploying to:  %s.", end_point)
             web_list = session.query(WebCache).all()
-            for web_cache in web_list:
-                logger.info("Writing:  %s.", web_cache.file_name)
-                client.put_object(
-                    Bucket=s3_credentials.bucket_name,
-                    Key=web_cache.file_name,
-                    Body=web_cache.content,
-                    ACL="public-read",
-                    ContentType="text/html",
-                )
+            logger.info("Endpoint url:  %s.", s3_credentials.endpoint_url)
+            # If we are running locally, output html files to local folder
+            if s3_credentials.endpoint_url == "local":
+                for web_cache in web_list:
+                    logger.info("Writing:  %s.", web_cache.file_name)
+                    with open(f"web/{web_cache.file_name}", "w", encoding="utf-8") as file_handler:
+                        file_handler.write(web_cache.content)
+            else:
+                client = boto3.client("s3", **s3_config)
+                end_point = f"{s3_credentials.endpoint_url}/{s3_credentials.bucket_name}"
+                logger.info("Deploying to:  %s.", end_point)
+                for web_cache in web_list:
+                    logger.info("Writing:  %s.", web_cache.file_name)
+                    client.put_object(
+                        Bucket=s3_credentials.bucket_name,
+                        Key=web_cache.file_name,
+                        Body=web_cache.content,
+                        ACL="public-read",
+                        ContentType="text/html",
+                    )
 
     def _get_meta_map(atlas_id, session):
         """Get the Meta Map Object."""
@@ -347,6 +389,12 @@ with DAG(
             for matrix in matrix_list:
                 html_matrix_list.append(HtmlMatrix(matrix))
 
+            therapy_table = (
+                session.query(Therapy)
+                .filter_by(atlas_id=atlas_id)
+                .all()
+            )
+
             path_stats_list = (
                 session.query(PathStats)
                 .filter_by(atlas_id=atlas_id)
@@ -361,6 +409,7 @@ with DAG(
                 validation_list,
                 html_matrix_list,
                 path_stats_list,
+                therapy_table
             )
             atlas_info_list.append(atlas_info)
         return atlas_info_list
@@ -369,6 +418,7 @@ with DAG(
     atlas_id_list1 = get_atlas_list()
     atlas_id_list2 = get_atlas_files.expand(atlas_id=atlas_id_list1)
     atlas_id_list3 = get_meta_files.expand(atlas_id=atlas_id_list2)
-    atlas_id_list4 = validate_atlas.expand(atlas_id=atlas_id_list3)
-    num_atlases = create_web(atlas_id_list4)
+    atlas_id_list4 = get_therapy_data.expand(atlas_id=atlas_id_list3)
+    atlas_id_list5 = validate_atlas.expand(atlas_id=atlas_id_list4)
+    num_atlases = create_web(atlas_id_list5)
     deploy_web(num_atlases)

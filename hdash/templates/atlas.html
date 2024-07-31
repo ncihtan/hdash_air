@@ -217,6 +217,18 @@
     {% endif %}
     {% endfor %}
 
+    {% for therapy in atlas_info.therapy_table %}
+        <div class="w-95 p-3 mb-3 border border-primary-subtle rounded">
+            <h3>Therapeutic Clinical Data </h3>
+            {% if therapy.has_data() %}
+                <br><br>
+                {% include "therapy_viz.html" %}
+            {% else %}
+                No data available.
+            {% endif %}
+        </div>
+    {% endfor %}
+
     <div class="w-95 p-3" style="background-color: #eee;">
         <h3><i class="bi bi-bug"></i> DCC Debugging</h3>
         <ul>
