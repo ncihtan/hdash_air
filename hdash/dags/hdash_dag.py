@@ -199,9 +199,9 @@ with DAG(
         return atlas_id
     
     @task
-    def get_therapy_data(atlas_id: str):
+    def get_longitudinal_data(atlas_id: str):
         # pylint: disable=unused-argument
-        """Get all therapy files and store contents in database."""
+        """Get all longitudinal files and store visuals in database."""
         db_connection = DbConnection()
         session = db_connection.session
         atlas = session.query(Atlas).filter_by(atlas_id=atlas_id).one()
@@ -214,12 +214,25 @@ with DAG(
         )
         logger.info("Processing %d therapy files.", len(therapy_list))
 
+        biospecimen_list = (
+            session.query(AtlasFile)
+            .filter_by(atlas_id=atlas_id, category=Categories.BIOSPECIMEN)
+            .all()
+        )
+        logger.info("Processing %d biospecimen files.", len(biospecimen_list))
+
         connector = SynapseConnector()
-        if len(therapy_list) > 0:
+        if len(therapy_list) > 0 or len(biospecimen_list) > 0:
+            therapy_util = TherapyUtil(atlas_id)
             for therapy_file in therapy_list:
                 logger.info("Retrieving therapy files data:  %s", therapy_file.synapse_id)
                 csv = connector.get_cvs_table(therapy_file.synapse_id)
-                therapy_util = TherapyUtil(atlas_id, csv)
+                therapy_util.build_therapy_matrix(csv)
+            for biospecimen_file in biospecimen_list:
+                logger.info("Retrieving biospecimen files data:  %s", biospecimen_file.synapse_id)
+                csv = connector.get_cvs_table(biospecimen_file.synapse_id)
+                therapy_util.build_biospecimen_matrix(csv)
+            therapy_util.create_therapy()
             therapy_table_list = therapy_util.table_list
             session.add_all(therapy_table_list)
             session.commit()
@@ -418,7 +431,7 @@ with DAG(
     atlas_id_list1 = get_atlas_list()
     atlas_id_list2 = get_atlas_files.expand(atlas_id=atlas_id_list1)
     atlas_id_list3 = get_meta_files.expand(atlas_id=atlas_id_list2)
-    atlas_id_list4 = get_therapy_data.expand(atlas_id=atlas_id_list3)
+    atlas_id_list4 = get_longitudinal_data.expand(atlas_id=atlas_id_list3)
     atlas_id_list5 = validate_atlas.expand(atlas_id=atlas_id_list4)
     num_atlases = create_web(atlas_id_list5)
     deploy_web(num_atlases)

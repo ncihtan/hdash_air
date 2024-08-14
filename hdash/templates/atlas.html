@@ -218,14 +218,24 @@
     {% endfor %}
 
     {% for therapy in atlas_info.therapy_table %}
-        <div class="w-95 p-3 mb-3 border border-primary-subtle rounded">
-            <h3>Therapeutic Clinical Data </h3>
-            {% if therapy.has_data() %}
-                <br><br>
-                {% include "therapy_viz.html" %}
-            {% else %}
-                No data available.
-            {% endif %}
+        <div class="accordion" id="accordionLongitudinal">
+            <div class="accordion-item">
+                <h3 class="accordion-header">
+                    <button class="accordion-button bg-light w-95 p-3 mb-3 border border-primary-subtle rounded" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#longitudinal">
+                        <span><h3>Longitudinal Data</h3></span>
+                    </button>
+                </h3>
+                <div id="longitudinal" class="accordion-collapse collapse show" data-bs-parent="#accordionLongitudinal">
+                    <div class="accordion-body">
+                        {% if therapy.has_data() %}
+                            {% include "therapy_viz.html" %}
+                        {% else %}
+                            No data available.
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
     {% endfor %}
 
