@@ -1,0 +1,18 @@
+<div class="mermaid">
+gantt
+    dateFormat X
+    axisFormat %s
+    {{longitudinal.get_content() | safe}}
+</div>
+<script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    var config = {
+      logLevel:1,
+      startOnLoad:true,
+      gantt: {
+        leftPadding: 220, // The space allocated for the section to the left of the events
+        topAxis: true
+      }
+    };
+    mermaid.initialize(config);
+</script>

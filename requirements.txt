@@ -103,6 +103,7 @@ pathspec==0.9.0
 pendulum==2.1.2
 Pillow==9.5.0
 platformdirs==3.1.1
+plotly
 pluggy==1.0.0
 prison==0.2.1
 protobuf==3.20.3

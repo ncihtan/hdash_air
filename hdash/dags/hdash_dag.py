@@ -17,7 +17,7 @@ from hdash.db.atlas_stats import AtlasStats
 from hdash.db.atlas_file import AtlasFile
 from hdash.db.meta_cache import MetaCache
 from hdash.db.matrix import Matrix
-from hdash.db.therapy import Therapy
+from hdash.db.longitudinal import Longitudinal
 from hdash.db.validation import Validation, ValidationError
 from hdash.db.web_cache import WebCache
 from hdash.db.path_stats import PathStats
@@ -30,7 +30,7 @@ from hdash.stats.meta_summary import MetaDataSummary
 from hdash.stats.path_stats_checker import PathStatsChecker
 from hdash.util.web_writer import WebWriter
 from hdash.util.matrix_util import MatrixUtil
-from hdash.util.therapy_util import TherapyUtil
+from hdash.util.longitudinal_util import LongitudinalUtil
 from hdash.stats.completeness_summary import CompletenessSummary
 from hdash.graph.graph_creator import GraphCreator
 from hdash.graph.graph_flattener import GraphFlattener
@@ -107,8 +107,8 @@ with DAG(
         session.query(Matrix).delete()
         session.commit()
 
-        # Delete any Existing Therapy Data
-        session.query(Therapy).delete()
+        # Delete any Existing Longitudinal Data
+        session.query(Longitudinal).delete()
         session.commit()
 
         # Delete any Existing Path Stats
@@ -197,7 +197,7 @@ with DAG(
             else:
                 logger.info("Skipping. Found cache for:  %s", meta_file.synapse_id)
         return atlas_id
-    
+
     @task
     def get_longitudinal_data(atlas_id: str):
         # pylint: disable=unused-argument
@@ -205,8 +205,9 @@ with DAG(
         db_connection = DbConnection()
         session = db_connection.session
         atlas = session.query(Atlas).filter_by(atlas_id=atlas_id).one()
-        logger.info("Getting therapy data for:  %s.", atlas)
+        logger.info("Getting longitudinal data for:  %s.", atlas)
 
+        # Retrieve list of therapy files
         therapy_list = (
             session.query(AtlasFile)
             .filter_by(atlas_id=atlas_id, category=Categories.THERAPY)
@@ -214,6 +215,7 @@ with DAG(
         )
         logger.info("Processing %d therapy files.", len(therapy_list))
 
+        # Retrieve list of biospecimen files
         biospecimen_list = (
             session.query(AtlasFile)
             .filter_by(atlas_id=atlas_id, category=Categories.BIOSPECIMEN)
@@ -223,18 +225,26 @@ with DAG(
 
         connector = SynapseConnector()
         if len(therapy_list) > 0 or len(biospecimen_list) > 0:
-            therapy_util = TherapyUtil(atlas_id)
+            longitudinal_util = LongitudinalUtil(atlas_id)
+            # For every file - retrive data and add to tables for visuals
             for therapy_file in therapy_list:
-                logger.info("Retrieving therapy files data:  %s", therapy_file.synapse_id)
+                logger.info(
+                    "Retrieving therapy files data:  %s", therapy_file.synapse_id
+                )
                 csv = connector.get_cvs_table(therapy_file.synapse_id)
-                therapy_util.build_therapy_matrix(csv)
+                longitudinal_util.build_therapy_matrix(csv)
             for biospecimen_file in biospecimen_list:
-                logger.info("Retrieving biospecimen files data:  %s", biospecimen_file.synapse_id)
+                logger.info(
+                    "Retrieving biospecimen files data:  %s",
+                    biospecimen_file.synapse_id,
+                )
                 csv = connector.get_cvs_table(biospecimen_file.synapse_id)
-                therapy_util.build_biospecimen_matrix(csv)
-            therapy_util.create_therapy()
-            therapy_table_list = therapy_util.table_list
-            session.add_all(therapy_table_list)
+                longitudinal_util.build_biospecimen_matrix(csv)
+            # Merge the data from these files to store
+            longitudinal_util.create_longitudinal()
+            # Create row for DB and commit
+            longitudinal_table_list = longitudinal_util.table_list
+            session.add_all(longitudinal_table_list)
             session.commit()
         return atlas_id
 
@@ -337,11 +347,15 @@ with DAG(
             if s3_credentials.endpoint_url == "local":
                 for web_cache in web_list:
                     logger.info("Writing:  %s.", web_cache.file_name)
-                    with open(f"web/{web_cache.file_name}", "w", encoding="utf-8") as file_handler:
+                    with open(
+                        f"web/{web_cache.file_name}", "w", encoding="utf-8"
+                    ) as file_handler:
                         file_handler.write(web_cache.content)
             else:
                 client = boto3.client("s3", **s3_config)
-                end_point = f"{s3_credentials.endpoint_url}/{s3_credentials.bucket_name}"
+                end_point = (
+                    f"{s3_credentials.endpoint_url}/{s3_credentials.bucket_name}"
+                )
                 logger.info("Deploying to:  %s.", end_point)
                 for web_cache in web_list:
                     logger.info("Writing:  %s.", web_cache.file_name)
@@ -402,10 +416,8 @@ with DAG(
             for matrix in matrix_list:
                 html_matrix_list.append(HtmlMatrix(matrix))
 
-            therapy_table = (
-                session.query(Therapy)
-                .filter_by(atlas_id=atlas_id)
-                .all()
+            longitudinal_table = (
+                session.query(Longitudinal).filter_by(atlas_id=atlas_id).all()
             )
 
             path_stats_list = (
@@ -422,7 +434,7 @@ with DAG(
                 validation_list,
                 html_matrix_list,
                 path_stats_list,
-                therapy_table
+                longitudinal_table,
             )
             atlas_info_list.append(atlas_info)
         return atlas_info_list
