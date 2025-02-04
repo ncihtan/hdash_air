@@ -217,6 +217,47 @@
     {% endif %}
     {% endfor %}
 
+    {% for longitudinal in atlas_info.longitudinal_table %}
+        <div class="accordion" id="accordionLongitudinal">
+            <div class="accordion-item">
+                <h3 class="accordion-header">
+                    <button class="accordion-button bg-light w-95 p-3 mb-3 border border-primary-subtle rounded" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#longitudinal">
+                        <span><h3>Longitudinal Data</h3></span>
+                    </button>
+                </h3>
+                <div id="longitudinal" class="accordion-collapse collapse show" data-bs-parent="#accordionLongitudinal">
+                    <div class="accordion-body">
+                        {% if longitudinal.has_data() %}
+                            {% include "longitudinal_viz.html" %}
+                        {% else %}
+                            No data available.
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="accordion" id="accordionLongitudinalPlotly">
+            <div class="accordion-item">
+                <h3 class="accordion-header">
+                    <button class="accordion-button bg-light w-95 p-3 mb-3 border border-primary-subtle rounded" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#longitudinalPlotly">
+                        <span><h3>Longitudinal Details Plot</h3></span>
+                    </button>
+                </h3>
+                <div id="longitudinalPlotly" class="accordion-collapse collapse show" data-bs-parent="#accordionLongitudinalPlotly">
+                    <div class="accordion-body">
+                        {% if longitudinal.has_data() %}
+                            {{longitudinal.get_html_plotly() | safe}}
+                        {% else %}
+                            No data available.
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
     <div class="w-95 p-3" style="background-color: #eee;">
         <h3><i class="bi bi-bug"></i> DCC Debugging</h3>
         <ul>

@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2024-10-12
+
+* Added new visualizations for longitudinal therapy and biospecimen data
+
 ## 2024-05-09
 
 * Added new Folder check table to identify folders with un-annotated files.
