@@ -1,4 +1,5 @@
 """Synapse Credentials."""
+
 from airflow.models import Variable
 
 
@@ -9,6 +10,7 @@ class DatabaseCredentials:
     DB_PASSWORD_KEY = "HDASH_DB_PASSWORD"
     DB_HOST_KEY = "HDASH_DB_HOST"
     DB_NAME_KEY = "HDASH_DB_NAME"
+    DB_PORT_NUMBER = "HDASH_DB_PORT_NUMBER"
 
     def __init__(self):
         """Construct Database Credentials."""
@@ -27,6 +29,10 @@ class DatabaseCredentials:
         self._db_name = Variable.get(self.DB_NAME_KEY)
         if self._db_name is None:
             raise EnvironmentError(f"{self.DB_NAME_KEY} not set.")
+
+        self._port_number = Variable.get(self.DB_PORT_NUMBER)
+        if self._port_number is None:
+            raise EnvironmentError(f"{self.DB_PORT_NUMBER} not set.")
 
     @property
     def user_name(self):
@@ -47,3 +53,8 @@ class DatabaseCredentials:
     def db_name(self):
         """Get DB Name."""
         return self._db_name
+
+    @property
+    def port_number(self):
+        """Get Database Port Number."""
+        return self._port_number
