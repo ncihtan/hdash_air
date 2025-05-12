@@ -1,4 +1,5 @@
 """Smoke Tests for Database Connector."""
+
 import pytest
 from hdash.db.db_util import DbConnection
 from hdash.db.atlas import Atlas
@@ -10,11 +11,17 @@ from hdash.db.web_cache import WebCache
 from hdash.db.validation import Validation, ValidationError
 
 
+@pytest.fixture(scope="module", autouse=True)
+def reset_database():
+    """Start with clean slate database."""
+    db_connection = DbConnection()
+    db_connection.reset_database()
+
+
 @pytest.mark.smoke
 def test_atlas():
     """Smoke Test for Atlas Table."""
     db_connection = DbConnection()
-    db_connection.reset_database()
     session = db_connection.session
 
     # Try adding a few atlases
@@ -34,7 +41,6 @@ def test_atlas():
 def test_atlas_stats():
     """Smoke Test for Atlas Stats Table."""
     db_connection = DbConnection()
-    db_connection.reset_database()
     session = db_connection.session
 
     # Try adding a few atlas stats
@@ -54,7 +60,6 @@ def test_atlas_stats():
 def test_atlas_files():
     """Smoke Test for AtlasFile Table."""
     db_connection = DbConnection()
-    db_connection.reset_database()
     session = db_connection.session
 
     # Try adding a few atlas files
@@ -79,7 +84,6 @@ def test_atlas_files():
 def test_meta_cache():
     """Smoke Test for MetaCache Table."""
     db_connection = DbConnection()
-    db_connection.reset_database()
     session = db_connection.session
 
     # Try adding a few meta-caches
@@ -105,7 +109,6 @@ def test_meta_cache():
 def test_validation():
     """Smoke Test for Validation Checks."""
     db_connection = DbConnection()
-    db_connection.reset_database()
     session = db_connection.session
 
     # Add a validation with multiple error messages
@@ -134,10 +137,10 @@ def test_validation():
 def test_matrix():
     """Smoke Test for Matrix."""
     db_connection = DbConnection()
-    db_connection.reset_database()
     session = db_connection.session
 
     matrix = Matrix()
+    matrix.matrix_id = "hta1_clinical"
     matrix.atlas_id = "HTA1"
     matrix.order = 0
     matrix.label = "Clinical Demographics"
@@ -152,7 +155,6 @@ def test_matrix():
 def test_web_cache():
     """Smoke Test for Web Cache."""
     db_connection = DbConnection()
-    db_connection.reset_database()
     session = db_connection.session
 
     web_cache = WebCache()
