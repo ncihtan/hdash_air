@@ -1,0 +1,5 @@
+Component,HTAN Participant ID,Treatment or Therapy,Treatment Type,Treatment Effect,Treatment Outcome,Days to Treatment End,Treatment Anatomic Site,Days to Treatment Start,Initial Disease Status,Regimen or Line of Therapy,Therapeutic Agents,Treatment Intent Type,Chemo Concurrent to Radiation,Number of Cycles,Reason Treatment Ended,Treatment Arm,Treatment Dose,Treatment Dose Units,Treatment Effect Indicator,Treatment Frequency,Id,entityId
+Therapy,HTA3_10033,yes,Chemotherapy,Not Reported,Stable Disease,26946,Lung NOS,26883,Initial Diagnosis,1,,Cure,no,,,,,,Not Reported,,a9979bbe-e12a-4298-ad3e-aa680d3a0de8,
+Therapy,HTA3_10040,yes,Chemotherapy,unknown,unknown,23578,Lung NOS,23536,Initial Diagnosis,1,,Cure,no,,,,,,unknown,,3b49a6f3-2c57-45d0-b3b2-1861912b358d,
+Therapy,HTA3_10088,yes,Immunotherapy (Including Vaccines),Not Reported,Not Reported,29140,Lung NOS,29098,Not Reported,1,,Prevention,no,,,,,,Not Reported,,73848c19-e6e4-4f1c-a52d-18177ec8f8f9,
+Therapy,HTA3_80001,no,,,,,,,,,,,,,,,,,,,592d98b2-625e-4d2d-9ce7-b6d67637c3d3,
