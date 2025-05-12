@@ -25,20 +25,17 @@ class LongitudinalUtil:
     def build_therapy_matrix(self, therapy_data):
         """Build Therapy Data Table."""
         # Extract therapy data into columns
-        headers = [
-            "HTAN Participant ID",
-            "Treatment Type",
-            "Days to Treatment End",
-            "Days to Treatment Start",
-            "Treatment Anatomic Site",
-        ]
-        data_frame = pd.read_csv(StringIO(therapy_data), usecols=headers)
+        data_frame = pd.read_csv(StringIO(therapy_data))
 
         data_frame = data_frame.rename(
             columns={
                 "Treatment Type": "Label",
-                "Days to Treatment End": "Days to End",
+                "Treatment Type 1": "Label",
                 "Days to Treatment Start": "Days to Start",
+                "Days to Treatment End": "Days to End",
+                # Legacy HTAPP Clinical Data
+                "Days to Treatment End 1": "Days to End",
+                "Days to Treatment Start 1": "Days to Start",
             }
         )
         self.longitudinal = pd.concat([self.longitudinal, data_frame])
@@ -116,7 +113,7 @@ class LongitudinalUtil:
 
         # Add duplicates count for each row
         data_frame["Number"] = 1
-        data_frame["Number"] = data_frame.groupby(headers).transform(sum)
+        data_frame["Number"] = data_frame.groupby(headers).transform(sum, numeric_only=True)
 
         # Force collection days to numeric value
         data_frame["Collection Days from Index"] = pd.to_numeric(
