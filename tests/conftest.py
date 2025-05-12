@@ -1,4 +1,5 @@
 """PyTest Fixtures."""
+
 from typing import List
 import pytest
 
@@ -119,8 +120,16 @@ def _init_atlas_list() -> List[AtlasInfo]:
     path_stats.num_un_annotated_files = 5
     path_stats_list.append(path_stats)
 
+    longitudinal_table = []
+
     atlas_info1 = AtlasInfo(
-        atlas1, stats1, meta_list, validation_list, matrix_list, path_stats_list
+        atlas1,
+        stats1,
+        meta_list,
+        validation_list,
+        matrix_list,
+        path_stats_list,
+        longitudinal_table,
     )
     local_atlas_list.append(atlas_info1)
     return local_atlas_list
