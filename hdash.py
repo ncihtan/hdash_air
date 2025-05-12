@@ -7,6 +7,10 @@ import boto3
 from hdash.reader.atlas_reader import AtlasReader
 from hdash.db.db_util import DbConnection
 from hdash.util.s3_credentials import S3Credentials
+from hdash.util.slack import Slack
+
+# These imports look like they are not used, but they are required to
+# register the ORM classes with SQLAlchemy.
 from hdash.db.atlas_file import AtlasFile
 from hdash.db.atlas_stats import AtlasStats
 from hdash.db.meta_cache import MetaCache
@@ -14,8 +18,7 @@ from hdash.db.path_stats import PathStats
 from hdash.db.validation import Validation, ValidationError
 from hdash.db.matrix import Matrix
 from hdash.db.web_cache import WebCache
-from hdash.util.slack import Slack
-
+from hdash.db.longitudinal import Longitudinal
 
 @click.group()
 def cli():
