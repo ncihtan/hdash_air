@@ -3,7 +3,7 @@ import json
 from sqlalchemy import Column, String
 from sqlalchemy.dialects.mysql import LONGTEXT
 import pandas as pd
-import plotly.express as px
+import plotly.express as px  # type: ignore
 from hdash.db.db_base import Base
 from typing import Union
 
