@@ -1,6 +1,7 @@
 """Test Atlas Reader."""
 from hdash.reader.atlas_reader import AtlasReader
 
+# pyright: strict
 
 def test_atlas_reader():
     """Test Atlas Reader."""

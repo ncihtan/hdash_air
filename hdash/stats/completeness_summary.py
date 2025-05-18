@@ -28,7 +28,7 @@ class CompletenessSummary:
         for clinical_category in self.categories.all_clinical:
             self.__walk_clinical_category(clinical_category)
 
-    def has_data(self, primary_id, category):
+    def has_data(self, primary_id: str, category: str):
         """Determine if the specified ID has data of the specified category."""
         key = KeyUtil.create_key(primary_id, category)
         if category in self.categories.all_clinical:

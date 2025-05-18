@@ -1,5 +1,4 @@
 """File Counter."""
-from typing import List
 from collections import Counter
 import numpy
 from hdash.db.atlas_file import AtlasFile
@@ -14,7 +13,7 @@ class FileCounter:
     Image files, etc.
     """
 
-    def __init__(self, file_list: List[AtlasFile]):
+    def __init__(self, file_list: list[AtlasFile]):
         """Construct new File Counter."""
         data_type_list = list(map(lambda file: file.data_type, file_list))
         size_list = list(map(lambda file: file.size_bytes, file_list))
@@ -23,7 +22,7 @@ class FileCounter:
         self.total_file_size = numpy.nansum(size_list)  # type: ignore
         self.counter = Counter(data_type_list)
 
-    def get_num_files(self, file_type):
+    def get_num_files(self, file_type: str):
         """Get number of files for the specified file type."""
         return self.counter.get(file_type, 0)
 

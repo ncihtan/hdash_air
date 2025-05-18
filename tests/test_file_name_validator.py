@@ -2,6 +2,7 @@
 from hdash.validator.validate_file_names import ValidateFileNames
 from hdash.db.atlas_file import AtlasFile
 
+# pyright: strict
 
 def test_file_name_checker():
     """Test File Name Validator."""
@@ -17,7 +18,7 @@ def test_file_name_checker():
     assert error_list[1].startswith("In folder: root, file name: hello*.txt")
 
 
-def __create_atlas_file(file_name):
+def __create_atlas_file(file_name: str):
     atlas_file = AtlasFile()
     atlas_file.name = file_name
     atlas_file.path = "root"

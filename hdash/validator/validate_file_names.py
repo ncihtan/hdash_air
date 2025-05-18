@@ -23,7 +23,7 @@ class ValidateFileNames(ValidationRule):
         for current_file in file_list:
             file_name = current_file.name
             folder_name = current_file.path
-            file_name_valid = cds_name_checker.is_file_name_valid(file_name)
+            file_name_valid = cds_name_checker.is_file_name_valid(file_name) # type: ignore
             if not file_name_valid:
                 msg = (
                     f"In folder: {folder_name}, file name: {file_name} "

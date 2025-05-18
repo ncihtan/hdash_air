@@ -8,7 +8,7 @@ class AtlasReader:
     def __init__(self, file):
         """Create Atlas Reader Object."""
         fd = open(file)
-        self.atlas_list = []
+        self.atlas_list: list[Atlas] = []
         fd.readline()  # Skip header row
         for line in fd:
             parts = line.split(",")

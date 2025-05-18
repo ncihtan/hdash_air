@@ -14,7 +14,7 @@ class FileTypeUtil:
         """Create FileType Utility."""
         self._init_file_types()
 
-    def get_file_type(self, file_name):
+    def get_file_type(self, file_name: str):
         """Determine the file type from the file name."""
         path = Path(file_name)
         file_type = FileType.OTHER
