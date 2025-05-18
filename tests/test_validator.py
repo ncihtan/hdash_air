@@ -2,9 +2,12 @@
 from hdash.validator.htan_validator import HtanValidator
 from hdash.graph.graph_creator import GraphCreator
 from hdash.db.atlas_file import AtlasFile
+from hdash.synapse.meta_map import MetaMap
+
+# pyright: strict
 
 
-def test_validator(sample_meta_map):
+def test_validator(sample_meta_map: MetaMap):
     """Test core HTAN Validator."""
     meta_map = sample_meta_map
 
@@ -46,7 +49,7 @@ def test_validator(sample_meta_map):
     )
 
 
-def __create_atlas_file(file_name):
+def __create_atlas_file(file_name: str):
     atlas_file = AtlasFile()
     atlas_file.name = file_name
     atlas_file.path = "sc_rna_seq_level_1"

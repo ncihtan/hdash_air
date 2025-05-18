@@ -43,7 +43,7 @@ def sample_meta_map():
     return meta_map
 
 
-def _create_meta_file_list(record_list) -> List[MetaFile]:
+def _create_meta_file_list(record_list) -> list[MetaFile]:
     meta_file_list: List[MetaFile] = []
     synapse_id = 1
     for record in record_list:
@@ -68,8 +68,8 @@ def _create_meta_file_list(record_list) -> List[MetaFile]:
     return meta_file_list
 
 
-def _init_atlas_list() -> List[AtlasInfo]:
-    local_atlas_list: List[AtlasInfo] = []
+def _init_atlas_list() -> list[AtlasInfo]:
+    local_atlas_list: list[AtlasInfo] = []
     atlas1 = _create_atlas("syn23448901", "HTA1", "HTAN MSKCC", "Ino")
 
     stats1 = AtlasStats("HTA1")

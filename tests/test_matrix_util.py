@@ -21,9 +21,9 @@ def test_matrix_util(sample_meta_map):
 
     matrix_list = matrix_util.matrix_list
     assert len(matrix_list) == 6
-    matrix0 = pd.read_csv(StringIO(matrix_list[0].content))
-    matrix1 = pd.read_csv(StringIO(matrix_list[1].content))
-    matrix2 = pd.read_csv(StringIO(matrix_list[2].content))
+    matrix0 = pd.read_csv(StringIO(matrix_list[0].content))  # type: ignore
+    matrix1 = pd.read_csv(StringIO(matrix_list[1].content))  # type: ignore
+    matrix2 = pd.read_csv(StringIO(matrix_list[2].content))  # type: ignore
 
     # Validate Clinical Tiers 1,2
     assert matrix0.at[0, "ParticipantID"] == "HTA3_8001"

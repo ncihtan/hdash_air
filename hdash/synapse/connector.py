@@ -2,7 +2,7 @@
 
 
 import logging
-import synapseclient # type: ignore
+import synapseclient  # type: ignore
 from hdash.reader.master_synapse_reader import MasterSynapseReader
 from hdash.synapse.credentials import SynapseCredentials
 

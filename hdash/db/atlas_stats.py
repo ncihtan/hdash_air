@@ -32,7 +32,7 @@ class AtlasStats(Base):
 
     def get_total_fize_size_human_readable(self):
         """Get total file size in human readable format, e.g. MB, TB."""
-        return humanize.naturalsize(self.total_file_size) # type: ignore
+        return humanize.naturalsize(self.total_file_size)  # type: ignore
 
     def get_total_num_files(self):
         """Get total number of files."""

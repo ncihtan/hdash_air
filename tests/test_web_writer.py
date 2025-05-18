@@ -5,16 +5,20 @@ from hdash.stats.completeness_summary import CompletenessSummary
 from hdash.graph.graph_creator import GraphCreator
 from hdash.util.matrix_util import MatrixUtil
 from hdash.util.html_matrix import HtmlMatrix
+from hdash.synapse.atlas_info import AtlasInfo
+from hdash.synapse.meta_map import MetaMap
+
+# pyright: strict
 
 
-def test_report_writer(atlas_list, sample_meta_map):
+def test_report_writer(atlas_list: list[AtlasInfo], sample_meta_map: MetaMap):
     """Test Report Writer."""
     graph_creator = GraphCreator("HTA1", sample_meta_map)
     graph_flat = GraphFlattener(graph_creator.htan_graph)
     stats = CompletenessSummary("HTA1", sample_meta_map, graph_flat)
     matrix_util = MatrixUtil("HTA1", stats)
     matrix_list = matrix_util.matrix_list
-    html_matrix_list = []
+    html_matrix_list: list[HtmlMatrix] = []
     for matrix in matrix_list:
         html_matrix = HtmlMatrix(matrix)
         html_matrix_list.append(html_matrix)

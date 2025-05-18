@@ -20,7 +20,7 @@ class MatrixUtil:
         """Create Matrix Utility."""
         self.atlas_id = atlas_id
         self.completeness_summary = completeness_summary
-        self.matrix_list = []
+        self.matrix_list: list[Matrix] = []
         self.categories = Categories()
         self.current_order = 0
 

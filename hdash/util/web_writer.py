@@ -13,7 +13,7 @@ class WebWriter:
     def __init__(self, atlas_list: List[AtlasInfo]):
         """Create new Web Writer."""
         self.atlas_list = atlas_list
-        self.atlas_html_map = {}
+        self.atlas_html_map: dict[str, str] = {}
         self.index_html: str
         self.matrix_html_map = {}
         self.categories = Categories()
@@ -47,7 +47,7 @@ class WebWriter:
             )
             template = self.env.get_template("atlas.html")
             html = template.render(now=self.now_str, atlas_info=atlas_info)
-            self.atlas_html_map[atlas_info.info.atlas_id] = html
+            self.atlas_html_map[atlas_info.info.atlas_id] = html  # type: ignore
 
     def _get_template_env(self):
         return Environment(

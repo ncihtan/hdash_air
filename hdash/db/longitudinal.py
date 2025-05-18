@@ -32,7 +32,7 @@ class Longitudinal(Base):
 
     def get_html_plotly(self):
         """Get Plotly Fig Dump."""
-        plotly_df = pd.DataFrame(json.loads(self.content_plotly)) # type: ignore
+        plotly_df = pd.DataFrame(json.loads(self.content_plotly))  # type: ignore
 
         plotly_df["delta"] = plotly_df["Finish"] - plotly_df["Start"]
         fig = px.timeline(
