@@ -2,6 +2,7 @@
 from sqlalchemy import Column, String, Integer, BigInteger, Float
 import humanize
 from hdash.db.db_base import Base
+from typing import Union
 
 
 class AtlasStats(Base):
@@ -9,14 +10,14 @@ class AtlasStats(Base):
 
     __tablename__ = "atlas_stats"
 
-    atlas_id = Column(String(25), primary_key=True)
-    total_file_size = Column(BigInteger)
-    num_fastq_files = Column(Integer)
-    num_bam_files = Column(Integer)
-    num_image_files = Column(Integer)
-    num_matrix_files = Column(Integer)
-    num_other_files = Column(Integer)
-    percent_metadata_complete = Column(Float)
+    atlas_id: Union[str, Column] = Column(String(25), primary_key=True)
+    total_file_size: Union[int, Column] = Column(BigInteger)
+    num_fastq_files: Union[int, Column] = Column(Integer)
+    num_bam_files: Union[int, Column] = Column(Integer)
+    num_image_files: Union[int, Column] = Column(Integer)
+    num_matrix_files: Union[int, Column] = Column(Integer)
+    num_other_files: Union[int, Column] = Column(Integer)
+    percent_metadata_complete: Union[float, Column] = Column(Float)
 
     def __init__(self, atlas_id):
         """Create AtlasStats Object."""
@@ -31,7 +32,7 @@ class AtlasStats(Base):
 
     def get_total_fize_size_human_readable(self):
         """Get total file size in human readable format, e.g. MB, TB."""
-        return humanize.naturalsize(self.total_file_size)
+        return humanize.naturalsize(self.total_file_size) # type: ignore
 
     def get_total_num_files(self):
         """Get total number of files."""

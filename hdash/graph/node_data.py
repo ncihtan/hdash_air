@@ -18,7 +18,7 @@ class NodeData:
     @property
     def sif_id(self):
         """Return Cytoscape SIF ID."""
-        return self.abbrev_map[self.meta_file.atlas_file.category] + "_" + self.node_id
+        return self.abbrev_map[self.meta_file.atlas_file.category] + "_" + self.node_id  # type: ignore
 
     def __repr__(self):
         """Get node summary."""

@@ -11,7 +11,7 @@ class HtmlMatrix:
     def __init__(self, matrix: Matrix):
         """Create new HTML Matrix Object."""
         self.matrix = matrix
-        self.data_frame = pd.read_csv(StringIO(matrix.content))
+        self.data_frame = pd.read_csv(StringIO(matrix.content))  # type: ignore
 
     def has_data(self):
         """Determine if the matrix has data."""

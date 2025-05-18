@@ -20,7 +20,7 @@ class FileCounter:
         size_list = list(map(lambda file: file.size_bytes, file_list))
 
         # Use numpy.nansum just in case we have empty files with NaN sizes
-        self.total_file_size = numpy.nansum(size_list)
+        self.total_file_size = numpy.nansum(size_list)  # type: ignore
         self.counter = Counter(data_type_list)
 
     def get_num_files(self, file_type):

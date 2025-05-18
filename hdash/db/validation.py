@@ -3,17 +3,20 @@ from sqlalchemy import Column, String, Integer
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import ForeignKey
 from hdash.db.db_base import Base
+from typing import Union
 
 
 class Validation(Base):
     """Validation ORM Class."""
 
     __tablename__ = "validation"
-    validation_id = Column(Integer, primary_key=True, autoincrement=True)
-    atlas_id = Column(String(255))
-    validation_order = Column(Integer)
-    validation_code = Column(String(255))
-    validation_text = Column(String(255))
+    validation_id: Union[int, Column] = Column(
+        Integer, primary_key=True, autoincrement=True
+    )
+    atlas_id: Union[str, Column] = Column(String(255))
+    validation_order: Union[int, Column] = Column(Integer)
+    validation_code: Union[str, Column] = Column(String(255))
+    validation_text: Union[str, Column] = Column(String(255))
     error_list = relationship("ValidationError", backref="validation")
 
     def __init__(self, atlas_id, validation_code, validation_text):
@@ -37,8 +40,8 @@ class ValidationError(Base):
     __tablename__ = "validation_error"
     validation_error_id = Column(Integer, primary_key=True, autoincrement=True)
     validation_id = Column(Integer, ForeignKey("validation.validation_id"))
-    order = Column(Integer)
-    error_msg = Column(String(1000))
+    order: Union[int, Column] = Column(Integer)
+    error_msg: Union[str, Column] = Column(String(1000))
 
     def __repr__(self):
         """Get summary."""

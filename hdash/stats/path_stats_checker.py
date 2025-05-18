@@ -30,9 +30,9 @@ class PathStatsChecker:
                 root_path, atlas_id, self.path_map, root_folder_map
             )
             if atlas_file.category is None or atlas_file.category == "NA":
-                path_stats.num_un_annotated_files += 1
+                path_stats.num_un_annotated_files += 1  # type: ignore
             else:
-                path_stats.num_annotated_files += 1
+                path_stats.num_annotated_files += 1  # type: ignore
         self.logger.info("Path Stats Checker done on %d files" % counter)
 
     def _get_path_stats(

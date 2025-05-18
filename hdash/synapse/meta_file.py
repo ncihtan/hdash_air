@@ -15,7 +15,7 @@ class MetaFile:
         self.data_frame = None
 
         if meta_cache.content is not None:
-            cvs_string_io = StringIO(meta_cache.content)
+            cvs_string_io = StringIO(meta_cache.content)  # type: ignore
             self.data_frame = pd.read_csv(cvs_string_io)
             self.meta_cache.num_records = len(self.data_frame.index)
 

@@ -17,9 +17,9 @@ class WebWriter:
         self.index_html: str
         self.matrix_html_map = {}
         self.categories = Categories()
-        self.total_storage = 0
+        self.total_storage: float = 0
         for atlas_info in self.atlas_list:
-            self.total_storage += atlas_info.stats.total_file_size
+            self.total_storage += atlas_info.stats.total_file_size  # type: ignore
 
         self.env = self._get_template_env()
         self.now = datetime.now()
@@ -43,7 +43,7 @@ class WebWriter:
     def _generate_atlas_pages(self):
         for atlas_info in self.atlas_list:
             atlas_info.meta_list = sorted(
-                atlas_info.meta_list, key=lambda d: d.atlas_file.category
+                atlas_info.meta_list, key=lambda d: d.atlas_file.category  # type: ignore
             )
             template = self.env.get_template("atlas.html")
             html = template.render(now=self.now_str, atlas_info=atlas_info)

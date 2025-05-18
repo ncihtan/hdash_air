@@ -98,7 +98,7 @@ def _init_atlas_list() -> List[AtlasInfo]:
 
     meta_list: List[MetaFile] = []
     atlas_file1 = AtlasFile()
-    atlas_file1.data_type = FileType.METADATA
+    atlas_file1.data_type = FileType.METADATA.value
     atlas_file1.category = Categories.DEMOGRAPHICS
     meta_cache1 = MetaCache()
     meta_cache1.synapse_id = "syn_423421"
