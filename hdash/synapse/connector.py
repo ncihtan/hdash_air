@@ -2,11 +2,9 @@
 
 
 import logging
-from typing import List
 import synapseclient
 from hdash.reader.master_synapse_reader import MasterSynapseReader
 from hdash.synapse.credentials import SynapseCredentials
-from hdash.db.atlas_file import AtlasFile
 
 
 class SynapseConnector:
@@ -21,7 +19,7 @@ class SynapseConnector:
         self.cred = SynapseCredentials()
         self.syn.login(self.cred.user_name, self.cred.password, silent=True)
 
-    def get_atlas_files(self, atlas_id, entity_id) -> List[AtlasFile]:
+    def get_atlas_files(self, atlas_id, entity_id):
         """Retrieve the Synapse Table for the Specified Atlas."""
         self.logger.info("Retrieving Synapse Table for:  %s", entity_id)
         sql = f"SELECT * FROM {self.MASTER_HTAN_ID} "

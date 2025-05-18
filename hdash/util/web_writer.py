@@ -14,17 +14,12 @@ class WebWriter:
         """Create new Web Writer."""
         self.atlas_list = atlas_list
         self.atlas_html_map = {}
-        self.index_html = None
+        self.index_html: str
         self.matrix_html_map = {}
         self.categories = Categories()
         self.total_storage = 0
         for atlas_info in self.atlas_list:
-            num_errors = 0
             self.total_storage += atlas_info.stats.total_file_size
-            validation_list = atlas_info.validation_list
-            for validation in validation_list:
-                num_errors += len(validation.error_list)
-            atlas_info.num_errors = num_errors
 
         self.env = self._get_template_env()
         self.now = datetime.now()

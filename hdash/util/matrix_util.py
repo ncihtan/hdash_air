@@ -16,8 +16,6 @@ class MatrixUtil:
     IMAGE_OTHER = "image_other"
     OTHER = "other"
 
-    CAPTION = "Value of 1 indicates presence of data."
-
     def __init__(self, atlas_id, completeness_summary: CompletenessSummary):
         """Create Matrix Utility."""
         self.atlas_id = atlas_id
@@ -131,7 +129,6 @@ class MatrixUtil:
         matrix.atlas_id = self.atlas_id
         matrix.order = self.current_order
         matrix.label = label
-        matrix.caption = MatrixUtil.CAPTION
         matrix.content = data_frame.to_csv(index=False)
         self.matrix_list.append(matrix)
         self.current_order += 1

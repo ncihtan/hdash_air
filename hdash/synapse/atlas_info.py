@@ -30,11 +30,11 @@ class AtlasInfo:
         self.html_matrix_list = html_matrix_list
         self.path_stats_list = (path_stats_list,)
         self.longitudinal_table = longitudinal_table
+        self._calculate_total_num_errors()
 
-    def get_total_num_errors(self):
-        """Get total number of validation errors."""
-        num_errors = 0
+    def _calculate_total_num_errors(self):
+        """Calculate total number of validation errors."""
+        self.num_errors = 0
         for validation in self.validation_list:
             error_list = validation.error_list
-            num_errors += len(error_list)
-        return num_errors
+            self.num_errors += len(error_list)

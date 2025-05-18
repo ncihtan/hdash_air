@@ -65,7 +65,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Validation Errors</h5>
                         <h6 class="card-subtitle mt-4 mb-4 text-success h2">{{
-                            "{:,d}".format(atlas_info.get_total_num_errors()) }}</h6>
+                            "{:,d}".format(atlas_info.num_errors) }}</h6>
                         <p class="card-text text-muted">Total number of validation
                             errors detected by the DCC dashboard.</p>
                     </div>
@@ -186,7 +186,6 @@
     {% if html_matrix.has_data() %}
         <div class="w-95 p-3 mb-3 border border-primary-subtle rounded">
             <h3>{{ html_matrix.matrix.label }} </h3>
-            {{ html_matrix.matrix.caption }}
             {% if html_matrix.has_non_zero_data() %}
                 <br><br>
                 {% include "matrix_viz.html" %}

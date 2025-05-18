@@ -3,6 +3,7 @@ import datetime
 import requests
 from airflow.models import Variable
 from hdash.util.s3_credentials import S3Credentials
+from typing import Any
 
 
 class Slack:
@@ -45,7 +46,7 @@ class Slack:
         block2 = {"type": "divider"}
         blocks.append(block2)
 
-        block3 = {"type": "section"}
+        block3: dict[str, Any] = {"type": "section"}
         blocks.append(block3)
         if success:
             text = self._create_text_block(
@@ -58,7 +59,7 @@ class Slack:
             )
         block3["text"] = text
 
-        block4 = {"type": "section"}
+        block4: dict[str, Any] = {"type": "section"}
         blocks.append(block4)
         text = self._create_text_block("plain_text", msg_detail)
         block4["text"] = text

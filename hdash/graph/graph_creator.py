@@ -45,15 +45,16 @@ class GraphCreator:
         for meta_file in meta_file_list:
             data_frame = meta_file.data_frame
             primary_id = self._id_util.get_primary_id_column(category)
-            id_list = data_frame[primary_id].to_list()
+            if data_frame is not None:
+                id_list = data_frame[primary_id].to_list()
 
-            # Each Primary ID Gets its Own Node
-            for current_id in id_list:
-                # Check edge case that there is only one primary ID
-                current_id = str(current_id)
-                if current_id != "nan" and "," not in current_id:
-                    node_data = NodeData(current_id, meta_file)
-                    self._graph.add_node(node_data)
+                # Each Primary ID Gets its Own Node
+                for current_id in id_list:
+                    # Check edge case that there is only one primary ID
+                    current_id = str(current_id)
+                    if current_id != "nan" and "," not in current_id:
+                        node_data = NodeData(current_id, meta_file)
+                        self._graph.add_node(node_data)
 
     def __gather_edges(self):
         """Gather all the edges."""
@@ -71,8 +72,9 @@ class GraphCreator:
                 self.__gather_child_parent_edges(
                     data_frame, primary_id_col, parent_id_col
                 )
-            if adj_id_col is not None and adj_id_col in data_frame.columns:
-                self.__gather_adjacent_edges(data_frame, primary_id_col, adj_id_col)
+            if data_frame is not None:
+                if adj_id_col is not None and adj_id_col in data_frame.columns:
+                    self.__gather_adjacent_edges(data_frame, primary_id_col, adj_id_col)
 
     def __gather_child_parent_edges(self, data_frame, primary_id_col, parent_id_col):
         """Gather Parent Child Edges."""

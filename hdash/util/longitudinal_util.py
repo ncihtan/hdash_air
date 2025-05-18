@@ -113,7 +113,9 @@ class LongitudinalUtil:
 
         # Add duplicates count for each row
         data_frame["Number"] = 1
-        data_frame["Number"] = data_frame.groupby(headers).transform(sum, numeric_only=True)
+        data_frame["Number"] = data_frame.groupby(headers).transform(
+            sum, numeric_only=True
+        )
 
         # Force collection days to numeric value
         data_frame["Collection Days from Index"] = pd.to_numeric(

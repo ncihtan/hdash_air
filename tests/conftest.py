@@ -110,7 +110,6 @@ def _init_atlas_list() -> List[AtlasInfo]:
     matrix_list = []
     matrix = Matrix()
     matrix.atlas_id = "HTA1"
-    matrix.bg_color = "pink"
     matrix.label = "Clinical Data Matrix: Tiers 1 and 2"
     matrix_list.append(matrix)
 

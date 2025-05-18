@@ -31,7 +31,7 @@ def _create_file(synapse_id, file_name, file_size, file_type, parent_id):
     file.synapse_id = synapse_id
     file.name = file_name
     file.size_bytes = file_size
-    file.type = file_type
+    file.file_type = file_type
     file.parent_id = parent_id
     file.data_type = util.get_file_type(file_name)
     return file

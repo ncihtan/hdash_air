@@ -17,6 +17,7 @@ def test_longitudinal_util():
     longitudinal_util.build_biospecimen_matrix(biospeciman_data2)
     longitudinal_util.create_longitudinal()
 
+
 def _get_data(file_name):
     with (open(file_name, "r")) as file:
         data = file.read()

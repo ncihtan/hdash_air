@@ -23,7 +23,10 @@ class ValidateNonDemographics(ValidationRule):
             demog_id_list = []
             for demographics_file in demographics_list:
                 data_frame = demographics_file.data_frame
-                demog_id_list.extend(data_frame[IdUtil.HTAN_PARTICIPANT_ID].to_list())
+                if data_frame is not None:
+                    demog_id_list.extend(
+                        data_frame[IdUtil.HTAN_PARTICIPANT_ID].to_list()
+                    )
             for category in categories.all_clinical:
                 self.__check_file(category, meta_map, demog_id_list)
 
@@ -32,12 +35,15 @@ class ValidateNonDemographics(ValidationRule):
             clinical_file_list = meta_map.get_meta_file_list(category)
             for clinical_file in clinical_file_list:
                 data_frame = clinical_file.data_frame
-                participant_id_list = data_frame[IdUtil.HTAN_PARTICIPANT_ID].to_list()
-                for participant_id in participant_id_list:
-                    if participant_id not in demog_id_list:
-                        msg = (
-                            f"Clinical file:  {category} "
-                            f"contains ID:  {participant_id}"
-                            ", but this ID is not in Demographics File"
-                        )
-                        self.add_error(msg, clinical_file)
+                if data_frame is not None:
+                    participant_id_list = data_frame[
+                        IdUtil.HTAN_PARTICIPANT_ID
+                    ].to_list()
+                    for participant_id in participant_id_list:
+                        if participant_id not in demog_id_list:
+                            msg = (
+                                f"Clinical file:  {category} "
+                                f"contains ID:  {participant_id}"
+                                ", but this ID is not in Demographics File"
+                            )
+                            self.add_error(msg, clinical_file)

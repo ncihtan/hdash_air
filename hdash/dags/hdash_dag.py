@@ -423,7 +423,7 @@ with DAG(
             path_stats_list = (
                 session.query(PathStats)
                 .filter_by(atlas_id=atlas_id)
-                .order_by(PathStats.path)
+                .order_by(PathStats.path)  # type: ignore
                 .all()
             )
 

@@ -49,7 +49,7 @@ class Longitudinal(Base):
         fig.update_traces(insidetextanchor="middle", textangle=20)
 
         for d in fig.data:
-            filt = plotly_df["Grouping"] == d.name
-            d.x = plotly_df[filt]["delta"].tolist()
+            filt = plotly_df["Grouping"] == d.name  # type: ignore
+            d.x = plotly_df[filt]["delta"].tolist()  # type: ignore
 
         return fig.to_html(full_html=False)

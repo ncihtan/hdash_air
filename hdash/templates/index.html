@@ -92,7 +92,7 @@
                 {% endif %}
             </td>
             <td>{{"%.1f"|format(100 *   atlas_info.stats.percent_metadata_complete) }}%</td>
-            <td>{{ atlas_info.get_total_num_errors() }}</td>
+            <td>{{ atlas_info.num_errors }}</td>
         </tr>
         {% endfor %}
         </tbody>

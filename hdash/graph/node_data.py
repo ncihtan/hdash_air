@@ -7,7 +7,6 @@ class NodeData:
     """Node Data."""
 
     node_id: str
-    sif_id: str
     meta_file: MetaFile
 
     def __init__(self, node_id: str, meta_file: MetaFile):

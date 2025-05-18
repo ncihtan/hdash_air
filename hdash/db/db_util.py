@@ -19,7 +19,9 @@ class DbConnection:
         port_number = credentials.port_number
 
         # Connect Pattern:  "mysql+pymysql://username:password@localhost:port/dbname"
-        self.db_connect_str = f"mysql+pymysql://{user}:{password}@{host}:{port_number}/{db_name}"
+        self.db_connect_str = (
+            f"mysql+pymysql://{user}:{password}@{host}:{port_number}/{db_name}"
+        )
 
         self._init_db_connections()
         if not database_exists(self.db_connect_str):
@@ -41,7 +43,7 @@ class DbConnection:
 
     def _create_database(self):
         create_database(self.db_connect_str)
-        Base.metadata.create_all(self._engine)
+        Base.metadata.create_all(self._engine)  # type: ignore
         self._init_db_connections()
 
     def _init_db_connections(self):

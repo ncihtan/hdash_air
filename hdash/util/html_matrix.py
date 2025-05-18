@@ -35,7 +35,7 @@ class HtmlMatrix:
         revised_df = self._prepare_df(self.data_frame)
         counts = revised_df.sum(axis=0)
         counts_df = counts.to_frame()
-        counts_df.index = list(counts.index)
+        counts_df.index = counts.index
         counts_df.columns = ["Counts"]
         return counts_df.to_html(
             index=True,

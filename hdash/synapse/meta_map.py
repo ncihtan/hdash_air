@@ -33,6 +33,6 @@ class MetaMap:
         """Get the List of Meta Files Associated with the Specified Category."""
         return self.map.get(category, [])
 
-    def get_categories(self) -> List[str]:
+    def get_categories(self):
         """Get the list of all registered categories in the map."""
         return self.map.keys()

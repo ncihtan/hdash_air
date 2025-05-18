@@ -19,7 +19,7 @@ class PathStatsChecker:
         self.path_map: Dict[str, PathStats] = {}
         counter = 0
 
-        non_meta_files = list(
+        non_meta_files: List[AtlasFile] = list(
             filter(lambda x: x.data_type != FileType.METADATA.value, file_list)
         )
 

@@ -24,8 +24,9 @@ class ValidateEntityIds(ValidationRule):
                 for meta_file in meta_file_list:
                     data_frame = meta_file.data_frame
                     try:
-                        synapse_ids = data_frame[Categories.ENTITY_ID_COL].to_list()
-                        self.__check_synapse_ids(meta_file, category, synapse_ids)
+                        if data_frame is not None:
+                            synapse_ids = data_frame[Categories.ENTITY_ID_COL].to_list()
+                            self.__check_synapse_ids(meta_file, category, synapse_ids)
                     except KeyError:
                         error_msg = (
                             f"{category} does not have "
