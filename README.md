@@ -101,12 +101,21 @@ make test       run Pytests
 make smoke      run "smoke" tests agains external dependencies, e.g. database, synapse, etc.
 make format     run black
 make flake8     run flake8
-make lint       run pylint
-make deploy     copy files to local Airflow Dev Server.
-make gcp        copy files to Google Cloud Composer for production deployment.
+make pyright    run pyright --> used to check type annotations
+make deploy     copy files to local Airflow Dev Server
+make gcp        copy files to Google Cloud Composer for production deployment
 ```
 
-## Local Development
+## Python Type Annotations
+
+We are currently using [Pyright](https://github.com/microsoft/pyright) to check for Python type
+annotations.  The current code base is a mix of code with and without Python type annotations.
+Ideally, I would like to get increased type coverage in the code.
+
+I am therefore following this [PyRight Getting Started Guide](https://microsoft.github.io/pyright/#/getting-started?id=_4-strict-typing).  It provides a step-by-step plan for incrementally adding types to an
+existing code base.
+
+## Local Development via Docker
 
 For local development, build the docker container by runnning:
 
