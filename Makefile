@@ -2,6 +2,7 @@ PROJ_SLUG = hdash
 CLI_NAME = hdash
 PY_VERSION = 3.8
 PY_LINT = pylint
+PY_RIGHT = pyright
 FLAKE8 = flake8
 FORMATTER = black
 
@@ -15,15 +16,14 @@ prepare:
 freeze:
 	pip freeze > requirements.txt
 
-# Run PyLint on all code
-lint:
-	$(PY_LINT) -j 0 $(PROJ_SLUG)
-	$(PY_LINT) -j 0 tests
-
 # Run flake8 on all code
 flake8:
 	$(FLAKE8) $(PROJ_SLUG)
 	$(FLAKE8) tests
+
+# Run Pyright on all code
+pyright:
+	$(PY_RIGHT)
 
 # Reformat all code via Black
 format:
