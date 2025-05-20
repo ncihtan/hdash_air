@@ -1,9 +1,10 @@
 """Test Graph Creator."""
 from hdash.graph.graph_creator import GraphCreator
 from hdash.graph.htan_graph import HtanGraph
+from hdash.synapse.meta_map import MetaMap
 
 
-def test_graph_creator(sample_meta_map):
+def test_graph_creator(sample_meta_map: MetaMap):
     """Test Graph Creator."""
     meta_map = sample_meta_map
     graph_creator = GraphCreator("HTA1", meta_map)

@@ -1,6 +1,7 @@
 """Test Path Util."""
 from hdash.util.path_util import PathUtil
 
+# pyright: strict
 
 def test_path_util():
     """Test Path Util."""

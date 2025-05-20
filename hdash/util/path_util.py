@@ -4,7 +4,7 @@
 class PathUtil:
     """Path Utility Class."""
 
-    def truncate_path(self, path):
+    def truncate_path(self, path: str):
         """Truncate a path.
 
         For example, given:  em_level_1/008, return em_level_1.
