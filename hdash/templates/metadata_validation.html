@@ -1,0 +1,39 @@
+<div class="accordion mt-2" id="accordionValidation">
+    {% for validation in atlas_info.validation_list %}
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button bg-light" type="button" data-bs-toggle="collapse"
+                data-bs-target="#validation{{ loop.index }}">
+                <span><strong>{{ validation.validation_text }}</strong></span>
+                {% if (validation.validation_passed()) %}
+                <span class="badge bg-success ms-1">Passed</span>
+                {% else %}
+                {% if (validation.validation_code == "H_ORPHAN_FILES"
+                or validation.validation_code == "H_FILE_NAMES") %}
+                <span class="badge bg-warning ms-2">Failed: {{ validation.error_list|length}}
+                    warnings</span>
+                {% else %}
+                <span class="badge bg-danger ms-2">Failed: {{ validation.error_list|length}}
+                    errors</span>
+                {% endif %}
+                {% endif %}
+            </button>
+        </h2>
+        <div id="validation{{loop.index}}" class="accordion-collapse collapse collapse">
+            <div class="accordion-body">
+                {% if (validation.validation_passed()) %}
+                Validation Passed.
+                {% else %}
+                <table class="table table-striped">
+                    {% for error in validation.error_list %}
+                    <tr>
+                        <td>{{ error.error_msg }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>

@@ -1,0 +1,29 @@
+{% if atlas_info.meta_list|length > 0 %}
+<table class="mt-2 table table-striped ">
+    <thead>
+        <tr>
+            <th>Synapse ID</th>
+            <th>Category</th>
+            <th>Num Records</th>
+            <th>Percent Complete Metadata</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for meta_file in atlas_info.meta_list %}
+        <tr>
+            <td>
+                <a href="https://www.synapse.org/#!Synapse:{{ meta_file.meta_cache.synapse_id }}/files/">{{
+                    meta_file.meta_cache.synapse_id }}</a>
+            </td>
+            <td>{{ meta_file.atlas_file.category }}</td>
+            <td>{{ meta_file.meta_cache.num_records }}</td>
+            <td>{{ "%.2f"|format(100 *
+                meta_file.meta_cache.percent_completed_fields) }}%
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+No metadata detected.
+{% endif %}

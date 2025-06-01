@@ -1,0 +1,19 @@
+<table class="mt-2 table table-striped ">
+    <thead>
+        <tr>
+            <th>Root Path</th>
+            <th>Num Annotated Files</th>
+            <th>Num Unannotated Files</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for path_stats in atlas_info.path_stats_list %}
+        <tr>
+            <td><a href="https://www.synapse.org/#!Synapse:{{path_stats.synapse_id}}">{{ path_stats.path
+                    }}</a></td>
+            <td>{{ path_stats.num_annotated_files }}</td>
+            <td>{{ path_stats.num_un_annotated_files }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

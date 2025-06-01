@@ -1,0 +1,33 @@
+{% for html_matrix in atlas_info.html_matrix_list %}
+{% if html_matrix.has_data() %}
+<div class="w-95 p-3 mt-2 mb-3 border border-primary-subtle rounded">
+    <h3>{{ html_matrix.matrix.label }} </h3>
+    {% if html_matrix.has_non_zero_data() %}
+    <br><br>
+    {% include "matrix_viz.html" %}
+    {% else %}
+    No data available.
+    {% endif %}
+    <br><br>
+
+    <div class="accordion" id="accordionMatrix{{loop.index}}">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button bg-light" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#matrix{{loop.index}}">
+                    <span>View Details</span>
+                </button>
+            </h2>
+            <div id="matrix{{loop.index}}" class="accordion-collapse collapse collapse">
+                <div class="accordion-body">
+                    <div class="small_table_text">
+                        {{ html_matrix.get_data_frame_html() | safe }}
+                        {{ html_matrix.get_counts_html() | safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}

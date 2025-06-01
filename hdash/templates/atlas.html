@@ -1,272 +1,141 @@
 <html>
+
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
-          crossorigin="anonymous">
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
-            crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
+        crossorigin="anonymous"></script>
     <script src='https://cdn.plot.ly/plotly-2.20.0.min.js'></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% include "plotly_heatmap.html" %}
     <style>
-    body {
-      margin-left: 20px;
-      margin-right:10px;
-      margin-top:10px;
-      margin-bottom:10px;
-    }
-    .small_table_text {
-        font-size:12;
-    }
+        .small_table_text {
+            font-size: 12;
+        }
     </style>
 </head>
+
 <body>
-<div class="container">
-    {% include "header.html" %}
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{
-                atlas_info.info.atlas_id }}: {{ atlas_info.info.name }}
-            </li>
-        </ol>
-    </nav>
-    <h2 class="mb-2">{{ atlas_info.info.atlas_id }}: {{ atlas_info.info.name }}</h2>
-    <div class="mb-3">
-        <div class="row">
-            <div class="col-3">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Total File Size</h5>
-                        <h6 class="card-subtitle mt-4 mb-4 text-success h2">{{
-                            atlas_info.stats.get_total_fize_size_human_readable()}}</h6>
-                        <p class="card-text text-muted">Total size of all files
-                            submitted to the DCC.</p>
+    <div class="container-fluid ms-2 me-2">
+        {% include "header.html" %}
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{
+                    atlas_info.info.atlas_id }}: {{ atlas_info.info.name }}
+                </li>
+            </ol>
+        </nav>
+        <h1 class="mb-3">{{ atlas_info.info.atlas_id }}: {{ atlas_info.info.name }}</h1>
+        <div class="mb-3 d-flex">
+            <div class="row">
+                <div class="col-3">
+                    <div class="card h-100 bg-success-subtle">
+                        <div class="card-body ">
+                            <h5 class="card-title">Total File Size</h5>
+                            <h6 class="card-subtitle mt-4 mb-4 text-success h2">{{
+                                atlas_info.stats.get_total_fize_size_human_readable()}}</h6>
+                            <p class="card-text text-muted">Total size of all files
+                                submitted to the DCC.</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-3">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Total Number of Files</h5>
-                        <h6 class="card-subtitle mt-4 mb-4 text-success h2">{{
-                            "{:,d}".format(atlas_info.stats.get_total_num_files())}}</h6>
-                        <p class="card-text text-muted">Total number of files submitted
-                            to the DCC.</p>
+                <div class="col-3">
+                    <div class="card h-100 bg-success-subtle">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Number of Files</h5>
+                            <h6 class="card-subtitle mt-4 mb-4 text-success h2">{{
+                                "{:,d}".format(atlas_info.stats.get_total_num_files())}}</h6>
+                            <p class="card-text text-muted">Total number of files submitted
+                                to the DCC.</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-3">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Validation Errors</h5>
-                        <h6 class="card-subtitle mt-4 mb-4 text-success h2">{{
-                            "{:,d}".format(atlas_info.num_errors) }}</h6>
-                        <p class="card-text text-muted">Total number of validation
-                            errors detected by the DCC dashboard.</p>
+                <div class="col-3">
+                    <div class="card h-100 bg-danger-subtle">
+                        <div class="card-body">
+                            <h5 class="card-title">Validation Errors</h5>
+                            <h6 class="card-subtitle mt-4 mb-4 text-success h2">{{
+                                "{:,d}".format(atlas_info.num_errors) }}</h6>
+                            <p class="card-text text-muted">Total number of validation
+                                errors detected by the DCC dashboard.</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-3">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Percent Metadata Complete</h5>
-                        <h6 class="card-subtitle mt-4 mb-4 text-success h2">{{
-                            "%.1f"|format(100 *
-                            atlas_info.stats.percent_metadata_complete) }}%</h6>
-                        <p class="card-text text-muted">Total percent of metadata fields
-                            completed.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="w-95 p-3 mb-3 border border-primary-subtle rounded">
-        <h3>Metadata Files</h3>
-        {% if atlas_info.meta_list|length > 0 %}
-        <table class="table table-striped ">
-            <thead>
-            <tr>
-                <th>Synapse ID</th>
-                <th>Category</th>
-                <th>Num Records</th>
-                <th>Percent Complete Metadata</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for meta_file in atlas_info.meta_list %}
-            <tr>
-                <td>
-                    <a href="https://www.synapse.org/#!Synapse:{{ meta_file.meta_cache.synapse_id }}/files/">{{
-                        meta_file.meta_cache.synapse_id }}</a></td>
-                <td>{{ meta_file.atlas_file.category }}</td>
-                <td>{{ meta_file.meta_cache.num_records }}</td>
-                <td>{{ "%.2f"|format(100 *
-                    meta_file.meta_cache.percent_completed_fields) }}%
-                </td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        No metadata detected.
-        {% endif %}
-    </div>
-
-    <div class="w-95 p-3 mb-3 border border-primary-subtle rounded">
-        <h3>Metadata Validation</h3>
-        <div class="accordion" id="accordionValidation">
-            {% for validation in atlas_info.validation_list %}
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button bg-light" type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#validation{{ loop.index }}">
-                        <span><strong>{{ validation.validation_text }}</strong></span>
-                        {% if (validation.validation_passed()) %}
-                        <span class="badge bg-success ms-1">Passed</span>
-                        {% else %}
-                            {% if (validation.validation_code == "H_ORPHAN_FILES"
-                                or validation.validation_code == "H_FILE_NAMES") %}
-                                <span class="badge bg-warning ms-2">Failed:  {{ validation.error_list|length}} warnings</span>
-                            {% else %}
-                                <span class="badge bg-danger ms-2">Failed:  {{ validation.error_list|length}} errors</span>
-                            {% endif %}
-                        {% endif %}
-                    </button>
-                </h2>
-                <div id="validation{{loop.index}}" class="accordion-collapse collapse collapse">
-                    <div class="accordion-body">
-                        {% if (validation.validation_passed()) %}
-                        Validation Passed.
-                        {% else %}
-                        <table class="table table-striped">
-                            {% for error in validation.error_list %}
-                            <tr>
-                                <td>{{ error.error_msg }}</td>
-                            </tr>
-                            {% endfor %}
-                        </table>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-
-    <div class="w-95 p-3 mb-3 border border-primary-subtle rounded">
-        <h3>Folder Check</h3>
-        <table class="table table-striped ">
-            <thead>
-            <tr>
-                <th>Root Path</th>
-                <th>Num Annotated Files</th>
-                <th>Num Unannotated Files</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for path_stats in atlas_info.path_stats_list %}
-                <tr>
-                    <td><a href="https://www.synapse.org/#!Synapse:{{path_stats.synapse_id}}">{{ path_stats.path }}</a></td>
-                    <td>{{ path_stats.num_annotated_files }}</td>
-                    <td>{{ path_stats.num_un_annotated_files }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    {% for html_matrix in atlas_info.html_matrix_list %}
-    {% if html_matrix.has_data() %}
-        <div class="w-95 p-3 mb-3 border border-primary-subtle rounded">
-            <h3>{{ html_matrix.matrix.label }} </h3>
-            {% if html_matrix.has_non_zero_data() %}
-                <br><br>
-                {% include "matrix_viz.html" %}
-            {% else %}
-                No data available.
-            {% endif %}
-            <br><br>
-
-            <div class="accordion" id="accordionMatrix{{loop.index}}">
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button bg-light" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#matrix{{loop.index}}">
-                            <span>View Details</span>
-                        </button>
-                    </h2>
-                    <div id="matrix{{loop.index}}" class="accordion-collapse collapse collapse">
-                        <div class="accordion-body">
-                            <div class="small_table_text">
-                            {{ html_matrix.get_data_frame_html() | safe }}
-                            {{ html_matrix.get_counts_html() | safe }}
-                            </div>
+                <div class="col-3">
+                    <div class="card h-100 bg-warning-subtle">
+                        <div class="card-body">
+                            <h5 class="card-title">Percent Metadata Complete</h5>
+                            <h6 class="card-subtitle mt-4 mb-4 text-success h2">{{
+                                "%.1f"|format(100 *
+                                atlas_info.stats.percent_metadata_complete) }}%</h6>
+                            <p class="card-text text-muted">Total percent of metadata fields
+                                completed.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    {% endif %}
-    {% endfor %}
 
-    {% for longitudinal in atlas_info.longitudinal_table %}
-        <div class="accordion" id="accordionLongitudinal">
-            <div class="accordion-item">
-                <h3 class="accordion-header">
-                    <button class="accordion-button bg-light w-95 p-3 mb-3 border border-primary-subtle rounded" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#longitudinal">
-                        <span><h3>Longitudinal Data</h3></span>
-                    </button>
-                </h3>
-                <div id="longitudinal" class="accordion-collapse collapse show" data-bs-parent="#accordionLongitudinal">
-                    <div class="accordion-body">
-                        {% if longitudinal.has_data() %}
-                            {% include "longitudinal_viz.html" %}
-                        {% else %}
-                            No data available.
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="accordion" id="accordionLongitudinalPlotly">
-            <div class="accordion-item">
-                <h3 class="accordion-header">
-                    <button class="accordion-button bg-light w-95 p-3 mb-3 border border-primary-subtle rounded" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#longitudinalPlotly">
-                        <span><h3>Longitudinal Details Plot</h3></span>
-                    </button>
-                </h3>
-                <div id="longitudinalPlotly" class="accordion-collapse collapse show" data-bs-parent="#accordionLongitudinalPlotly">
-                    <div class="accordion-body">
-                        {% if longitudinal.has_data() %}
-                            {{longitudinal.get_html_plotly() | safe}}
-                        {% else %}
-                            No data available.
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endfor %}
-
-    <div class="w-95 p-3" style="background-color: #eee;">
-        <h3><i class="bi bi-bug"></i> DCC Debugging</h3>
-        <ul>
-            <li><a href="{{ atlas_info.info.atlas_id}}_network.sif">Cytoscape SIF
-                Network</a></li>
+        <ul class="nav nav-tabs" id="tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="metadata-file-tab" data-bs-toggle="tab"
+                    data-bs-target="#metadata-files-tab-pane" type="button" role="tab">Metadata Files</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="metadata-validation-tab" data-bs-toggle="tab"
+                    data-bs-target="#metadata-validation-pane" type="button" role="tab">Metadata
+                    Validation</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="folder-pane-tab" data-bs-toggle="tab" data-bs-target="#folder-pane"
+                    type="button" role="tab">Folder
+                    Check</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="completeness-tab" data-bs-toggle="tab" data-bs-target="#completeness-pane"
+                    type="button" role="tab">Completeness
+                    Summary</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="longitudinal-tab" data-bs-toggle="tab" data-bs-target="#longitudinal-pane"
+                    type="button" role="tab">Longitudinal
+                    Clinical
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="cytoscape-tab" data-bs-toggle="tab" data-bs-target="#cytoscape-pane"
+                    type="button" role="tab">Cytoscape Network (Debug)
+                </button>
+            </li>
         </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane show active" id="metadata-files-tab-pane" role="tabpanel" tabindex="0">
+                {% include "metadata_files.html" %}
+            </div>
+            <div class="tab-pane" id="metadata-validation-pane" role="tabpanel" tabindex="0">
+                {% include "metadata_validation.html" %}
+            </div>
+            <div class="tab-pane" id="folder-pane" role="tabpanel" tabindex="0">
+                {% include "folder_check.html" %}
+            </div>
+            <div class="tab-pane" id="completeness-pane" role="tabpanel" tabindex="0">
+                {% include "completeness_check.html" %}
+            </div>
+            <div class="tab-pane" id="longitudinal-pane" role="tabpanel" tabindex="0">
+                {% include "longitudinal.html" %}
+            </div>
+            <div class="tab-pane" id="cytoscape-pane" role="tabpanel" tabindex="0">
+                    <ul class="mt-3">
+                        <li><a href="{{ atlas_info.info.atlas_id}}_network.sif">Download Cytoscape SIF
+                                Network</a> (DCC Debugging)</li>
+                    </ul>
+            </div>
+        </div>
+        <br>
+        {% include "footer.html" %}
     </div>
-    <br>
-    {% include "footer.html" %}
-</div>
 </body>
 
 </html>

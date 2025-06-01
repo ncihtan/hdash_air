@@ -23,6 +23,7 @@ class WebWriter:
 
         self.env = self._get_template_env()
         self.now = datetime.now()
+        self.year = self.now.year
         self.now_str = self.now.strftime("%Y-%m-%d %I:%M:%S %p")
         self.next_update = self.now + timedelta(hours=4)
         self.next_update_str = self.next_update.strftime("%Y-%m-%d %I:%M:%S %p")
@@ -35,6 +36,7 @@ class WebWriter:
         storage_human = humanize.naturalsize(self.total_storage)
         self.index_html = template.render(
             now=self.now_str,
+            year=self.year,
             next_update=self.next_update_str,
             atlas_list=self.atlas_list,
             storage_human=storage_human,
