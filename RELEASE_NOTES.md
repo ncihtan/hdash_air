@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2025-06-02
+
+* Front-end refresh.  Atlas pages now have tabs to make content easier to follow.
+
 ## 2024-10-12
 
 * Added new visualizations for longitudinal therapy and biospecimen data

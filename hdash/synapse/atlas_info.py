@@ -1,5 +1,4 @@
 """Atlas Info."""
-from typing import List
 from hdash.db.atlas import Atlas
 from hdash.db.validation import Validation
 from hdash.db.atlas_stats import AtlasStats
@@ -16,11 +15,11 @@ class AtlasInfo:
         self,
         atlas: Atlas,
         atlas_stats: AtlasStats,
-        meta_list: List[MetaFile],
-        validation_list: List[Validation],
-        html_matrix_list: List[HtmlMatrix],
-        path_stats_list: List[PathStats],
-        longitudinal_table: List[Longitudinal],
+        meta_list: list[MetaFile],
+        validation_list: list[Validation],
+        html_matrix_list: list[HtmlMatrix],
+        path_stats_list: list[PathStats],
+        longitudinal_table: list[Longitudinal],
     ):
         """Create new Atlas Info Object."""
         self.info = atlas
@@ -28,7 +27,7 @@ class AtlasInfo:
         self.meta_list = meta_list
         self.validation_list = validation_list
         self.html_matrix_list = html_matrix_list
-        self.path_stats_list = (path_stats_list,)
+        self.path_stats_list = path_stats_list
         self.longitudinal_table = longitudinal_table
         self._calculate_total_num_errors()
 

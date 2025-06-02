@@ -1,3 +1,13 @@
+<div class="mt-3 ms-1">
+These plots are designed to visually summarize the data completeness of
+an HTAN atlas.
+<p>For example:
+<ul>
+    <li>how much Tier 1 clinical data has the atlas provided?</li>
+    <li>for sequencing or imaging data, has the atlas provided Level 1-4 data?</li>
+</ul>
+</div>
+
 {% for html_matrix in atlas_info.html_matrix_list %}
 {% if html_matrix.has_data() %}
 <div class="w-95 p-3 mt-2 mb-3 border border-primary-subtle rounded">
