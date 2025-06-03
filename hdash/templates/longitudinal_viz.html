@@ -1,18 +1,35 @@
-<div class="mermaid">
+<div class="mermaid" id="gantt-chart">
 gantt
     dateFormat X
     axisFormat %s
     {{longitudinal.get_content() | safe}}
 </div>
-<script type="module">
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+<script>
     var config = {
       logLevel:1,
-      startOnLoad:true,
+      startOnLoad:false, // Prevent loading on startup, as the tab is hidden
       gantt: {
         leftPadding: 220, // The space allocated for the section to the left of the events
         topAxis: true
       }
     };
     mermaid.initialize(config);
+    let chartRendered = false;
+
+    // Function to render the chart
+    function renderChart() {
+        if (!chartRendered) {
+            const element = document.getElementById('gantt-chart');
+            mermaid.render('gantt-svg', element.textContent).then(({svg}) => {
+                element.innerHTML = svg;
+                chartRendered = true;
+            });
+        }
+    }
+
+    // Render chart when tab is shown
+    document.getElementById('longitudinal-tab').addEventListener('shown.bs.tab', function (e) {
+        // Small delay to ensure tab is fully visible
+        setTimeout(renderChart, 100);
+    });
 </script>
