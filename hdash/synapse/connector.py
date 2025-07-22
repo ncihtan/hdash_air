@@ -17,7 +17,7 @@ class SynapseConnector:
         self.logger = logging.getLogger("airflow.task")
         self.syn = synapseclient.Synapse()
         self.cred = SynapseCredentials()
-        self.syn.login(self.cred.user_name, self.cred.password, silent=True)
+        self.syn.login(authToken=self.cred.password, silent=True)
 
     def get_atlas_files(self, atlas_id, entity_id):
         """Retrieve the Synapse Table for the Specified Atlas."""
