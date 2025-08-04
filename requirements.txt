@@ -16,6 +16,7 @@ httpx==0.28.1
 humanize==4.12.3
 idna==3.10
 importlib_metadata==8.7.0
+iniconfig==2.1.0
 Jinja2==3.1.6
 jmespath==1.0.1
 MarkupSafe==3.0.2
@@ -39,9 +40,12 @@ opentelemetry-util-http==0.57b0
 packaging==25.0
 pandas==2.3.1
 plotly==6.2.0
+pluggy==1.6.0
 protobuf==6.31.1
 psutil==5.9.8
+Pygments==2.19.2
 PyMySQL==1.1.1
+pytest==8.4.1
 python-dateutil==2.9.0.post0
 pytz==2025.2
 requests==2.32.4

@@ -15,7 +15,7 @@ freeze:
 	pip freeze > requirements.txt
 
 # Build the Docker Image for Linux/amd64
-build_amd64:
+build_amd64: freeze
 	docker build --platform linux/amd64 -t hdash .
 
 # Push to AWS Elastic Container Registry (ECR)

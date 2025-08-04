@@ -60,53 +60,54 @@ SLACK_WEBHOOK_URL     Slack Web Hook URL for Posting to Slack
 
 ## Developer Tools
 
+The Makefile includes a number of useful development tools:
 
+* format:  runs Black on all source files
+* flake8:  runs Flake8 linter on all source files
+* pyright:  runs PyRight type checker on all source files
+* test:  runs all unit tests
 
-## Command Line Tool
+## CLIs
 
-The ```hdash.py``` command line tool does not run the full pipelines.  Rather, it
-is designed to initialize a project and test certain external dependencies.
-It currently supports the following commands:
+There are two CLIs:
 
-```
-  deploy  Deploy website from database to S3 bucket.
-  init    Initialize the database with atlases.
-  reset   Reset the database (use with caution).
-  slack   Send a mock message to Slack.
-  web     Download website from the database to deploy directory.
-```
-
-You can run the CLI like so:
-
-```commandline
-python3 hdash.py slack
-```
-
-## Developer Notes
-
-The Makefile includes a number of useful targets for developing code.
+```hdash_util.py``` includes:
 
 ```
-make test       run Pytests
-make smoke      run "smoke" tests agains external dependencies, e.g. database, synapse, etc.
-make format     run black
-make flake8     run flake8
-make pyright    run pyright --> used to check type annotations
-make deploy     copy files to local Airflow Dev Server
-make gcp        copy files to Google Cloud Composer for production deployment
+  init   Initialize the database with atlases.
+  reset  Reset the database (use with caution).
+  slack  Send a mock message to Slack.
 ```
+
+```hdash.py``` runs the entire pipeline, start to finish.
+
 
 ## Developer Notes:  Python Type Annotations
 
 I am currently using [Pyright](https://github.com/microsoft/pyright) to check for Python type annotations.  The current code base is a mix of code with and without Python type annotations. Ideally, I would like to get increased type coverage in the code.  I am therefore following this [PyRight Getting Started Guide](https://microsoft.github.io/pyright/#/getting-started?id=_4-strict-typing).  It provides a step-by-step plan for incrementally adding types to an existing code base.
 
-## AWS Notes
+## AWS Deployment Notes
 
-AWS Elastic Container Registry (ECR) is used to register the hdash Docker image.
+To deploy everything to AWS:
 
-AWS Elastic Compute FarGate is used to run the hdash Docker container.
+```
+make build_amd64
+make docker_push
+```
 
-AWS EventBridge is used to schedule hdash runs on a cron-based schedule.
+This creates a new Docker image and registers it via AWS Elastic Container Registry (ECR).
+
+If the docker push fails, re-authenticate via:
+
+```
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 507652762357.dkr.ecr.us-east-1.amazonaws.com
+```
+
+Once the Docker image is uploaded:
+
+* Create an AWS Elastic Compute Cluster.
+* Create a Task Definition for HDash.  This task definition must include the environment variables.
+* Create an AWS EventBridge to execute the container on a schedule.
 
 For this to work, you must specify a schedule with:
 
