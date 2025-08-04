@@ -1,20 +1,20 @@
 """Synapse Credentials."""
-from airflow.models import Variable
+import os
 
 
 class SynapseCredentials:
-    """Synapse Credentials obtained via Airflow Environment Variables."""
+    """Synapse Credentials obtained via Environment Variables."""
 
     SYNAPSE_USER_KEY = "SYNAPSE_USER"
     SYNAPSE_PASSWORD_KEY = "SYNAPSE_PASSWORD"
 
     def __init__(self):
         """Construct Synapse Credentials."""
-        self._user_name = Variable.get(self.SYNAPSE_USER_KEY)
+        self._user_name = os.environ.get(self.SYNAPSE_USER_KEY)
         if self._user_name is None:
             raise EnvironmentError(f"{self.SYNAPSE_USER_KEY} not set.")
 
-        self._password = Variable.get(self.SYNAPSE_PASSWORD_KEY)
+        self._password = os.environ.get(self.SYNAPSE_PASSWORD_KEY)
         if self._password is None:
             raise EnvironmentError(f"{self.SYNAPSE_PASSWORD_KEY} not set.")
 

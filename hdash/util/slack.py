@@ -1,7 +1,7 @@
 """Slack Connector."""
 import datetime
 import requests
-from airflow.models import Variable
+import os
 from hdash.util.s3_credentials import S3Credentials
 from typing import Any
 
@@ -14,7 +14,7 @@ class Slack:
     def __init__(self):
         """Construct Slack Connector."""
         self.s3_credentials = S3Credentials()
-        self.web_hook_url = Variable.get(self.SLACK_WEBHOOK_URL)
+        self.web_hook_url = os.environ.get(self.SLACK_WEBHOOK_URL)
         if self.web_hook_url is None:
             raise EnvironmentError(f"{self.SLACK_WEBHOOK_URL} not set.")
 
@@ -39,7 +39,7 @@ class Slack:
             payload["text"] = "Dashboard Build Failed"
 
         payload["blocks"] = blocks
-        text = self._create_text_block("plain_text", "HDash Bot")
+        text = self._create_text_block("plain_text", "HDash Bot @ AWS")
         block1 = {"type": "header", "text": text}
         blocks.append(block1)
 

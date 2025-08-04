@@ -14,7 +14,7 @@ class SynapseConnector:
 
     def __init__(self):
         """Construct a new Synapse Connector Class."""
-        self.logger = logging.getLogger("airflow.task")
+        self.logger = logging.getLogger("hdash")
         self.syn = synapseclient.Synapse()
         self.cred = SynapseCredentials()
         self.syn.login(authToken=self.cred.password, silent=True)

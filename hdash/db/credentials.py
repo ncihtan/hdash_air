@@ -1,10 +1,8 @@
 """Synapse Credentials."""
-
-from airflow.models import Variable
-
+import os
 
 class DatabaseCredentials:
-    """Database Credentials obtained via Airflow Environment Variables."""
+    """Database Credentials obtained via Environment Variables."""
 
     DB_USER_KEY = "HDASH_DB_USER"
     DB_PASSWORD_KEY = "HDASH_DB_PASSWORD"
@@ -14,23 +12,23 @@ class DatabaseCredentials:
 
     def __init__(self):
         """Construct Database Credentials."""
-        self._user_name = Variable.get(self.DB_USER_KEY)
+        self._user_name = os.environ.get(self.DB_USER_KEY)
         if self._user_name is None:
             raise EnvironmentError(f"{self.DB_USER_KEY} not set.")
 
-        self._password = Variable.get(self.DB_PASSWORD_KEY)
+        self._password = os.environ.get(self.DB_PASSWORD_KEY)
         if self._password is None:
             raise EnvironmentError(f"{self.DB_PASSWORD_KEY} not set.")
 
-        self._host = Variable.get(self.DB_HOST_KEY)
+        self._host = os.environ.get(self.DB_HOST_KEY)
         if self._host is None:
             raise EnvironmentError(f"{self.DB_HOST_KEY} not set.")
 
-        self._db_name = Variable.get(self.DB_NAME_KEY)
+        self._db_name = os.environ.get(self.DB_NAME_KEY)
         if self._db_name is None:
             raise EnvironmentError(f"{self.DB_NAME_KEY} not set.")
 
-        self._port_number = Variable.get(self.DB_PORT_NUMBER)
+        self._port_number = os.environ.get(self.DB_PORT_NUMBER)
         if self._port_number is None:
             raise EnvironmentError(f"{self.DB_PORT_NUMBER} not set.")
 

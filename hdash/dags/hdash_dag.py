@@ -39,7 +39,7 @@ from hdash.util.slack import Slack
 from hdash.util.categories import Categories
 
 
-logger = logging.getLogger("airflow.task")
+logger = logging.getLogger("hdash")
 
 
 def dag_failure_alert(context):

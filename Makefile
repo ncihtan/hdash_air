@@ -8,13 +8,20 @@ FORMATTER = black
 
 # Prepare directories
 prepare:
-	mkdir -p deploy
-	mkdir -p deploy/images
 	mkdir -p tests/out
 
 # Generate new requirements.txt dependencies file.
 freeze:
 	pip freeze > requirements.txt
+
+# Build the Docker Image for Linux/amd64
+build_amd64:
+	docker build --platform linux/amd64 -t hdash .
+
+# Push to AWS Elastic Container Registry (ECR)
+docker_push:
+	docker tag hdash:latest 507652762357.dkr.ecr.us-east-1.amazonaws.com/hdash:latest
+	docker push 507652762357.dkr.ecr.us-east-1.amazonaws.com/hdash:latest
 
 # Run flake8 on all code
 flake8:
@@ -37,17 +44,3 @@ test: prepare
 # Run smoke tests that require external dependencies, e.g. database, synapse, buckets.
 smoke:
 	pytest -v -m "smoke" tests
-
-# Deploy to Apache Airflow Dev Directory
-deploy:
-	cp -R hdash $(AIRFLOW_DEV_HOME)
-	cp hdash/dags/*.py $(AIRFLOW_DEV_HOME)/dags
-
-# Deploy to Google Cloud Composer DAG Bucket
-gcp:
-	gsutil cp -r hdash $(HDASH_CLOUD_COMPOSER_DAG)
-	gsutil cp hdash/dags/*.py $(HDASH_CLOUD_COMPOSER_DAG)
-
-# Clean things up
-clean:
-	rm -rf deploy

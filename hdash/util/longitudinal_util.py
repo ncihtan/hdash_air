@@ -11,7 +11,7 @@ class LongitudinalUtil:
 
     def __init__(self, atlas_id):
         """Create Longitudinal Utility."""
-        self.logger = logging.getLogger("airflow.task")
+        self.logger = logging.getLogger("hdash")
         self.atlas_id = atlas_id
         self.table_list = []
         self.plotly_list = []

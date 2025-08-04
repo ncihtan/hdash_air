@@ -19,7 +19,7 @@ from hdash.synapse.meta_map import MetaMap
 class HtanValidator:
     """Core HTAN Validator."""
 
-    logger = logging.getLogger("airflow.task")
+    logger = logging.getLogger("hdash")
 
     def __init__(
         self,

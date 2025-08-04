@@ -8,7 +8,7 @@ from hdash.util.categories import Categories
 class MetaFileIdChecker:
     """Check HTAN IDs in a Metadata File."""
 
-    logger = logging.getLogger("airflow.task")
+    logger = logging.getLogger("hdash")
 
     def __init__(self, synapse_id, category, data_frame):
         """Init MetaFileIdChecker."""

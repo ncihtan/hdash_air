@@ -1,23 +1,22 @@
-# hdash_air
+# hdash_aws
 
-Airflow pipeline for creating the HTAN Dashboard.
+AWS Pipeline for creating the HTAN Dashboard.
 
 ## Overview
 
-```hdash_air``` is an Apache Airflow pipeline for creating the HTAN Dashboard.  The
-pipeline connects to Synapse to retrieve HTAN data and metadata, and summarizes this
-data in a series of static HTML web pages.  These static pages are then deployed to
-an S3 compatible cloud bucket.
+```hdash_aws``` is an AWS pipeline for creating the HTAN Dashboard.  The pipeline connects to Synapse to retrieve HTAN data and metadata, and summarizes this data in a series of static HTML web pages.  These static pages are then deployed to an S3 cloud bucket.
 
-```hdash_air``` requires the following components:
+Previous versions of this code used Apache Airflow, but this new code is designed to run natively within AWS and designed to be more cost-effective.
 
-* A working installation of Apache Airflow, e.g. via
-[Astro CLI](https://docs.astronomer.io/astro/cli/overview).
-* A MySQL database for storing intermediate files.
-* An S3 compatible cloud bucket for hosting static web pages.
+Specifically:
 
-```hdash_air``` is currently running on [Google Cloud Composer](https://cloud.google.com/composer),
-with a managed MySQL database, and a Linode cloud bucket.
+* the code is packaged into a Docker image, and registered via AWS Elastic Container Registry (ECR).
+* database is run via AWS RDS.
+* the Docker container is run via AWS Elastic Compute / Fargate.
+* Fargate is triggered via AWS EventBridge on a specific cron schedule.
+* static HTML pages are stored in an S3 bucket.
+
+With this architecture, our cloud bill should be substantially lower than Airflow, as we will only be paying for on-demand Fargate computing.
 
 ## Development
 
@@ -44,12 +43,11 @@ pip install -r requirements.txt
 
 ## Set Environment Variables
 
-To run the ```hdash.py``` command line tool, and/or to run the pipeline within Airflow,
-you must set the following variables.
+The following environment variables are required:
 
 ```
-SYNAPSE_USER          Synapse User Name
-SYNAPSE_PASSWORD      Synapse Password
+SYNAPSE_USER          Synapse User Name, must use a Personal Access Token (PAT)
+SYNAPSE_PASSWORD      Synapse Password, must use a Personal Access Token (PAT)
 HDASH_DB_HOST         Database Host Name 
 HDASH_DB_USER         Database User Name
 HDASH_DB_PASSWORD     Database Password
@@ -58,19 +56,9 @@ S3_ACCESS_KEY_ID      S3 Access Key ID
 S3_SECRET_ACCESS_KEY  S3 Access key
 S3_ENDPOINT_URL       S3 Endpoint URL, e.g. https://us-east-1.linodeobjects.com
 S3_BUCKET_NAME        S3 Bucket Name, e.g. htan
-S3_WEB_SITE_URL       S3 Static Site, e.g. http://hdash.website-us-east-1.linodeobjects.com/
+S3_WEB_SITE_URL       S3 Static Site, e.g. http://htan-hdash.s3-website-us-east-1.amazonaws.com
 SLACK_WEBHOOK_URL     Slack Web Hook URL for Posting to Slack
 ```
-
-For local development, you will also need:
-```
-AIRFLOW_DEV_HOME            Directory of local/dev Airflow installation.
-HDASH_CLOUD_COMPOSER_DAG    DAG Bucket location for Google Cloud Composer.
-                            Must be of the form:  gs://xxxx/dags 
-```
-
-Note:  For the command line tool, all variables must be prefixed with:  ```AIRFLOW_VAR_```.
-For example:  ```AIRFLOW_VAR_SYNAPSE_USER```.
 
 ## Command Line Tool
 
@@ -106,69 +94,23 @@ make deploy     copy files to local Airflow Dev Server
 make gcp        copy files to Google Cloud Composer for production deployment
 ```
 
-## Python Type Annotations
+## Developer Notes:  Python Type Annotations
 
-We are currently using [Pyright](https://github.com/microsoft/pyright) to check for Python type
-annotations.  The current code base is a mix of code with and without Python type annotations.
-Ideally, I would like to get increased type coverage in the code.
+I am currently using [Pyright](https://github.com/microsoft/pyright) to check for Python type annotations.  The current code base is a mix of code with and without Python type annotations. Ideally, I would like to get increased type coverage in the code.  I am therefore following this [PyRight Getting Started Guide](https://microsoft.github.io/pyright/#/getting-started?id=_4-strict-typing).  It provides a step-by-step plan for incrementally adding types to an existing code base.
 
-I am therefore following this [PyRight Getting Started Guide](https://microsoft.github.io/pyright/#/getting-started?id=_4-strict-typing).  It provides a step-by-step plan for incrementally adding types to an
-existing code base.
+## AWS Notes
 
-## Local Development via Docker
+AWS Elastic Container Registry (ECR) is used to register the hdash Docker image.
 
-For local development, build the docker container by runnning:
+AWS Elastic Compute FarGate is used to run the hdash Docker container.
 
-```commandline
-docker build . -t hdash
-```
+AWS EventBridge is used to schedule hdash runs on a cron-based schedule.
 
-Start the local airflow and services by running:
+For this to work, you must specify a schedule with:
 
-```commandline
-docker compose up
-```
-
-You then should be able to navigate to airflow http://localhost:8080/
-Username and password are both 'airflow'.
-
-Sometimes the image may need to be pruned, if you are getting databse timeouts.
-
-```commandline
-docker image prune -a -f
-```
-
-## Production Deployment
-
-For production deployment, I am using [Google Cloud Composer](https://cloud.google.com/composer).
-
-Google provides complete documentation on installing Python dependencies at:  
-https://cloud.google.com/composer/docs/composer-2/install-python-dependencies.
-This includes a console interface where you can install dependencies one by one;
-but it also includes documentation on installing an entire requirements.txt file via the
-gcloud command line utility.
-
-I used the following command to install dependencies in the requirements.txt file:
-
-```
-gcloud composer environments update [project-name] --location [location] --update-pypi-packages-from-file requirements.txt
-```
-
-Note that when you update dependencies, it can take several minutes for Google to
-update the environment.  Google also already has a (large) number of Python dependencies
-installed (see:  https://cloud.google.com/composer/docs/concepts/versioning/composer-versions),
-and the current requirements.txt may conflict with Google's.  If this happens, you will receive an
-error and none of your dependencies will be installed.  You will then need to potentially relax
-specific version numbers in the requirements.txt file.
-
-Other important notes:
-
-Use ```make gcp``` to transfer code to Google Cloud Composer.
-
-By default, Google Cloud Composer is set to use fairly minimal VMs with minimal memory.
-To adjust, go to Environment Details, and click Workflow Configuration: Edit.  
-You can then adjust the CPUs, RAM and storage for the scheduler and the workers.
-You can also adjust the maximum number of workers.
+* subnet:  copy from a manual run of ECS
+* security group:  copy from a manual run of ECS
+* auto-assign Public IP:  must be set to enabled;  otherwise the task cannot pull images from ECR.
 
 ## MIT License
 

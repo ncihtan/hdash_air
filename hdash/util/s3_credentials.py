@@ -1,9 +1,9 @@
 """S3 Credentials."""
-from airflow.models import Variable
+import os
 
 
 class S3Credentials:
-    """S3 Credentials obtained via Airflow Environment Variables."""
+    """S3 Credentials obtained via Environment Variables."""
 
     ACCESS_KEY_ID = "S3_ACCESS_KEY_ID"
     SECRET_ACCESS_KEY = "S3_SECRET_ACCESS_KEY"
@@ -13,23 +13,23 @@ class S3Credentials:
 
     def __init__(self):
         """Construct S3 Credentials."""
-        self._access_key_id = Variable.get(self.ACCESS_KEY_ID)
+        self._access_key_id = os.environ.get(self.ACCESS_KEY_ID)
         if self._access_key_id is None:
             raise EnvironmentError(f"{self.ACCESS_KEY_ID} not set.")
 
-        self._secret_access_key = Variable.get(self.SECRET_ACCESS_KEY)
+        self._secret_access_key = os.environ.get(self.SECRET_ACCESS_KEY)
         if self._secret_access_key is None:
             raise EnvironmentError(f"{self.SECRET_ACCESS_KEY} not set.")
 
-        self._endpoint_url = Variable.get(self.ENDPOINT_URL)
+        self._endpoint_url = os.environ.get(self.ENDPOINT_URL)
         if self._endpoint_url is None:
             raise EnvironmentError(f"{self.ENDPOINT_URL} not set.")
 
-        self._bucket_name = Variable.get(self.BUCKET_NAME)
+        self._bucket_name = os.environ.get(self.BUCKET_NAME)
         if self._bucket_name is None:
             raise EnvironmentError(f"{self.BUCKET_NAME} not set.")
 
-        self._web_site_url = Variable.get(self.WEB_SITE_URL)
+        self._web_site_url = os.environ.get(self.WEB_SITE_URL)
         if self._web_site_url is None:
             raise EnvironmentError(f"{self.WEB_SITE_URL} not set.")
 

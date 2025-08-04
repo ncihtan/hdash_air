@@ -11,7 +11,7 @@ from hdash.synapse.file_type import FileType
 class PathStatsChecker:
     """Path Stats Checker."""
 
-    logger = logging.getLogger("airflow.task")
+    logger = logging.getLogger("hdash")
 
     def __init__(self, atlas_id, file_list: List[AtlasFile], root_folder_map):
         """Create PathStats Object."""

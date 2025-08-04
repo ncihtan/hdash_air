@@ -1,114 +1,432 @@
-"""Command Line Interface (CLI) for HTAN Dashboard."""
-from hdash.graph.graph_flattener import GraphFlattener
 import logging
-import emoji
-import click
-import boto3
-from hdash.reader.atlas_reader import AtlasReader
-from hdash.db.db_util import DbConnection
-from hdash.util.s3_credentials import S3Credentials
-from hdash.util.slack import Slack
+from typing import List
 
-# These imports look like they are not used, but they are required to
-# register the ORM classes with SQLAlchemy.
+import boto3
+from natsort import natsorted
+
+from hdash.db.atlas import Atlas
 from hdash.db.atlas_file import AtlasFile
 from hdash.db.atlas_stats import AtlasStats
+from hdash.db.db_util import DbConnection
+from hdash.db.longitudinal import Longitudinal
+from hdash.db.matrix import Matrix
 from hdash.db.meta_cache import MetaCache
 from hdash.db.path_stats import PathStats
 from hdash.db.validation import Validation, ValidationError
-from hdash.db.matrix import Matrix
 from hdash.db.web_cache import WebCache
-from hdash.db.longitudinal import Longitudinal
+from hdash.graph.graph_creator import GraphCreator
+from hdash.graph.graph_flattener import GraphFlattener
+from hdash.graph.sif_writer import SifWriter
+from hdash.stats.completeness_summary import CompletenessSummary
+from hdash.stats.meta_summary import MetaDataSummary
+from hdash.stats.path_stats_checker import PathStatsChecker
+from hdash.synapse.atlas_info import AtlasInfo
+from hdash.synapse.connector import SynapseConnector
+from hdash.synapse.file_counter import FileCounter
+from hdash.synapse.file_type import FileType
+from hdash.synapse.meta_file import MetaFile
+from hdash.synapse.meta_map import MetaMap
+from hdash.util.categories import Categories
+from hdash.util.html_matrix import HtmlMatrix
+from hdash.util.longitudinal_util import LongitudinalUtil
+from hdash.util.matrix_util import MatrixUtil
+from hdash.util.s3_credentials import S3Credentials
+from hdash.util.slack import Slack
+from hdash.util.web_writer import WebWriter
+from hdash.validator.htan_validator import HtanValidator
 
-@click.group()
-def cli():
-    pass
+# Configure logging to output to stdout
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger("hdash")
 
 
-@cli.command()
-def init():
-    """Initialize the database with atlases."""
+def truncate_db_tables():
+    """Truncate Database Tables."""
+    logger.info("Truncating Tables")
     db_connection = DbConnection()
     session = db_connection.session
-    reader = AtlasReader("config/htan_projects.csv")
-    atlas_list = reader.atlas_list
-    output_header(f"Saving {len(atlas_list)} atlases to the database.")
-    for atlas in atlas_list:
-        session.add(atlas)
+
+    # Delete any Existing Atlas Stats Records
+    session.query(AtlasStats).delete()
     session.commit()
-    output_header(emoji.emojize("Done :beer_mug:"))
+
+    # Delete any Existing Atlas Files
+    session.query(AtlasFile).delete()
+    session.commit()
+
+    # Delete any Existing Validation Results
+    session.query(ValidationError).delete()
+    session.query(Validation).delete()
+    session.commit()
+
+    # Delete any Existing Web Resources
+    session.query(WebCache).delete()
+    session.commit()
+
+    # Delete any Existing Matrices
+    session.query(Matrix).delete()
+    session.commit()
+
+    # Delete any Existing Longitudinal Data
+    session.query(Longitudinal).delete()
+    session.commit()
+
+    # Delete any Existing Path Stats
+    session.query(PathStats).delete()
+    session.commit()
+    session.close()
 
 
-@cli.command()
-def reset():
-    """Reset the database (use with caution)."""
-    db_connection = DbConnection()
-    output_header("Resetting database.")
-    db_connection.reset_database()
-    output_header(emoji.emojize("Done :beer_mug:"))
-
-
-@cli.command()
-def web():
-    """Download website from the database to deploy directory."""
+def get_atlas_list():
+    """Get all HTAN Atlases from the Database."""
+    logger.info("Querying database for all atlases")
     db_connection = DbConnection()
     session = db_connection.session
-    output_header("Creating web site.")
-    web_list = session.query(WebCache).all()
-    if len(web_list) > 0:
-        for web_cache in web_list:
-            path = f"deploy/{web_cache.file_name}"
-            output_message(f"Writing:  {path}.")
-            with open(path, "w") as fd:
-                fd.write(web_cache.content)
-        output_header(emoji.emojize("Done :beer_mug:"))
-    else:
-        output_header(emoji.emojize(":warning:  No web cache files found."))
+    atlases = session.query(Atlas).all()
+    logger.info("Got %d atlases.", len(atlases))
+    id_list = [atlas.atlas_id for atlas in atlases]
+    return id_list
 
 
-@cli.command()
-def deploy():
-    """Deploy website from database to S3 bucket."""
+def get_atlas_files(atlas_id: str):
+    """Get all Synapse Files for the Specified Atlas."""
+    db_connection = DbConnection()
+    session = db_connection.session
+    atlas = session.query(Atlas).filter_by(atlas_id=atlas_id).one()
+
+    logger.info("Getting Synapse data:  %s.", atlas)
+    connector = SynapseConnector()
+    (file_list, root_folder_map) = connector.get_atlas_files(
+        atlas.atlas_id, atlas.synapse_id
+    )
+
+    # Count the Files
+    logger.info(f"Total number of files:  {len(file_list)}")
+
+    # Save stats back to the database
+    file_counter = FileCounter(file_list)
+    stats = AtlasStats(atlas.atlas_id)
+    stats.total_file_size = file_counter.get_total_file_size()
+    stats.num_bam_files = file_counter.get_num_files(FileType.BAM.value)
+    stats.num_fastq_files = file_counter.get_num_files(FileType.FASTQ.value)
+    stats.num_image_files = file_counter.get_num_files(FileType.IMAGE.value)
+    stats.num_matrix_files = file_counter.get_num_files(FileType.MATRIX.value)
+    stats.num_other_files = file_counter.get_num_files(FileType.OTHER.value)
+    logger.info(f"Total file size:  {file_counter.get_total_file_size()}")
+    logger.info("Saving stats to database")
+    session.add(stats)
+    session.commit()
+
+    # Perform path check
+    logger.info("Performing Path Check")
+    logger.info("Number of files to check:  %d", len(file_list))
+    logger.info("Number of root folders:  %d", len(root_folder_map))
+    path_stats_checker = PathStatsChecker(atlas_id, file_list, root_folder_map)
+    path_stats_list = path_stats_checker.path_map.values()
+    logger.info("Storing paths:  %d", len(path_stats_list))
+    session.add_all(path_stats_list)
+    session.commit()
+
+    # Save Files to Database
+    if len(file_list) > 0:
+        session.add_all(file_list)
+        session.commit()
+
+
+def get_meta_files(atlas_id: str):
+    """Get all meta files and store contents in database."""
+    db_connection = DbConnection()
+    session = db_connection.session
+    atlas = session.query(Atlas).filter_by(atlas_id=atlas_id).one()
+    logger.info("Getting Metadata files for:  %s.", atlas)
+
+    meta_list = (
+        session.query(AtlasFile)
+        .filter_by(atlas_id=atlas_id, data_type=FileType.METADATA.value)
+        .all()
+    )
+    logger.info("Processing %d meta files.", len(meta_list))
+
+    connector = SynapseConnector()
+    for meta_file in meta_list:
+        # Check if meta file is already cached
+        cache = session.query(MetaCache).filter_by(md5=meta_file.md5).first()
+        if cache is None:
+            logger.info("Retrieving meta file:  %s", meta_file.synapse_id)
+            csv = connector.get_cvs_table(meta_file.synapse_id)
+            meta_cache = MetaCache()
+            meta_cache.synapse_id = meta_file.synapse_id
+            meta_cache.md5 = meta_file.md5
+            meta_cache.content = csv
+            session.add(meta_cache)
+            session.commit()
+        else:
+            logger.info("Skipping. Found cache for:  %s", meta_file.synapse_id)
+    return atlas_id
+
+
+def get_longitudinal_data(atlas_id: str):
+    """Get all longitudinal files and store visuals in database."""
+    db_connection = DbConnection()
+    session = db_connection.session
+    atlas = session.query(Atlas).filter_by(atlas_id=atlas_id).one()
+    logger.info("Getting longitudinal data for:  %s.", atlas)
+
+    # Retrieve list of therapy files
+    therapy_list = (
+        session.query(AtlasFile)
+        .filter_by(atlas_id=atlas_id, category=Categories.THERAPY)
+        .all()
+    )
+    logger.info("Processing %d therapy files.", len(therapy_list))
+
+    # Retrieve list of biospecimen files
+    biospecimen_list = (
+        session.query(AtlasFile)
+        .filter_by(atlas_id=atlas_id, category=Categories.BIOSPECIMEN)
+        .all()
+    )
+    logger.info("Processing %d biospecimen files.", len(biospecimen_list))
+
+    connector = SynapseConnector()
+
+    # TODO:  THESE CAN BE RETRIEVED FROM THE DB CACHE
+    if len(therapy_list) > 0 or len(biospecimen_list) > 0:
+        longitudinal_util = LongitudinalUtil(atlas_id)
+        # For every file - retrive data and add to tables for visuals
+        for therapy_file in therapy_list:
+            logger.info("Retrieving therapy files data:  %s", therapy_file.synapse_id)
+            csv = connector.get_cvs_table(therapy_file.synapse_id)
+            longitudinal_util.build_therapy_matrix(csv)
+        for biospecimen_file in biospecimen_list:
+            logger.info(
+                "Retrieving biospecimen files data:  %s",
+                biospecimen_file.synapse_id,
+            )
+            csv = connector.get_cvs_table(biospecimen_file.synapse_id)
+            longitudinal_util.build_biospecimen_matrix(csv)
+        # Merge the data from these files to store
+        longitudinal_util.create_longitudinal()
+        # Create row for DB and commit
+        longitudinal_table_list = longitudinal_util.table_list
+        session.add_all(longitudinal_table_list)
+        session.commit()
+    return atlas_id
+
+
+def validate_atlas(atlas_id: str):
+    """Validate atlas and store results to the database."""
+    logger.info("Validating atlas:  %s.", atlas_id)
+    db_connection = DbConnection()
+    session = db_connection.session
+
+    # Validate
+    logger.info("Creating meta_map")
+    meta_map = _get_meta_map(atlas_id, session)
+    logger.info("Creating HTAN Graph")
+    graph_creator = GraphCreator(atlas_id, meta_map)
+    htan_graph = graph_creator.htan_graph
+    non_meta_file_list = _get_non_meta_atlas_files_from_db(atlas_id, session)
+    logger.info("Start validation")
+    validator = HtanValidator(atlas_id, meta_map, htan_graph, non_meta_file_list)
+    logger.info("Validation complete")
+
+    # Store Validation Results to Database
+    logger.info("Store validation results to database")
+    validation_list = validator.get_validation_results()
+    for validation in validation_list:
+        logger.info(
+            "%s: %d errors" % (validation.validation_code, len(validation.error_list))
+        )
+        session.add(validation)
+        session.commit()
+
+    # Assess Completeness of Metadata
+    logger.info("Assess metadata completeness")
+    atlas_stats = session.query(AtlasStats).filter_by(atlas_id=atlas_id).one()
+    meta_summary = MetaDataSummary(meta_map.meta_list_sorted)
+    atlas_stats.percent_metadata_complete = meta_summary.get_overall_percent_complete()
+    session.commit()
+
+    # Assess Completeness across Levels
+    logger.info("Assess level completeness")
+    graph_flat = GraphFlattener(htan_graph)
+    completeness_summary = CompletenessSummary(atlas_id, meta_map, graph_flat)
+    matrix_util = MatrixUtil(atlas_id, completeness_summary)
+    matrix_list = matrix_util.matrix_list
+    session.add_all(matrix_list)
+
+    # Store SIF Network
+    logger.info("Create SIF network")
+    directed_graph = htan_graph.directed_graph
+    sif_writer = SifWriter(directed_graph)
+    web_cache = WebCache()
+    web_cache.file_name = f"{atlas_id}_network.sif"
+    web_cache.content = sif_writer.sif
+    session.add(web_cache)
+    session.commit()
+    return atlas_id
+
+
+def create_web(atlas_id_list):
+    """Create Web Site."""
+    db_connection = DbConnection()
+    session = db_connection.session
+    atlas_id_list = natsorted(atlas_id_list)
+    atlas_info_list = _get_atlas_info_list(atlas_id_list, session)
+
+    web_writer = WebWriter(atlas_info_list)
+    web_cache = WebCache()
+    web_cache.file_name = "index.html"
+    web_cache.content = web_writer.index_html
+    logger.info("Creating index.html")
+    session.add(web_cache)
+
+    for atlas_id in atlas_id_list:
+        atlas_html = web_writer.atlas_html_map[atlas_id]
+        web_cache = WebCache()
+        web_cache.file_name = f"{atlas_id}.html"
+        web_cache.content = atlas_html
+        logger.info("Creating %s.", web_cache.file_name)
+        session.add(web_cache)
+    session.commit()
+    return len(atlas_id_list)
+
+def deploy_web():
+    """Deploy website to S3 Bucket."""
     db_connection = DbConnection()
     session = db_connection.session
     s3_credentials = S3Credentials()
     s3_config = s3_credentials.get_s3_config()
-    client = boto3.client("s3", **s3_config)
-    output_header(
-        f"Deploying to:  {s3_credentials.endpoint_url}/{s3_credentials.bucket_name}."
-    )
     web_list = session.query(WebCache).all()
-    if len(web_list) > 0:
-        for web_cache in web_list:
-            output_message(f"Writing:  {web_cache.file_name}.")
-            client.put_object(
-                Bucket=s3_credentials.bucket_name,
-                Key=web_cache.file_name,
-                Body=web_cache.content,
-                ACL='public-read',
-                ContentType='text/html'
-            )
-        output_header(emoji.emojize("Done :beer_mug:"))
-    else:
-        output_header(emoji.emojize(":warning:  No web cache files found."))
+    logger.info("Endpoint url:  %s.", s3_credentials.endpoint_url)
+    client = boto3.client("s3", **s3_config) # type: ignore
+    end_point = (
+        f"{s3_credentials.endpoint_url}/{s3_credentials.bucket_name}"
+    )
+    logger.info("Deploying to:  %s.", end_point)
+    for web_cache in web_list:
+        logger.info("Writing:  %s.", web_cache.file_name)
+        client.put_object(
+            Bucket=s3_credentials.bucket_name,
+            Key=web_cache.file_name,
+            Body=web_cache.content,
+            ContentType="text/html",
+        )
 
-@cli.command()
-def slack():
-    """Send a mock message to Slack."""
+def _get_non_meta_atlas_files_from_db(atlas_id, session):
+    atlas_file_list = (
+        session.query(AtlasFile)
+        .filter(
+            AtlasFile.atlas_id == atlas_id,
+            AtlasFile.data_type != FileType.METADATA.value,
+        )
+        .order_by(AtlasFile.category)
+        .all()
+    )
+    return atlas_file_list
+
+
+def _get_atlas_info_list(atlas_list, session):
+    """Get Atlas Info List."""
+    atlas_info_list: List[AtlasInfo] = []
+    for atlas_id in atlas_list:
+        atlas = session.query(Atlas).filter_by(atlas_id=atlas_id).one()
+        atlas_stats = session.query(AtlasStats).filter_by(atlas_id=atlas_id).one()
+        meta_map = _get_meta_map(atlas_id, session)
+        validation_list = (
+            session.query(Validation)
+            .filter_by(atlas_id=atlas_id)
+            .order_by(Validation.validation_order)
+            .all()
+        )
+        matrix_list = (
+            session.query(Matrix)
+            .filter_by(atlas_id=atlas_id)
+            .order_by(Matrix.order)
+            .all()
+        )
+        html_matrix_list = []
+        for matrix in matrix_list:
+            html_matrix_list.append(HtmlMatrix(matrix))
+
+        longitudinal_table = (
+            session.query(Longitudinal).filter_by(atlas_id=atlas_id).all()
+        )
+
+        path_stats_list = (
+            session.query(PathStats)
+            .filter_by(atlas_id=atlas_id)
+            .order_by(PathStats.path)  # type: ignore
+            .all()
+        )
+
+        atlas_info = AtlasInfo(
+            atlas,
+            atlas_stats,
+            meta_map.meta_list_sorted,
+            validation_list,
+            html_matrix_list,
+            path_stats_list,
+            longitudinal_table,
+        )
+        atlas_info_list.append(atlas_info)
+    return atlas_info_list
+
+
+def _get_meta_map(atlas_id, session):
+    """Get the Meta Map Object."""
+    meta_map = MetaMap()
+    atlas_file_list = (
+        session.query(AtlasFile)
+        .filter_by(atlas_id=atlas_id, data_type=FileType.METADATA.value)
+        .order_by(AtlasFile.category)
+        .all()
+    )
+    for atlas_file in atlas_file_list:
+        meta_cache = session.query(MetaCache).filter_by(md5=atlas_file.md5).first()
+        meta_map.add_meta_file(MetaFile(atlas_file, meta_cache))
+    return meta_map
+
+def send_failure_alert(e: Exception):
+    """Handle Failure."""
+    error_msg = f"hdash build failed: {e}"
     slack = Slack()
-    print(f"Sending slack message to web hook:  {slack.web_hook_url}.")
-    r = slack.post_msg(True, "This is a mock message from the hdash command line tool.")
-    print(r)
-
-def output_header(msg):
-    """Output header with emphasis."""
-    click.echo(click.style(msg, fg="green"))
+    logger.info("Sending failure message to Slack:  %s.", error_msg)
+    response = slack.post_msg(False, error_msg)
+    logger.info("Response from Slack:  %s.", response.status_code)
 
 
-def output_message(msg):
-    """Output message to console."""
-    click.echo(msg)
+def send_success_alert():
+    """Handle Success."""
+    success_msg = "hdash build succeeded."
+    slack = Slack()
+    logger.info("Sending success message to Slack:  %s.", success_msg)
+    response = slack.post_msg(True, success_msg)
+    logger.info("Response from Slack:  %s.", response.status_code)
 
 
-if __name__ == "__main__":
-    cli()
+try:
+    logger.info("-------------------------")
+    logger.info("hdash: The HTAN Dashboard")
+    logger.info("-------------------------")
+    truncate_db_tables()
+    id_list = get_atlas_list()
+
+    for atlas_id in id_list:
+        logger.info("-------------------------")
+        logger.info("Processing Atlas:  %s" % atlas_id)
+        logger.info("-------------------------")
+        get_atlas_files(atlas_id) # type: ignore
+        get_meta_files(atlas_id) # type: ignore
+        get_longitudinal_data(atlas_id) # type: ignore
+        validate_atlas(atlas_id) # type: ignore
+
+    create_web(id_list)
+    deploy_web()
+    send_success_alert()
+except Exception as e:
+    logger.error(f"An error occurred: {e}")
+    send_failure_alert(e)

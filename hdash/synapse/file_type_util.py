@@ -6,6 +6,8 @@ from hdash.synapse.file_type import FileType
 
 class FileTypeUtil:
     """File Type Utility Class."""
+    logger = logging.getLogger("hdash")
+    invalid_file_type_set = set()
 
     LEGACY_META_FILE_NAME = "synapse_storage_manifest.csv"
     META_FILE_PREFIX = "synapse_storage_manifest_"
@@ -27,7 +29,7 @@ class FileTypeUtil:
             try:
                 file_type = self.file_type_map[file_extension]
             except KeyError:
-                logging.warning("Unrecognized: %s", file_extension)
+                self.invalid_file_type_set.add(file_extension)
         return file_type.value
 
     def _get_file_extension(self, path):
