@@ -1,4 +1,5 @@
 """Slack Connector."""
+
 import datetime
 import requests
 import os

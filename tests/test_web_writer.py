@@ -1,4 +1,5 @@
 """Test Report Writer."""
+
 from hdash.db.path_stats import PathStats
 from hdash.util.web_writer import WebWriter
 from hdash.graph.graph_flattener import GraphFlattener
@@ -45,6 +46,7 @@ def test_report_writer(atlas_list: list[AtlasInfo], sample_meta_map: MetaMap):
         file_handler.write(atlas_html_map["HTA1"])
     assert html.index("HTAN MSKCC") > 0
 
+
 def _get_longitudinal_table():
     longitudinal_util = LongitudinalUtil("HTA_1")
 
@@ -61,7 +63,8 @@ def _get_longitudinal_table():
 
     return longitudinal_util.table_list
 
+
 def _get_data(file_name: str):
-    with (open(file_name, "r")) as file:
+    with open(file_name, "r") as file:
         data = file.read()
         return data

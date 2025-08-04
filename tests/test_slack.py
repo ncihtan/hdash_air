@@ -1,4 +1,5 @@
 """Test Slack Connector."""
+
 import json
 from hdash.util.slack import Slack
 

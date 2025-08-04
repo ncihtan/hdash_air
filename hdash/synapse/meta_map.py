@@ -1,4 +1,5 @@
 """MetaMap Class."""
+
 from typing import List
 from hdash.synapse.meta_file import MetaFile
 

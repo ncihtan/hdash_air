@@ -1,4 +1,5 @@
 """Smoke Tests for Synapse Connector."""
+
 import pytest
 from hdash.synapse.connector import SynapseConnector
 

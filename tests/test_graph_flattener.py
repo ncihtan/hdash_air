@@ -1,4 +1,5 @@
 """Test Graph Util class."""
+
 from hdash.graph.htan_graph import HtanGraph
 from hdash.graph.node_data import NodeData
 from hdash.db.atlas_file import AtlasFile

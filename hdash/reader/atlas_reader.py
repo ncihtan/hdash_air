@@ -1,4 +1,5 @@
 """Atlas Reader."""
+
 from hdash.db.atlas import Atlas
 
 

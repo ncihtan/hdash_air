@@ -1,4 +1,5 @@
 """MetaCache ORM Class."""
+
 from sqlalchemy import Column, String, Integer, Float
 from sqlalchemy.dialects.mysql import LONGTEXT
 from hdash.db.db_base import Base

@@ -1,4 +1,5 @@
 """Synapse Credentials."""
+
 import os
 
 

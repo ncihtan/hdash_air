@@ -1,4 +1,5 @@
 """Test HTAN Validator class."""
+
 from io import StringIO
 import pandas as pd
 from hdash.graph.graph_flattener import GraphFlattener

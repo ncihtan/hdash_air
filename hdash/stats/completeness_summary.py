@@ -1,4 +1,5 @@
 """Completeness Summary."""
+
 from hdash.synapse.meta_map import MetaMap
 from hdash.graph.graph_flattener import GraphFlattener
 from hdash.graph.key import KeyUtil

@@ -1,4 +1,5 @@
 """SIF Writer."""
+
 import networkx as nx
 from hdash.graph.htan_graph import HtanGraph
 

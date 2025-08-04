@@ -1,4 +1,5 @@
 """Test CompletenessSummary."""
+
 from hdash.graph.graph_flattener import GraphFlattener
 from hdash.stats.completeness_summary import CompletenessSummary
 from hdash.graph.graph_creator import GraphCreator
@@ -6,6 +7,7 @@ from hdash.synapse.meta_map import MetaMap
 from hdash.util.categories import Categories
 
 # pyright: strict
+
 
 def test_completeness_summary(sample_meta_map: MetaMap):
     """Test Completeness Summary."""

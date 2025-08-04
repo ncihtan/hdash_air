@@ -1,10 +1,8 @@
-# hdash_aws
-
-AWS Pipeline for creating the HTAN Dashboard.
+# AWS Pipeline for creating the HTAN Dashboard.
 
 ## Overview
 
-```hdash_aws``` is an AWS pipeline for creating the HTAN Dashboard.  The pipeline connects to Synapse to retrieve HTAN data and metadata, and summarizes this data in a series of static HTML web pages.  These static pages are then deployed to an S3 cloud bucket.
+An AWS pipeline for creating the HTAN Dashboard.  The pipeline connects to Synapse to retrieve HTAN data and metadata, and summarizes this data in a series of static HTML web pages.  These static pages are then deployed to an S3 cloud bucket.
 
 Previous versions of this code used Apache Airflow, but this new code is designed to run natively within AWS and designed to be more cost-effective.
 
@@ -43,7 +41,7 @@ pip install -r requirements.txt
 
 ## Set Environment Variables
 
-The following environment variables are required:
+The following environment variables are required, whether run locally or within AWS.
 
 ```
 SYNAPSE_USER          Synapse User Name, must use a Personal Access Token (PAT)
@@ -59,6 +57,10 @@ S3_BUCKET_NAME        S3 Bucket Name, e.g. htan
 S3_WEB_SITE_URL       S3 Static Site, e.g. http://htan-hdash.s3-website-us-east-1.amazonaws.com
 SLACK_WEBHOOK_URL     Slack Web Hook URL for Posting to Slack
 ```
+
+## Developer Tools
+
+
 
 ## Command Line Tool
 

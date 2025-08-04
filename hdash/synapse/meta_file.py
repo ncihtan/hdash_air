@@ -1,4 +1,5 @@
 """Metadata File."""
+
 from io import StringIO
 import pandas as pd
 from hdash.db.atlas_file import AtlasFile

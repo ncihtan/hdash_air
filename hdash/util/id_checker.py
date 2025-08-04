@@ -1,4 +1,5 @@
 """Check HTAN IDs against SOP."""
+
 import re
 from hdash.util.id_util import IdUtil
 

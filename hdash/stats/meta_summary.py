@@ -1,4 +1,5 @@
 """Summarize stats across all metadata files."""
+
 from hdash.util.id_util import IdUtil
 from hdash.util.categories import Categories
 from typing import List

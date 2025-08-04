@@ -1,4 +1,5 @@
 """File Type."""
+
 from enum import Enum
 
 

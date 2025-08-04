@@ -1,8 +1,10 @@
 """Test File Type Utility Class."""
+
 from hdash.synapse.file_type_util import FileTypeUtil
 from hdash.synapse.file_type import FileType
 
 # pyright: strict
+
 
 def test_file_type_util():
     """Test File Type Utility Class."""

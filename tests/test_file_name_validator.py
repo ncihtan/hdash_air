@@ -1,8 +1,10 @@
 """Test FileCounter class."""
+
 from hdash.validator.validate_file_names import ValidateFileNames
 from hdash.db.atlas_file import AtlasFile
 
 # pyright: strict
+
 
 def test_file_name_checker():
     """Test File Name Validator."""

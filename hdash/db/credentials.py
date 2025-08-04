@@ -1,5 +1,7 @@
 """Synapse Credentials."""
+
 import os
+
 
 class DatabaseCredentials:
     """Database Credentials obtained via Environment Variables."""

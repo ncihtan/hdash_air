@@ -1,4 +1,5 @@
 """Test Path Stats Checker."""
+
 from hdash.stats.path_stats_checker import PathStatsChecker
 from hdash.db.atlas_file import AtlasFile
 from hdash.util.categories import Categories

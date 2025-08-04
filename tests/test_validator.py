@@ -1,4 +1,5 @@
 """Test HTAN Validator class."""
+
 from hdash.validator.htan_validator import HtanValidator
 from hdash.graph.graph_creator import GraphCreator
 from hdash.db.atlas_file import AtlasFile

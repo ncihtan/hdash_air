@@ -1,4 +1,5 @@
 """Test Synapse Credentials."""
+
 from unittest import mock
 from hdash.util.s3_credentials import S3Credentials
 

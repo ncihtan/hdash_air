@@ -1,4 +1,5 @@
 """Test Meta Summary class."""
+
 import pytest
 from hdash.stats.meta_summary import MetaDataSummary
 from hdash.synapse.meta_map import MetaMap

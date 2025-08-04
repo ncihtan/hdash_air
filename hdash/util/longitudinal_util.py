@@ -1,4 +1,5 @@
 """Longitudinal Utility."""
+
 import json
 import logging
 import pandas as pd
@@ -173,9 +174,9 @@ class LongitudinalUtil:
                     f' ({row["Number"]})'
                 )
             else:
-                data_frame.at[
-                    index, "Acquisition Method Type"
-                ] = f'{(row["Specimen Laterality"])} {row["Acquisition Method Type"]}'
+                data_frame.at[index, "Acquisition Method Type"] = (
+                    f'{(row["Specimen Laterality"])} {row["Acquisition Method Type"]}'
+                )
         del data_frame["Number"]
 
         data_frame["HTAN Parent ID"] = (

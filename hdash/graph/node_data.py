@@ -1,4 +1,5 @@
 """Node Data."""
+
 from hdash.synapse.meta_file import MetaFile
 from hdash.util.categories import Categories
 

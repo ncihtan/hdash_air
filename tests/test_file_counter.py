@@ -1,10 +1,12 @@
 """Test FileCounter class."""
+
 from hdash.db.atlas_file import AtlasFile
 from hdash.synapse.file_counter import FileCounter
 from hdash.synapse.file_type import FileType
 from hdash.synapse.file_type_util import FileTypeUtil
 
 # pyright: strict
+
 
 def test_file_counter():
     """Test File Counter."""
@@ -13,7 +15,7 @@ def test_file_counter():
     file3 = _create_file("a3", "hta.tif", 100, "file", "b3")
     file4 = _create_file("a4", "hta2.bam", 100, "file", "b4")
 
-    file_list: list[AtlasFile]= [file1, file2, file3, file4]
+    file_list: list[AtlasFile] = [file1, file2, file3, file4]
     counter = FileCounter(file_list)
 
     assert counter.get_total_file_size() == 400
@@ -25,7 +27,9 @@ def test_file_counter():
     counter = FileCounter(file_list)
 
 
-def _create_file(synapse_id: str, file_name: str, file_size: int, file_type: str, parent_id: str):
+def _create_file(
+    synapse_id: str, file_name: str, file_size: int, file_type: str, parent_id: str
+):
     """Create Atlas File."""
     util = FileTypeUtil()
     file = AtlasFile()

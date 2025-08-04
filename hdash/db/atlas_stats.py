@@ -1,4 +1,5 @@
 """AtlasStats ORM Class."""
+
 from sqlalchemy import Column, String, Integer, BigInteger, Float
 import humanize
 from hdash.db.db_base import Base

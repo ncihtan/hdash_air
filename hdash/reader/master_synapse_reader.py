@@ -1,4 +1,5 @@
 """Master Synapse Table Reader."""
+
 from typing import List
 from hdash.db.atlas_file import AtlasFile
 from hdash.synapse.file_type import FileType
@@ -95,7 +96,7 @@ class MasterSynapseReader:
         file.md5 = str(row.dataFileMD5Hex)
         file.modified_on = row.modifiedOn
         file.atlas_id = self.atlas_id
-        file.data_type = self.file_type_util.get_file_type(file.name) # type: ignore
+        file.data_type = self.file_type_util.get_file_type(file.name)  # type: ignore
         return file
 
     def _get_path(self, row, folder_map):

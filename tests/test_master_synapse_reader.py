@@ -1,4 +1,5 @@
 """Test Master Synapse Reader."""
+
 import pandas as pd
 from hdash.reader.master_synapse_reader import MasterSynapseReader
 from hdash.synapse.file_type import FileType

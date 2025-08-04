@@ -1,4 +1,5 @@
 """File Type Utility Class."""
+
 import logging
 from pathlib import Path
 from hdash.synapse.file_type import FileType
@@ -6,6 +7,7 @@ from hdash.synapse.file_type import FileType
 
 class FileTypeUtil:
     """File Type Utility Class."""
+
     logger = logging.getLogger("hdash")
     invalid_file_type_set = set()
 

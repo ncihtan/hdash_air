@@ -1,4 +1,5 @@
 """Path ORM Class."""
+
 from sqlalchemy import Column, String, Integer
 from hdash.db.db_base import Base
 from typing import Union

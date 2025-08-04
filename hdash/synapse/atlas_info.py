@@ -1,4 +1,5 @@
 """Atlas Info."""
+
 from hdash.db.atlas import Atlas
 from hdash.db.validation import Validation
 from hdash.db.atlas_stats import AtlasStats

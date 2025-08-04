@@ -1,4 +1,5 @@
 """Core HTAN Validator."""
+
 import logging
 from typing import List
 from hdash.db.atlas_file import AtlasFile

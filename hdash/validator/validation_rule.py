@@ -1,4 +1,5 @@
 """Base Validation Rule."""
+
 from hdash.synapse.meta_file import MetaFile
 
 

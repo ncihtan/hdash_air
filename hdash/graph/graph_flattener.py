@@ -1,4 +1,5 @@
 """Graph Flattener Class."""
+
 import networkx as nx
 from natsort import natsorted
 from hdash.graph.htan_graph import HtanGraph

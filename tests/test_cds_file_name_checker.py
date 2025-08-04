@@ -1,7 +1,9 @@
 """Test FileCounter class."""
+
 from hdash.util.cds_name_checker import CdsFileNameChecker
 
 # pyright: strict
+
 
 def test_file_name_checker():
     """Test File Name Checker."""

@@ -1,4 +1,5 @@
 """Longitudinal ORM Class."""
+
 import json
 from sqlalchemy import Column, String
 from sqlalchemy.dialects.mysql import LONGTEXT

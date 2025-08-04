@@ -1,4 +1,5 @@
 """HTAN Graph."""
+
 import networkx as nx
 from hdash.graph.node_data import NodeData
 from hdash.util.categories import Categories

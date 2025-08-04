@@ -1,4 +1,5 @@
 """Validation Rule."""
+
 from hdash.util.categories import Categories
 from hdash.validator.validation_rule import ValidationRule
 from hdash.synapse.meta_map import MetaMap

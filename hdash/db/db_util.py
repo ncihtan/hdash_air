@@ -1,4 +1,5 @@
 """Database Utilities."""
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from sqlalchemy_utils import database_exists, create_database, drop_database  # type: ignore

@@ -1,4 +1,5 @@
 """Test Graph Creator."""
+
 from hdash.graph.graph_creator import GraphCreator
 from hdash.graph.sif_writer import SifWriter
 

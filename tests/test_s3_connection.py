@@ -1,4 +1,5 @@
 """Smoke Tests for S3 Connection."""
+
 import pytest
 import boto3
 from hdash.util.s3_credentials import S3Credentials

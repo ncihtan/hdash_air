@@ -1,4 +1,5 @@
 """Test Synapse Credentials."""
+
 from unittest import mock
 from hdash.synapse.credentials import SynapseCredentials
 

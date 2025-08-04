@@ -1,4 +1,5 @@
 """ID Utility Class."""
+
 from hdash.util.categories import Categories
 
 
