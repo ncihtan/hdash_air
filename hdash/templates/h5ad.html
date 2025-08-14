@@ -1,0 +1,53 @@
+<html>
+
+<head>
+    {% include "head.html" %}
+</head>
+
+<body>
+    <div class="container-fluid ms-2 me-2">
+        {% include "header.html" %}
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">h5ad validation
+                </li>
+            </ol>
+        </nav>
+        <h1 class="mb-3">h5ad Validation</h1>
+
+        <table class="table table-striped">
+            <tr>
+                <th>timestamp</th>
+                <th>bucket</th>
+                <th>key</th>
+                <th>valid</th>
+                <th>errors</th>
+            </tr>
+        {% for h5ad in h5ad_list %}
+        <tr>
+            <td>{{ h5ad.created_at }}</td>
+            <td>{{ h5ad.bucket }}</td>
+            <td>{{ h5ad.key }}</td>
+            <td>{{ h5ad.valid }}</td>
+            <td>
+                {% if h5ad.error_list %}
+                    <ul>
+                    {% for error in h5ad.error_list.split('#') %}
+                        <li>{{ error.strip() }}</li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    No errors
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </table>
+
+        <br>
+        {% include "footer.html" %}
+    </div>
+</body>
+
+</html>

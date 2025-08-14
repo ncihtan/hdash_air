@@ -5,3 +5,4 @@ tests/out
 deploy/
 *.pyc
 .env
+lambda_requirements.txt

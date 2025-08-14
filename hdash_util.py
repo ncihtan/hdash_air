@@ -17,6 +17,7 @@ from hdash.db.validation import Validation, ValidationError
 from hdash.db.matrix import Matrix
 from hdash.db.web_cache import WebCache
 from hdash.db.longitudinal import Longitudinal
+from hdash.db.h5ad_validation import H5adValidation
 
 @click.group()
 def cli():
