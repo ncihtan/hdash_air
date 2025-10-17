@@ -91,8 +91,8 @@ I am currently using [Pyright](https://github.com/microsoft/pyright) to check fo
 To deploy everything to AWS:
 
 ```
-make build_amd64
-make docker_push
+make docker_fargate_build
+make docker_fargate_push
 ```
 
 This creates a new Docker image and registers it via AWS Elastic Container Registry (ECR).

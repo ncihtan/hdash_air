@@ -49,6 +49,7 @@ class IdUtil:
             Categories.HI_C_SEQ_LEVEL_1: IdUtil.HTAN_PARENT_BIOSPECIMEN_ID,
             Categories.MASS_SPEC_LEVEL_1: IdUtil.HTAN_PARENT_BIOSPECIMEN_ID,
             Categories.ELECTRON_MICROSCOPY_LEVEL_1: IdUtil.HTAN_PARENT_BIOSPECIMEN_ID,
+            Categories.MULTIPLEX_CITE_SEQ_LEVEL_1: IdUtil.HTAN_PARENT_BIOSPECIMEN_ID,
         }
 
     def get_primary_id_column(self, category):

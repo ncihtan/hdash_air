@@ -68,6 +68,10 @@ class Categories:
     SLIDE_SEQ_LEVEL_3 = "Slide-seqLevel3"
     EX_SEQ_MINIMAL = "ExSeqMinimal"
     ACCESSORY_MANIFEST = "AccessoryManifest"
+    MULTIPLEX_CITE_SEQ_LEVEL_1 = "MultiplexedCITE-seqLevel1"
+    MULTIPLEX_CITE_SEQ_LEVEL_2 = "MultiplexedCITE-seqLevel2"
+    MULTIPLEX_CITE_SEQ_LEVEL_3 = "MultiplexedCITE-seqLevel3"
+    MULTIPLEX_CITE_SEQ_LEVEL_4 = "MultiplexedCITE-seqLevel4"
 
     # Clinical Data Categories
     DEMOGRAPHICS = "Demographics"
@@ -182,6 +186,13 @@ class Categories:
             Categories.SLIDE_SEQ_LEVEL_3,
         ]
 
+        self.cite_seq_list = [
+            Categories.MULTIPLEX_CITE_SEQ_LEVEL_1,
+            Categories.MULTIPLEX_CITE_SEQ_LEVEL_2,
+            Categories.MULTIPLEX_CITE_SEQ_LEVEL_3,
+            Categories.MULTIPLEX_CITE_SEQ_LEVEL_4,
+        ]
+
         self.other_assay_list = [
             Categories.OTHER_ASSAY,
             Categories.EX_SEQ_MINIMAL,
@@ -290,6 +301,10 @@ class Categories:
             Categories.SLIDE_SEQ_LEVEL_3: "SS3",
             Categories.EX_SEQ_MINIMAL: "ES",
             Categories.ACCESSORY_MANIFEST: "AM",
+            Categories.MULTIPLEX_CITE_SEQ_LEVEL_1: "MC1",
+            Categories.MULTIPLEX_CITE_SEQ_LEVEL_2: "MC2",
+            Categories.MULTIPLEX_CITE_SEQ_LEVEL_3: "MC3",
+            Categories.MULTIPLEX_CITE_SEQ_LEVEL_4: "MC4",
         }
 
         self.all_assays = []
@@ -306,6 +321,7 @@ class Categories:
         self.all_assays.extend(self.mass_spec_list)
         self.all_assays.extend(self.electron_microscopy_list)
         self.all_assays.extend(self.rppa_list)
+        self.all_assays.extend(self.cite_seq_list)
 
         self.all_clinical = []
         self.all_clinical.extend(self.clinical_tier1_2_list)
